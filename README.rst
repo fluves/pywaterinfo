@@ -34,7 +34,7 @@ Tests are defined with `pytest <https://docs.pytest.org>`_. Write tests and run 
     python setup.py test
 
 
-Documentation lives in the `docs` directory and is setup using `Sphinx <http://www.sphinx-doc.org/en/master/>`_.
+Documentation lives in the `docs` directory and is setup using `Sphinx package <http://www.sphinx-doc.org/en/master/>`_.
 You can edit the documentation using any text editor and then generate the HTML output by with the command:
 
 ::
