@@ -1,14 +1,23 @@
 # pywaterinfo
 
-Add a short description here!
-
+Python package to download time series data from waterinfo.be
 
 ## Description
 
-A longer description of your project goes here...
+pywaterinfo facilitates access to [waterinfo.be](https://www.waterinfo.be/), a website managed by the [Flanders Environment Agency (VMM)](https://en.vmm.be/) and [Flanders Hydraulics Research](https://www.waterbouwkundiglaboratorium.be/). The website provides access to real-time water and weather related environmental variables for Flanders (Belgium), such as rainfall, air pressure, discharge, and water level. The package provides functions to search for stations and variables, and download time series.
+
+## Installation
+
+... TODO
+
+## Example
+
+... TODO
+
 
 ## Contribute
 
+... TODO
 
 ```
 A `.pre-commit-config.yaml` file was generated inside your project but in order to make sure the hooks will run, please don't forget to install the `pre-commit` package:
