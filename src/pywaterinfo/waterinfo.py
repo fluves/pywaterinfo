@@ -158,14 +158,25 @@ class Waterinfo:
 
         Examples
         --------
+        >>> from pywaterinfo import Waterinfo
         >>> vmm = Waterinfo("vmm")
         >>> # get the API info/documentation from kiwis
-        >>> vmm.request_kiwis({"request": "getRequestInfo"})
+        >>> data, res = vmm.request_kiwis({"request": "getRequestInfo"})
+        >>> data        #doctest: +ELLIPSIS
+        [{'Title': 'KISTERS QueryServices - Request Inform...file'}}}}}}]
+        >>> res.status_code
+        200
         >>> # get the timeseries data from last day from time series 78124042
-        >>> vmm.request_kiwis({"request": "getTimeseriesValues", "ts_id": "78124042",
-        >>>                    "period": "P1D"})
+        >>> data, res = vmm.request_kiwis({"request": "getTimeseriesValues",
+        ...                                "ts_id": "78124042",
+        ...                                "period": "P1D"})
+        >>> data        #doctest: +ELLIPSIS
+        [{'ts_id': '78124042'...]]}]
         >>> # get all stations starting with a P in the station_no
-        >>> vmm.request_kiwis({"request": "getStationList", "station_no": "P*"}
+        >>> data, res = vmm.request_kiwis({"request": "getStationList",
+        ...                                "station_no": "P*"})
+        >>> data        #doctest: +ELLIPSIS
+        [['station_name'...]]
         """
         # query input checks: valid parameters and formatting of the parameters period,
         # dateformat, returnfields
@@ -444,34 +455,37 @@ class Waterinfo:
 
         Examples
         --------
+        >>> from pywaterinfo import Waterinfo
         >>> vmm = Waterinfo("vmm")
         >>>
         >>> # get last day of data for the time series with ID 78124042
-        >>> get_timeseries_values(78124042, period="P1D")
+        >>> df = vmm.get_timeseries_values(78124042, period="P1D")
         >>>
         >>> # get last day data of time series with ID 78124042 with subset of columns
         >>> my_columns = ("Timestamp,Value,Interpolation Type,Quality Code,Quality"
-                          "Code Name,Quality Code Description")
-        >>> vmm.get_timeseries_values(78124042, period="P1D", returnfields=my_columns)
+        ...               " Code Name,Quality Code Description")
+        >>> df = vmm.get_timeseries_values(78124042, period="P1D",
+        ...                                returnfields=my_columns)
         >>>
         >>> # get the data for ts_id 60992042 and 60968042 (Moerbeke_P and Waregem_P)
         >>> # for 20190502 till 20190503
         >>> # Note: UTC as time unit is used as input and asked as output by default
-        >>> vmm.get_timeseries_values("60992042,60968042",
+        >>> df = vmm.get_timeseries_values("60992042,60968042",
         ...                           start="20190502", end="20190503")
         >>>
         >>> # get the data for all stations from groups 192900 (yearly rain sum)
         >>> # and 192895 (yearly discharge average) for the last 2 years
-        >>> vmm.get_timeseries_values(timeseriesgroup_id="192900,192895", period="P2Y")
+        >>> df = vmm.get_timeseries_values(timeseriesgroup_id="192900,192895",
+        ...                                period="P2Y")  # doctest: +SKIP
         >>>
         >>> hic = Waterinfo("hic")
         >>>
         >>> # get last day of data for the time series with ID 44223010
-        >>> hic.get_timeseries_values(ts_id="44223010", period="P1D")
+        >>> df = hic.get_timeseries_values(ts_id="44223010", period="P1D")
         >>>
         >>> # get last day data of time series with ID 44223010 with subset of columns
-        >>> hic.get_timeseries_values(ts_id="44223010", period="P1D",
-        ...            returnfields="Timestamp,Value,Interpolation Type,Quality Code")
+        >>> df = hic.get_timeseries_values(ts_id="44223010", period="P1D",
+        ...          returnfields="Timestamp,Value,Interpolation Type,Quality Code")
         """
         # check the period information
         period_info = self._parse_period(start=start, end=end, period=period)
@@ -503,7 +517,6 @@ class Waterinfo:
         query_param.update(kwargs)
 
         data, response = self.request_kiwis(query_param)
-        print(query_param)
 
         # All metadata of time series (except of columns, data and rows) converted
         # to additional columns in df in order to concat all of them while keeping the
@@ -557,24 +570,26 @@ class Waterinfo:
 
         Examples
         --------
+        >>> from pywaterinfo import Waterinfo
         >>> vmm = Waterinfo("vmm")
         >>>
         >>> # get the metadata and last measured value on a single time series
-        >>> vmm.get_timeseries_value_layer(ts_id=78124042)
+        >>> df = vmm.get_timeseries_value_layer(ts_id=78124042)
         >>>
         >>> # get the metadata and last measured value of all members of a
         >>> # time series group
-        >>> vmm.get_timeseries_value_layer(timeseriesgroup_id=192928)
+        >>> df = vmm.get_timeseries_value_layer(timeseriesgroup_id=192928)
         >>>
         >>> # get the measured value of all members of a time series group on
         >>> # a given time stamp
-        >>> vmm.get_timeseries_value_layer(timeseriesgroup_id=192928, date="20190501")
+        >>> df = vmm.get_timeseries_value_layer(timeseriesgroup_id=192928,
+        ...                                     date="20190501")
         >>>
         >>> hic = Waterinfo("hic")
         >>>
         >>> # get the metadata and last measured value of the oxygen concentration
         >>> # (group id 156207) and conductivity (group id 156173) combined
-        >>> hic.get_timeseries_value_layer(timeseriesgroup_id="156207,156173")
+        >>> df = hic.get_timeseries_value_layer(timeseriesgroup_id="156207,156173")
         """
         # hard coded set of metadata return fields as only in description
         # field of queryinfo
@@ -636,22 +651,23 @@ class Waterinfo:
 
         Examples
         --------
+        >>> from pywaterinfo import Waterinfo
         >>> vmm = Waterinfo("vmm")
         >>>
         >>> # all available groupid's provided by VMM
-        >>> vmm.get_group_list()
+        >>> df = vmm.get_group_list()
         >>>
         >>> # all available groupid's provided by VMM that represent a time series
-        >>> vmm.get_group_list(group_type='timeseries')
+        >>> df = vmm.get_group_list(group_type='timeseries')
         >>>
         >>> # all available groupid's  provided by VMM containing 'Download' in
         >>> # the group name
-        >>> vmm.get_group_list(group_name='*Download*')
+        >>> df = vmm.get_group_list(group_name='*Download*')
         >>>
         >>> hic = Waterinfo("hic")
         >>>
         >>> # all available groupid's provided by HIC
-        >>> hic.get_group_list()
+        >>> df = hic.get_group_list()
         """
         if group_type and group_type not in ["station", "parameter", "timeseries"]:
             raise WaterinfoException(
@@ -700,33 +716,35 @@ class Waterinfo:
 
         Examples
         --------
+        >>> from pywaterinfo import Waterinfo
         >>> vmm = Waterinfo("vmm")
         >>>
         >>> # for given station ME09_012, which time series are available?
-        >>> vmm.get_timeseries_list(station_no="ME09_012")
+        >>> df = vmm.get_timeseries_list(station_no="ME09_012") # doctest: +SKIP
         >>>
         >>> # for a given parameter PET, which time series are available?
-        >>> vmm.get_timeseries_list(parametertype_name="PET")
+        >>> df = vmm.get_timeseries_list(parametertype_name="PET") # doctest: +SKIP
         >>>
         >>> # for a given parameter PET and station ME09_012, which time series
         >>> # are available?
-        >>> vmm.get_timeseries_list(parametertype_name="PET", station_no="ME09_012")
+        >>> df = vmm.get_timeseries_list(parametertype_name="PET",
+        ...                              station_no="ME09_012")
         >>>
         >>> # for a given parametertype_id 11502, which time series are available?
-        >>> vmm.get_timeseries_list(parametertype_id="11502"))
+        >>> df = vmm.get_timeseries_list(parametertype_id="11502")
         >>>
         >>> # only interested in a subset of the returned columns: ts_id, station_name,
         >>> # stationparameter_longname
-        >>> vmm.get_timeseries_list(parametertype_id="11502", returnfields="ts_id,
-        ...                         station_name,stationparameter_longname")
+        >>> df = vmm.get_timeseries_list(parametertype_id="11502",
+        ...                returnfields="ts_id,station_name,stationparameter_longname")
         >>>
         >>> hic = Waterinfo("hic")
         >>>
         >>> # for a given parameter EC, which time series are available?
-        >>> hic.get_timeseries_list(parametertype_name="EC")
+        >>> df = hic.get_timeseries_list(parametertype_name="EC")
         >>>
         >>> # for a given station plu03a-1066, which time series are available?
-        >>> hic.get_timeseries_list(station_no="plu03a-1066")
+        >>> df = hic.get_timeseries_list(station_no="plu03a-1066")
         """
         all_returnfields = list(
             self._kiwis_info["getTimeseriesList"]["Returnfields"]["Content"].keys()
