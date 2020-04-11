@@ -179,7 +179,7 @@ class Waterinfo:
             raise KiwisException(
                 f"Waterinfo call returned {res.status_code} error with the message {res.content}"
             )
-        logging.info(f"Succesful waterinfo API request with call {res.url}")
+        logging.info(f"Successful waterinfo API request with call {res.url}")
 
         parsed = res.json()
         if (
@@ -513,7 +513,7 @@ class Waterinfo:
         Returns
         -------
         pd.DataFrame
-            DataFrame with for each time series in the group a row containint measurement and metadata
+            DataFrame with for each time series in the group a row containing measurement and metadata
 
         Examples
         --------

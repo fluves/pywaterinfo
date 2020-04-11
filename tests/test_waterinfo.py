@@ -43,13 +43,13 @@ def test_ssl_handling():
 
 def test_token():
     """Check if submitting of a token is tackled properly"""
-    # no token, no token header, no authentification in request header
+    # no token, no token header, no authentication in request header
     vmm = Waterinfo("vmm")
     assert vmm._token_header is None
     _, res = vmm.request_kiwis({"request": "getRequestInfo"})
     assert "Authorization" not in res.request.headers.keys()
 
-    # token, token header, authentification in request header
+    # token, token header, authentication in request header
     # this client code is received by VMM for unit testing purposes only
     client = (
         "MzJkY2VlY2UtODI2Yy00Yjk4LTljMmQtYjE2OTc4ZjBjYTZhOjRhZGE"
