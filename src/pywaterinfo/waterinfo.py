@@ -1,17 +1,18 @@
-import os
-import re
 import datetime
 import logging
+import os
 import pkg_resources
+import re
 
 import certifi
-import requests
 import pandas as pd
+import requests
 
 """
 INFO:
 
-https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo
+https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters& \
+    type=QueryServices&format=html&request=getrequestinfo
 other KIWIS-python clients:
     - https://github.com/amacd31
     - https://gitlab.com/kisters/kisters.water.time_series
@@ -21,6 +22,9 @@ other KIWIS-python clients:
 VMM_BASE = "https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS"
 HIC_BASE = "https://www.waterinfo.be/tsmhic/KiWIS/KiWIS"
 DATA_PATH = pkg_resources.resource_filename(__name__, "/data")
+
+# Custom hard-coded fix for the decoding issue #1 of given returnfields
+DECODE_ERRORS = ["AV Quality Code Color", "RV Quality Code Color"]
 
 logger = logging.getLogger(__name__)
 
@@ -43,14 +47,15 @@ class SSLAdditionException(Exception):
     pass
 
 
-class Waterinfo():
+class Waterinfo:
     def __init__(self, provider: str = "vmm", token: str = None):
         """Request data from waterinfo.be
 
         Parameters
         ----------
         provider : vmm | hic
-            Define the origin of the data on waterinfo you're looking for. Either provided by VMM (vmm) or HIC (hic)
+            Define the origin of the data on waterinfo you're looking for. Either
+            provided by VMM (vmm) or HIC (hic)
         token : str
             Token as provided by VMM on project-level.
         """
@@ -76,7 +81,8 @@ class Waterinfo():
         }
 
         self._token_header = None
-        #self._verify_ssl()
+        # self._verify_ssl() # TODO -- check with VITO on how to handle this
+        # (CA file not packaged)
         if token:
             res = requests.post(
                 "http://download.waterinfo.be/kiwis-auth/token",
@@ -91,7 +97,8 @@ class Waterinfo():
             res.raise_for_status()
             res_parsed = res.json()
             self._token_header = {
-                "Authorization": f"{res_parsed['token_type']} {res_parsed['access_token']}"
+                "Authorization": f"{res_parsed['token_type']}"
+                f"{res_parsed['access_token']}"
             }
             expires_in = res_parsed["expires_in"]
             expires_on = datetime.datetime.now() + datetime.timedelta(
@@ -129,12 +136,14 @@ class Waterinfo():
     def request_kiwis(self, query: dict, headers: dict = None) -> dict:
         """ http call to waterinfo.be KIWIS API
 
-        General call used to request information and data from waterinfo.be, providing error handling and json
-        parsing. The service, type, format (json), datasource and timezone (UTC) are provided by default
-        (but can be overridden by adding them to the query).
+        General call used to request information and data from waterinfo.be, providing
+        error handling and json parsing. The service, type, format (json),
+        datasource and timezone (UTC) are provided by default (but can be overridden
+        by adding them to the query).
 
-        Whereas specific methods are provided to support the queries getTimeseriesList, getTimeseriesValues,
-        getTimeseriesValueLayer and getGroupList; this method can be used to use the other available queries as well.
+        Whereas specific methods are provided to support the queries getTimeseriesList,
+        getTimeseriesValues, getTimeseriesValueLayer and getGroupList; this method
+        can be used to use the other available queries as well.
 
         Parameters
         ----------
@@ -153,11 +162,13 @@ class Waterinfo():
         >>> # get the API info/documentation from kiwis
         >>> vmm.request_kiwis({"request": "getRequestInfo"})
         >>> # get the timeseries data from last day from time series 78124042
-        >>> vmm.request_kiwis({"request": "getTimeseriesValues", "ts_id": "78124042", "period": "P1D"})
+        >>> vmm.request_kiwis({"request": "getTimeseriesValues", "ts_id": "78124042",
+        >>>                    "period": "P1D"})
         >>> # get all stations starting with a P in the station_no
         >>> vmm.request_kiwis({"request": "getStationList", "station_no": "P*"}
         """
-        # query input checks: valid parameters and formatting of the parameters period, dateformat, returnfields
+        # query input checks: valid parameters and formatting of the parameters period,
+        # dateformat, returnfields
         query = {key.lower(): value for (key, value) in query.items()}
         if query["request"] != "getRequestInfo":
             self._check_query_parameters(query)
@@ -177,7 +188,8 @@ class Waterinfo():
 
         if res.status_code != requests.codes.ok:
             raise KiwisException(
-                f"Waterinfo call returned {res.status_code} error with the message {res.content}"
+                f"Waterinfo call returned {res.status_code} error"
+                f"with the message {res.content}"
             )
         logging.info(f"Succesfull waterinfo API request with call {res.url}")
 
@@ -195,7 +207,8 @@ class Waterinfo():
         return parsed, res
 
     def _check_query_parameters(self, query):
-        """checking if all given parameters in the query are known to the KIWIS webservice"""
+        """checking if all given parameters in the query are known
+        to the KIWIS webservice"""
 
         request = query["request"]
         supported_parameters = set(
@@ -211,7 +224,8 @@ class Waterinfo():
             ):
                 raise WaterinfoException(
                     f"Parameter '{parameter}' not in requestInfo for {request}. Check "
-                    f"{self._base_url}?service=kisters&type=queryServices&request=getRequestInfo "
+                    f"{self._base_url}?service=kisters&type=queryServices"
+                    f"&request=getRequestInfo "
                     f"for an overview of the documentation."
                 )
 
@@ -219,7 +233,8 @@ class Waterinfo():
     def _check_period_format(period_string):
         """Check period string format
 
-        Check if the format of the period is conform the specifications of the KIWIS webservice definition
+        Check if the format of the period is conform the specifications of
+        the KIWIS webservice definition
 
         Parameters
         ----------
@@ -255,7 +270,8 @@ class Waterinfo():
 
         if not valid:
             raise WaterinfoException(
-                "The period string is not a valid expression. Examples of valid expressions are"
+                "The period string is not a valid expression. Examples of"
+                " valid expressions are"
                 " P3D, P1Y, P1DT12H, PT6H, P1Y6M3DT4H20M30S"
             )
         return period_string
@@ -268,10 +284,10 @@ class Waterinfo():
         )
         if dateformat not in supported_formats:
             raise WaterinfoException(
-                f"The requested returned datetime {dateformat} format is not valid as KIWIS input."
-                f"The supported formats are {supported_formats} or check "
-                f"{self._base_url}?service=kisters&type=queryServices&request=getRequestInfo"
-                f"for an overview of the documentation."
+                f"The requested returned datetime {dateformat} format is not valid "
+                f"as KIWIS input. The supported formats are {supported_formats} or "
+                f"check {self._base_url}?service=kisters&type=queryServices&"
+                f"request=getRequestInfo for an overview of the documentation."
             )
 
     def _check_return_fields_format(self, return_fields, request="getTimeseriesValues"):
@@ -286,20 +302,22 @@ class Waterinfo():
             raise WaterinfoException(
                 f"Returnfield(s) {invalid_fields} not in requestInfo for {request}. "
                 f"The supported formats are {supported_fields} or check "
-                f"{self._base_url}?service=kisters&type=queryServices&request=getRequestInfo "
-                f"for an overview of the documentation."
+                f"{self._base_url}?service=kisters&type=queryServices&"
+                f"request=getRequestInfo for an overview of the documentation."
             )
 
     @staticmethod
     def _parse_date(input_datetime):
         """Evaluate date and transform to format accepted by KIWIS API
 
-        Dates can be specified on a courser-than-day basis, but will always be transformed to start of...
-        (year, month,...). For example, '2007' will be translated to '20170101 00:00'.
+        Dates can be specified on a courser-than-day basis, but will always be
+        transformed to start of... (year, month,...). For example, '2007' will be
+        translated to '20170101 00:00'.
 
-        Note, the input datetime of the KIWIS API is always CET (and is not tz-aware), but we normalize everything to
-        UTC. Hence, we interpret the user input as UTC, provide the input to the API as CET and request the returned
-        utput data as UTC.
+        Note, the input datetime of the KIWIS API is always CET (and is not tz-aware),
+        but we normalize everything to UTC. Hence, we interpret the user input as UTC,
+        provide the input to the API as CET and request the returned
+        output data as UTC.
 
         Parameters
         ----------
@@ -313,7 +331,8 @@ class Waterinfo():
         )
 
     def _parse_period(self, start=None, end=None, period=None):
-        """Check the from/to/period arguments when requesting (valid for getTimeseriesValues and getGraph)
+        """Check the from/to/period arguments when requesting (valid for
+        getTimeseriesValues and getGraph)
 
         Handle the information of provided date information on the period and provide
         feedback to the user. Valid combinations of the arguments are:
@@ -323,7 +342,8 @@ class Waterinfo():
         - from + period: will return the given period starting at the from date
         - to + period: will return the given period backdating from the to date
         - period: will return the given period backdating from the current system time
-        - from:	will return all data starting at the given from date until the current system time
+        - from:	will return all data starting at the given from date until
+          the current system time
 
         Parameters
         ----------
@@ -382,13 +402,15 @@ class Waterinfo():
     ):
         """Get time series data from waterinfo.be
 
-        Using the ts_id codes or group identifiers and by providing a given date period,
-        download the corresponding time series from the waterinfo.be website. Each identifier ts_id corresponds to a
-        given variable-location-frequency combination (e.g. precipitation, Waregem, daily). When interested in
-        daily, monthly, yearly aggregates look for these identifiers in order to overcome too much/large requests.
+        Using the ts_id codes or group identifiers and by providing a given date
+        period, download the corresponding time series from the waterinfo.be website.
+        Each identifier ts_id corresponds to a given variable-location-frequency
+        combination (e.g. precipitation, Waregem, daily). When interested in daily,
+        monthly, yearly aggregates look for these identifiers in order to overcome
+        too much/large requests.
 
-        Note: The usage of 'start' and 'end' instead of the API default from/to is done to avoid de usage of from, which
-        is a protected name in Python.
+        Note: The usage of 'start' and 'end' instead of the API default from/to is done
+        to avoid de usage of from, which is a protected name in Python.
 
         Parameters
         ----------
@@ -397,18 +419,23 @@ class Waterinfo():
         timeseriesgroup_id : str
             single or multiple group identifiers, comma-separated
         period : str
-            input string according to format required by waterinfo: De period string is provided as P#Y#M#DT#H#M#S,
-            with P defines `Period`, each # is an integer value and the codes define the number of...
-            Y - years M - months D - days T required if information about sub-day resolution is present H - hours D
-            - days M - minutes S - seconds Instead of D (days), the usage of W - weeks is possible as well
+            input string according to format required by waterinfo: De period
+            string is provided as P#Y#M#DT#H#M#S, with P defines `Period`, each # is
+            an integer value and the codes define the number of...
+            Y - years M - months D - days T required if information about sub-day
+            resolution is present H - hours D - days M - minutes S - seconds Instead
+            of D (days), the usage of W - weeks is possible as well
             Examples of valid period strings: P3D, P1Y, P1DT12H, PT6H, P1Y6M3DT4H20M30S.
         start : datetime | str
-            Either python datetime object or a string which can be interpreted as a valid Timestamp
+            Either python datetime object or a string which can be interpreted
+            as a valid Timestamp
         end : datetime | str
-            Either python datetime object or a string which can be interpreted as a valid Timestamp
+            Either python datetime object or a string which can be interpreted
+            as a valid Timestamp
         kwargs :
-            Additional query parameter options as documented by KIWIS waterinfo API, see
-            https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo
+            Additional query parameter options as documented by KIWIS waterinfo API,
+            see https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters& \
+                type=QueryServices&format=html&request=getrequestinfo
 
         Returns
         -------
@@ -422,16 +449,19 @@ class Waterinfo():
         >>> # get last day of data for the time series with ID 78124042
         >>> get_timeseries_values(78124042, period="P1D")
         >>>
-        >>> # get last day of data for the time series with ID 78124042 with subset of columns
-        >>> my_columns = "Timestamp,Value,Interpolation Type,Quality Code,Quality Code Name,Quality Code Description"
+        >>> # get last day data of time series with ID 78124042 with subset of columns
+        >>> my_columns = ("Timestamp,Value,Interpolation Type,Quality Code,Quality"
+                          "Code Name,Quality Code Description")
         >>> vmm.get_timeseries_values(78124042, period="P1D", returnfields=my_columns)
         >>>
-        >>> # get the data for ts_id 60992042 and 60968042 (Moerbeke_P and Waregem_P) for 20190502 till 20190503
+        >>> # get the data for ts_id 60992042 and 60968042 (Moerbeke_P and Waregem_P)
+        >>> # for 20190502 till 20190503
         >>> # Note: UTC as time unit is used as input and asked as output by default
-        >>> vmm.get_timeseries_values("60992042,60968042", start="20190502", end="20190503")
+        >>> vmm.get_timeseries_values("60992042,60968042",
+        ...                           start="20190502", end="20190503")
         >>>
-        >>> # get the data for all stations from groups 192900 (yearly rain sum) and 192895 (yearly discharge average)
-        >>> # for the last 2 years
+        >>> # get the data for all stations from groups 192900 (yearly rain sum)
+        >>> # and 192895 (yearly discharge average) for the last 2 years
         >>> vmm.get_timeseries_values(timeseriesgroup_id="192900,192895", period="P2Y")
         >>>
         >>> hic = Waterinfo("hic")
@@ -439,9 +469,9 @@ class Waterinfo():
         >>> # get last day of data for the time series with ID 44223010
         >>> hic.get_timeseries_values(ts_id="44223010", period="P1D")
         >>>
-        >>> # get last day of data for the time series with ID 44223010 with subset of columns
+        >>> # get last day data of time series with ID 44223010 with subset of columns
         >>> hic.get_timeseries_values(ts_id="44223010", period="P1D",
-        ...                           returnfields="Timestamp,Value,Interpolation Type,Quality Code")
+        ...            returnfields="Timestamp,Value,Interpolation Type,Quality Code")
         """
         # check the period information
         period_info = self._parse_period(start=start, end=end, period=period)
@@ -456,9 +486,12 @@ class Waterinfo():
             raise WaterinfoException("Either ts_id or timeseriesgroup_id is required.")
 
         # collect all possible returnfields
-        all_returnfields = list(
-            self._kiwis_info["getTimeseriesValues"]["Returnfields"]["Content"].keys()
-        )
+        returnfields = self._kiwis_info["getTimeseriesValues"]["Returnfields"][
+            "Content"
+        ].keys()
+        all_returnfields = [
+            field for field in returnfields if field not in DECODE_ERRORS
+        ]
 
         query_param = dict(
             request="getTimeseriesValues",
@@ -470,9 +503,11 @@ class Waterinfo():
         query_param.update(kwargs)
 
         data, response = self.request_kiwis(query_param)
+        print(query_param)
 
-        # All metadata of time series (except of columns, data and rows) converted to additional columns in df
-        # in order to concat all of them while keeping the information to trace the origin
+        # All metadata of time series (except of columns, data and rows) converted
+        # to additional columns in df in order to concat all of them while keeping the
+        # information to trace the origin
         time_series = []
         for section in data:
             df = pd.DataFrame(section["data"], columns=section["columns"].split(","))
@@ -491,10 +526,12 @@ class Waterinfo():
     ):
         """Get metadata and last measured value for group of stations
 
-        Either ts_id, timeseriesgroup_id or bbox can be used to request data. The function provides metadata and the
-        last measured value for the group of ids/stations.
+        Either ts_id, timeseriesgroup_id or bbox can be used to request data. The
+        function provides metadata and the last measured value for the group of
+        ids/stations.
 
-        Note, by using an additional 'date' argument, the data value of another moment can be requested as well.
+        Note, by using an additional 'date' argument, the data value of another moment
+        can be requested as well.
 
         Parameters
         ----------
@@ -503,17 +540,20 @@ class Waterinfo():
         timeseriesgroup_id : str
             single or multiple group identifiers, comma-separated
         bbox :
-            Comma separated list with four values in order min_x, min_y, max_x, max_y; use 'crs' parameter to
-            choose between local and global coordinates. fields stationparameter_no and ts_shortname are required
-            for bbox; the function will select 0 or 1 timeseries per station in the area according to filters
+            Comma separated list with four values in order min_x, min_y, max_x, max_y;
+            use 'crs' parameter to choose between local and global coordinates. fields
+            stationparameter_no and ts_shortname are required for bbox; the function
+            will select 0 or 1 timeseries per station in the area according to filters
         kwargs :
             Additional query parameter options as documented by KIWIS waterinfo API, see
-            https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo
+            https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters& \
+                type=QueryServices&format=html&request=getrequestinfo
 
         Returns
         -------
         pd.DataFrame
-            DataFrame with for each time series in the group a row containint measurement and metadata
+            DataFrame with for each time series in the group a row containing
+            measurement and metadata
 
         Examples
         --------
@@ -522,23 +562,26 @@ class Waterinfo():
         >>> # get the metadata and last measured value on a single time series
         >>> vmm.get_timeseries_value_layer(ts_id=78124042)
         >>>
-        >>> # get the metadata and last measured value of all members of a time series group
+        >>> # get the metadata and last measured value of all members of a
+        >>> # time series group
         >>> vmm.get_timeseries_value_layer(timeseriesgroup_id=192928)
         >>>
-        >>> # get the measured value of all members of a time series group on a given time stamp
+        >>> # get the measured value of all members of a time series group on
+        >>> # a given time stamp
         >>> vmm.get_timeseries_value_layer(timeseriesgroup_id=192928, date="20190501")
         >>>
         >>> hic = Waterinfo("hic")
         >>>
-        >>> # get the metadata and last measured value of the oxygen concentration (group id 156207) and
-        >>> # conductivity (group id 156173) combined
+        >>> # get the metadata and last measured value of the oxygen concentration
+        >>> # (group id 156207) and conductivity (group id 156173) combined
         >>> hic.get_timeseries_value_layer(timeseriesgroup_id="156207,156173")
         """
-        # hard coded set of metadata return fields as only in description field of queryinfo
+        # hard coded set of metadata return fields as only in description
+        # field of queryinfo
         md_returnfields = (
             "ts_id,ts_path,ts_name,ts_shortname,station_no,station_id,station_name,"
-            "stationparameter_name,stationparameter_no,stationparameter_longname,ts_unitname,"
-            "ts_unitsymbol,parametertype_id,parametertype_name,ca_sta"
+            "stationparameter_name,stationparameter_no,stationparameter_longname,"
+            "ts_unitname,ts_unitsymbol,parametertype_id,parametertype_name,ca_sta"
         )
         ca_sta_returnfields = "dataprovider"
 
@@ -571,8 +614,9 @@ class Waterinfo():
     def get_group_list(self, group_name=None, group_type=None, **kwargs):
         """Get a list of time series and station groups
 
-        The function provides the existing group identifiers. These group_ids enable the user to request all
-        values of a given group at the same time (method `get_timeseries_value_layer` or `get_timeseries_values`).
+        The function provides the existing group identifiers. These group_ids enable
+        the user to request all values of a given group at the same time (method
+        `get_timeseries_value_layer` or `get_timeseries_values`).
 
         Parameters
         ----------
@@ -582,7 +626,8 @@ class Waterinfo():
             Specify the type station, parameter or timeseries
         kwargs :
             Additional queryfields as accepted by the KIWIS call getGroupList, see
-            https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo
+            https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters& \
+                type=QueryServices&format=html&request=getrequestinfo
 
         Returns
         -------
@@ -599,7 +644,8 @@ class Waterinfo():
         >>> # all available groupid's provided by VMM that represent a time series
         >>> vmm.get_group_list(group_type='timeseries')
         >>>
-        >>> # all available groupid's  provided by VMM containing 'Download' in the group name
+        >>> # all available groupid's  provided by VMM containing 'Download' in
+        >>> # the group name
         >>> vmm.get_group_list(group_name='*Download*')
         >>>
         >>> hic = Waterinfo("hic")
@@ -624,14 +670,17 @@ class Waterinfo():
     def get_timeseries_list(
         self, station_no=None, stationparameter_name=None, **kwargs
     ):
-        """Get time series at given station an/or time series which provide certain parameter
+        """Get time series at given station an/or time series which provide
+        certain parameter
 
-        The station_no and stationparameter_name are provided as arguments, as these represent our typical use cases:
-        station_no and stationparameter_name are shown on the waterinfo.be download pages as respectively
-        the 'station_number' and 'parameter' column.
+        The station_no and stationparameter_name are provided as arguments, as these
+        represent our typical use cases: station_no and stationparameter_name are shown
+        on the waterinfo.be download pages as respectively the 'station_number' and
+        'parameter' column.
 
-        By default all returnfields are provided in the returned dataframe, but this can be overridden by the user by
-        providing the returnfields as an additional argument.
+        By default all returnfields are provided in the returned dataframe, but this
+        can be overridden by the user by providing the returnfields as an additional
+        argument.
 
         Parameters
         ----------
@@ -641,7 +690,8 @@ class Waterinfo():
             single or multiple stationparameter_name values, comma-separated
         kwargs :
             Additional queryfields as accepted by the KIWIS call getTimeseriesList, see
-            https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo
+            https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters& \
+                type=QueryServices&format=html&request=getrequestinfo
 
         Returns
         -------
@@ -658,14 +708,17 @@ class Waterinfo():
         >>> # for a given parameter PET, which time series are available?
         >>> vmm.get_timeseries_list(parametertype_name="PET")
         >>>
-        >>> # for a given parameter PET and station ME09_012, which time series are available?
+        >>> # for a given parameter PET and station ME09_012, which time series
+        >>> # are available?
         >>> vmm.get_timeseries_list(parametertype_name="PET", station_no="ME09_012")
         >>>
         >>> # for a given parametertype_id 11502, which time series are available?
         >>> vmm.get_timeseries_list(parametertype_id="11502"))
         >>>
-        >>> # only interested in a subset of the returned columns: ts_id, station_name,stationparameter_longname
-        >>> vmm.get_timeseries_list(parametertype_id="11502", returnfields="ts_id, station_name,stationparameter_longname")
+        >>> # only interested in a subset of the returned columns: ts_id, station_name,
+        >>> # stationparameter_longname
+        >>> vmm.get_timeseries_list(parametertype_id="11502", returnfields="ts_id,
+        ...                         station_name,stationparameter_longname")
         >>>
         >>> hic = Waterinfo("hic")
         >>>
@@ -678,7 +731,8 @@ class Waterinfo():
         all_returnfields = list(
             self._kiwis_info["getTimeseriesList"]["Returnfields"]["Content"].keys()
         )
-        # custom-fix: remove 'ts_clientvalue##' and 'datacart' from returnfields as these provide error
+        # custom-fix: remove 'ts_clientvalue##' and 'datacart' from returnfields
+        # as these provide error
         all_returnfields = [
             field
             for field in all_returnfields
