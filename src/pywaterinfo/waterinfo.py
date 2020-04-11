@@ -1,12 +1,12 @@
-import os
-import re
 import datetime
 import logging
+import os
 import pkg_resources
+import re
 
 import certifi
-import requests
 import pandas as pd
+import requests
 
 """
 INFO:
@@ -43,7 +43,7 @@ class SSLAdditionException(Exception):
     pass
 
 
-class Waterinfo():
+class Waterinfo:
     def __init__(self, provider: str = "vmm", token: str = None):
         """Request data from waterinfo.be
 
@@ -76,7 +76,7 @@ class Waterinfo():
         }
 
         self._token_header = None
-        #self._verify_ssl()
+        # self._verify_ssl()
         if token:
             res = requests.post(
                 "http://download.waterinfo.be/kiwis-auth/token",
@@ -141,7 +141,7 @@ class Waterinfo():
         query : dict
             list of query options to be used together with the base string
         headers : dict
-            authentification header for the call
+            authentication header for the call
 
         Returns
         -------
@@ -179,7 +179,7 @@ class Waterinfo():
             raise KiwisException(
                 f"Waterinfo call returned {res.status_code} error with the message {res.content}"
             )
-        logging.info(f"Succesfull waterinfo API request with call {res.url}")
+        logging.info(f"Succesful waterinfo API request with call {res.url}")
 
         parsed = res.json()
         if (
@@ -195,7 +195,7 @@ class Waterinfo():
         return parsed, res
 
     def _check_query_parameters(self, query):
-        """checking if all given parameters in the query are known to the KIWIS webservice"""
+        """Check if all given parameters in the query are known to the KIWIS webservice"""
 
         request = query["request"]
         supported_parameters = set(
@@ -219,7 +219,7 @@ class Waterinfo():
     def _check_period_format(period_string):
         """Check period string format
 
-        Check if the format of the period is conform the specifications of the KIWIS webservice definition
+        Check if the format of the period is conform the specifications of the KIWIS webservice definition.
 
         Parameters
         ----------
@@ -261,7 +261,7 @@ class Waterinfo():
         return period_string
 
     def _check_return_date_format(self, dateformat, request="getTimeseriesValues"):
-        """check if the requested output date format is known to the KIWIS webservice
+        """Check if the requested output date format is known to the KIWIS webservice
         """
         supported_formats = set(
             self._kiwis_info[request]["Dateformats"]["Content"].keys()
@@ -275,7 +275,7 @@ class Waterinfo():
             )
 
     def _check_return_fields_format(self, return_fields, request="getTimeseriesValues"):
-        """checking if the requested return_fields are known to the KIWIS webservice"""
+        """Check if the requested return_fields are known to the KIWIS webservice"""
         return_fields = set(return_fields.split(","))  # user requested
         supported_fields = set(
             self._kiwis_info[request]["Returnfields"]["Content"].keys()
@@ -387,7 +387,7 @@ class Waterinfo():
         given variable-location-frequency combination (e.g. precipitation, Waregem, daily). When interested in
         daily, monthly, yearly aggregates look for these identifiers in order to overcome too much/large requests.
 
-        Note: The usage of 'start' and 'end' instead of the API default from/to is done to avoid de usage of from, which
+        Note: The usage of 'start' and 'end' instead of the API default from/to is done to avoid the usage of from, which
         is a protected name in Python.
 
         Parameters
@@ -397,15 +397,15 @@ class Waterinfo():
         timeseriesgroup_id : str
             single or multiple group identifiers, comma-separated
         period : str
-            input string according to format required by waterinfo: De period string is provided as P#Y#M#DT#H#M#S,
+            input string according to format required by waterinfo: the period string is provided as P#Y#M#DT#H#M#S,
             with P defines `Period`, each # is an integer value and the codes define the number of...
             Y - years M - months D - days T required if information about sub-day resolution is present H - hours D
-            - days M - minutes S - seconds Instead of D (days), the usage of W - weeks is possible as well
+            - days M - minutes S - seconds Instead of D (days), the usage of W - weeks is possible as well.
             Examples of valid period strings: P3D, P1Y, P1DT12H, PT6H, P1Y6M3DT4H20M30S.
         start : datetime | str
-            Either python datetime object or a string which can be interpreted as a valid Timestamp
+            Either Python datetime object or a string which can be interpreted as a valid Timestamp.
         end : datetime | str
-            Either python datetime object or a string which can be interpreted as a valid Timestamp
+            Either Python datetime object or a string which can be interpreted as a valid Timestamp.
         kwargs :
             Additional query parameter options as documented by KIWIS waterinfo API, see
             https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo
@@ -413,7 +413,7 @@ class Waterinfo():
         Returns
         -------
         pd.DataFrame
-            DataFrame with for time series data and datetime in UTC
+            DataFrame with for time series data and datetime in UTC.
 
         Examples
         --------

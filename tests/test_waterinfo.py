@@ -208,7 +208,7 @@ class TestTimeseriesValues:
             vmm_connection.get_timeseries_values(period="P1D")
 
     def test_multiple_ids(self, vmm_connection):
-        """Call worksxpected for multiple identifiers combined in singel dataframe"""
+        """Call worksxpected for multiple identifiers combined in single dataframe"""
         df = vmm_connection.get_timeseries_values(
             ts_id="60992042,60968042", start="20190501 14:05", end="20190501 14:10"
         )
