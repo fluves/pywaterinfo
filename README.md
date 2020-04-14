@@ -24,11 +24,11 @@ pywaterinfo facilitates access to [waterinfo.be](https://www.waterinfo.be/), a w
 A `.pre-commit-config.yaml` file was generated inside your project but in order to make sure the hooks will run, please don't forget to install the `pre-commit` package:
 
   cd pywaterinfo
-  # it is a good idea to create and activate a virtualenv here
+  >>> it is a good idea to create and activate a virtualenv here
   pip install pre-commit
   pre-commit install
-  # another good idea is update the hooks to the latest version
-  # pre-commit autoupdate
+  >>> another good idea is update the hooks to the latest version
+  >>> pre-commit autoupdate
 
 You might also consider including similar instructions in your docs, to remind the contributors to do the same.
 
