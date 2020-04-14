@@ -22,7 +22,7 @@ From the package side, the following is required:
     import logging
     logger = logging.getLogger(__name__)
     ...
-    logging.info(f"Succesfull waterinfo API request with call {res.url}")
+    logging.info(f"Succesful waterinfo API request with call {res.url}")
 
 On the applciation (using/relying on the package) side, one can control the level of log messages. If
 interested in seeing these informative messages, set the level on :code:`logging.INFO`:

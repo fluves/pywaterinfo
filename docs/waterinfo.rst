@@ -45,7 +45,7 @@ initiation to make sure all session requests are using the token:
 Download with known ts identifier
 ---------------------------------
 
-In case you already know the :code:`ts_id` identifier that defines your time serie, the class :class:`~pywaterinfo.Waterinfo` provides the method
+In case you already know the :code:`ts_id` identifier that defines your time series, the class :class:`~pywaterinfo.Waterinfo` provides the method
 :func:`~pywaterinfo.Waterinfo.get_timeseries_values` to download a specific period of the time series. For example, to download the air pressure time series data of Liedekerke with a 15 min resolution
 (:code:`ts_id = 78073042`) for the first of January 2016:
 
@@ -120,5 +120,3 @@ to do custom calls to the KIWIS API. For example, using the :code:`getStationLis
 
     vmm = Waterinfo("vmm")
     vmm.request_kiwis({"request": "getStationList", "station_no": "P*"})
-
-
