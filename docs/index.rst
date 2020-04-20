@@ -14,20 +14,19 @@ Contents
    :caption: User guide
    :maxdepth: 1
 
-   waterinfo
+   Tutorial <waterinfo>
+   Module Reference <api/modules>
 
 .. toctree::
    :caption: Developer guide
    :maxdepth: 1
 
+   Contributing <contributing>
    Logging <logging>
    Changelog <changelog>
-   Module Reference <api/modules>
    Authors <authors>
+   Code of conduct <conduct>
    License <license>
-
-.. toctree::
-   :caption: Developer guide
 
 
 Indices and tables

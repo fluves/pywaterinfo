@@ -10,12 +10,27 @@ pywaterinfo facilitates access to [waterinfo.be](https://www.waterinfo.be/), a w
 
 ## Installation
 
-... TODO
+```
+pip install pywaterinfo
+```
 
 ## Example
 
 ... TODO
 
+
+## Note on restrictions of the downloads
+
+The amount of data downloaded from waterinfo.be is limited via a credit system. You do not need to get a token right away to download data. For limited and irregular downloads, a token will not be required.
+
+When you require more extended data requests, please request a download token from the waterinfo.be site administrators via the e-mail address <hydrometrie@waterinfo.be> with a statement of which data and how frequently you would like to download data. You will then receive a client-credit code that can be used to obtain a token that is valid for 24 hours, after which the token can be refreshed with the same client-credit code. The handling of this token is done by
+the package itself, but it is important to use the code when initializing the `Waterinfo` instance. For example, using a VMM token:
+
+```
+from pywaterinfo import Waterinfo
+vmm_token = "YOUR TOKEN CODE"
+vmm = Waterinfo("vmm",  token=vmm_token)
+```
 
 ## Contribute
 
@@ -56,3 +71,5 @@ Part of the initial development of this package has been supported by [VITO](htt
   <img src="./docs/_static/img/logo_fluves.png">
   <img src="./docs/_static/img/logo_vito.png">
 </p>
+
+This package is just a small wrapper around waterinfo.be to facilitate researchers and other stakeholders in downloading the data from [waterinfo.be](http://www.waterinfo.be). The availability of this data is made possible by *de Vlaamse Milieumaatschappij, Waterbouwkundig Laboratorium, Maritieme Dienstverlening & Kust, Waterwegen en Zeekanaal NV en De Scheepvaart NV*.
