@@ -218,7 +218,7 @@ class Waterinfo:
         return parsed, res
 
     def _check_query_parameters(self, query):
-        """Check if all given parameters in the query are known to 
+        """Check if all given parameters in the query are known to
         the KIWIS webservice"""
 
         request = query["request"]
@@ -243,8 +243,8 @@ class Waterinfo:
     @staticmethod
     def _check_period_format(period_string):
         """Check period string format
-        
-        Check if the format of the period is conform the specifications of 
+
+        Check if the format of the period is conform the specifications of
         the KIWIS webservice definition.
 
         Parameters
@@ -420,7 +420,7 @@ class Waterinfo:
         monthly, yearly aggregates look for these identifiers in order to overcome
         too much/large requests.
 
-        Note: The usage of 'start' and 'end' instead of the API default from/to is done 
+        Note: The usage of 'start' and 'end' instead of the API default from/to is done
         to avoid the usage of from, which is a protected name in Python.
 
         Parameters
@@ -430,11 +430,11 @@ class Waterinfo:
         timeseriesgroup_id : str
             single or multiple group identifiers, comma-separated
         period : str
-            input string according to format required by waterinfo: the period string 
-            is provided as P#Y#M#DT#H#M#S, with P defines `Period`, each # is an 
-            integer value and the codes define the number of... 
-            Y - years M - months D - days T required if information about sub-day 
-            resolution is present H - hours D - days M - minutes S - seconds Instead 
+            input string according to format required by waterinfo: the period string
+            is provided as P#Y#M#DT#H#M#S, with P defines `Period`, each # is an
+            integer value and the codes define the number of...
+            Y - years M - months D - days T required if information about sub-day
+            resolution is present H - hours D - days M - minutes S - seconds Instead
             of D (days), the usage of W - weeks is possible as well.
             Examples of valid period strings: P3D, P1Y, P1DT12H, PT6H, P1Y6M3DT4H20M30S.
         start : datetime | str
@@ -563,7 +563,7 @@ class Waterinfo:
         Returns
         -------
         pd.DataFrame
-            DataFrame with for each time series in the group a row containing 
+            DataFrame with for each time series in the group a row containing
             measurement and metadata
 
         Examples
