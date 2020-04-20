@@ -438,9 +438,11 @@ class Waterinfo:
             of D (days), the usage of W - weeks is possible as well.
             Examples of valid period strings: P3D, P1Y, P1DT12H, PT6H, P1Y6M3DT4H20M30S.
         start : datetime | str
-            Either Python datetime object or a string which can be interpreted as a valid Timestamp.
+            Either Python datetime object or a string which can be interpreted
+            as a valid Timestamp.
         end : datetime | str
-            Either Python datetime object or a string which can be interpreted as a valid Timestamp.
+            Either Python datetime object or a string which can be interpreted
+            as a valid Timestamp.
         kwargs :
             Additional query parameter options as documented by KIWIS waterinfo API,
             see https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters& \

@@ -7,7 +7,10 @@ import pytest
 from pywaterinfo.waterinfo import Waterinfo
 
 # use a session for VMM/HIC that can be used among tests
-vmm_client = "MTU1MzRiYzgtZDQ2ZS00ZTEyLWI0ZmYtYzA0OWIzYzljYjI3OjQ1ZmU5M2ExLWNiNzUtNGExZi1hZDZkLWU2ODk1OGU0MWQwMg=="
+vmm_client = (
+    "MTU1MzRiYzgtZDQ2ZS00ZTEyLWI0ZmYtYzA0OWIzYzljYjI"
+    "3OjQ1ZmU5M2ExLWNiNzUtNGExZi1hZDZkLWU2ODk1OGU0MWQwMg=="
+)
 
 
 @pytest.fixture(scope="module")
