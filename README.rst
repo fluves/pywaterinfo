@@ -1,5 +1,5 @@
 ===========
-pyconnector
+pywaterinfo
 ===========
 
 Python package to download time series data from waterinfo.be
@@ -51,8 +51,7 @@ but make sure to install the pre-commit hook:
 
     pre-commit install
 
-The jenkins CI runs the unit tests and builds the documentation as well for each development branch. Check the
-`iow_pyconnector project on Jenkins <http://jenkins.marvin.vito.local/job/iow_pyconnector/>`_.
+The Github actions CI job run the unit tests and builds the documentation as well.
 
 
 Note
