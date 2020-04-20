@@ -2,6 +2,8 @@
 
 Python package to download time series data from waterinfo.be
 
+![Python package](https://github.com/fluves/pywaterinfo/workflows/Python%20package/badge.svg?branch=master)
+
 ## Description
 
 pywaterinfo facilitates access to [waterinfo.be](https://www.waterinfo.be/), a website managed by the [Flanders Environment Agency (VMM)](https://en.vmm.be/) and [Flanders Hydraulics Research](https://www.waterbouwkundiglaboratorium.be/). The website provides access to real-time water and weather related environmental variables for Flanders (Belgium), such as rainfall, air pressure, discharge, and water level. The package provides functions to search for stations and variables, and download time series.
@@ -43,3 +45,11 @@ information on PyScaffold see https://pyscaffold.org/.
 # after git clone of empty repo `pywaterinfo`:
 putup --pyproject --markdown --pre-commit --tox --travis --force pywaterinfo
 ```
+
+
+## Acknowledgements
+
+The package development and maintenance is supported by [Fluves](https://fluves.com/).
+Part of the initial development of this package has been supported by [VITO](https://vito.be).
+
+![](./docs/_static/img/logo_fluves.png)  ![](./docs/_static/img/logo_vito.png)
