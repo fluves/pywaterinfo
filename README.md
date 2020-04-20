@@ -52,4 +52,7 @@ putup --pyproject --markdown --pre-commit --tox --travis --force pywaterinfo
 The package development and maintenance is supported by [Fluves](https://fluves.com/).
 Part of the initial development of this package has been supported by [VITO](https://vito.be).
 
-![](./docs/_static/img/logo_fluves.png)  ![](./docs/_static/img/logo_vito.png)
+<p align="center">
+  <img src="./docs/_static/img/logo_fluves.png">
+  <img src="./docs/_static/img/logo_vito.png">
+</p>
