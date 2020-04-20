@@ -7,7 +7,13 @@ Python package to download time series data from waterinfo.be
 Description
 ===========
 
-TODO
+pywaterinfo facilitates access to `waterinfo.be <https://www.waterinfo.be/>`_, a
+website managed by the `Flanders Environment Agency (VMM) <https://en.vmm.be/>`_ and
+`Flanders Hydraulics Research <https://www.waterbouwkundiglaboratorium.be>`_. The website
+provides access to real-time water and weather related environmental variables for
+Flanders (Belgium), such as rainfall, air pressure, discharge, and water level.
+The package provides functions to search for stations and variables, and download
+time series.
 
 Start to develop
 ================
@@ -41,7 +47,7 @@ You can edit the documentation using any text editor and then generate the HTML 
 
     python setup.py build_sphinx
 
-The resulting html files will be in the `docs\_build\html folder`. Double click the `index.html` to see the website locally.
+The resulting html files will be in the `docs\_build\html folder`. Double click the `index.html` to see the website on your local computer.
 
 To keep the code formatting uniform, `black <https://black.readthedocs.io/en/stable/index.html>`_. is used to make the
 code styling as consistent as possible. The required dependencies are part of the develop requirements in the `setup.cfg` file,
@@ -50,8 +56,9 @@ but make sure to install the pre-commit hook:
 ::
 
     pre-commit install
+    pre-commit autoupdate
 
-The Github actions CI job run the unit tests and builds the documentation as well.
+The Github actions CI job runs the unit tests, doctest, pre-commit checks and documentation building as well.
 
 
 Note

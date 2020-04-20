@@ -16,7 +16,33 @@ pip install pywaterinfo
 
 ## Example
 
-... TODO
+To initialize data requests from VMM, setup the `Waterinfo` class with `vmm` as input:
+
+```
+from pywaterinfo import Waterinfo
+vmm = Waterinfo("vmm")
+```
+
+Get last day of data for the time series with ID `78124042`:
+```
+df = vmm.get_timeseries_values(78124042, period="P1D")
+```
+
+pywaterinfo returns the data mostly as a [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/index.html).
+
+Requesting data from from HIC, is very similar:
+
+```
+hic = Waterinfo("hic")
+```
+
+Get last day of data for the time series with ID `44223010`:
+```
+df = hic.get_timeseries_values(ts_id="44223010", period="P1D")
+```
+
+Next to the request of time series data for a given time series identifier, other
+requests are supported as well. See the [documentation](TODO) pages for more info.
 
 
 ## Note on restrictions of the downloads
@@ -34,33 +60,48 @@ vmm = Waterinfo("vmm",  token=vmm_token)
 
 ## Contribute
 
-... TODO
-
----------------------------
-
-A `.pre-commit-config.yaml` file was generated inside your project but in order to make sure the hooks will run, please don't forget to install the `pre-commit` package:
-
-  cd pywaterinfo
-  >>> it is a good idea to create and activate a virtualenv here
-  pip install pre-commit
-  pre-commit install
-  >>> another good idea is update the hooks to the latest version
-  >>> pre-commit autoupdate
-
-You might also consider including similar instructions in your docs, to remind the contributors to do the same.
-
----------------------------
-
-## Note
-
-This project has been set up using PyScaffold 3.2.3. For details and usage
-information on PyScaffold see https://pyscaffold.org/.
+It's good practice to create a separate development environment for your package development. Use your preferred
+system (or maybe integrated in your IDE) to setup a Python environment and see those docs to setup an environment
+(conda, pyenv, virtualenv,,...). Once created, you can install all the developer dependencies using pip:
 
 ```
-# after git clone of empty repo `pywaterinfo`:
-putup --pyproject --markdown --pre-commit --tox --travis --force pywaterinfo
+pip install -e .[develop]
 ```
 
+You can do a local development install to start using the package. Activate your environment and run:
+
+```
+python setup.py develop
+```
+
+Tests are defined with `pytest <https://docs.pytest.org>`_. Write tests and run them using the command:
+
+```
+python setup.py test
+```
+
+Documentation lives in the `docs` directory and is setup using `Sphinx package <http://www.sphinx-doc.org/en/master/>`_.
+You can edit the documentation using any text editor and then generate the HTML output by with the command:
+
+```
+python setup.py build_sphinx
+```
+
+The resulting html files will be in the `docs\_build\html folder`. Double click the `index.html` to see the website on your local computer.
+
+To keep the code formatting uniform, `black <https://black.readthedocs.io/en/stable/index.html>`_. is used to make the
+code styling as consistent as possible. Also a number of other checks are included in the
+pre-commit handle (`flake` check of PEP8 guidelines, limit committing large files, trailing whitespaces,...)
+
+The required dependencies are part of the development requirements
+in the `setup.cfg` file, but make sure to install the pre-commit hook:
+
+```
+pre-commit install
+pre-commit autoupdate
+```
+
+The Github actions CI job runs the unit tests, doctest, pre-commit checks and documentation building as well.
 
 ## Acknowledgements
 
@@ -73,3 +114,12 @@ Part of the initial development of this package has been supported by [VITO](htt
 </p>
 
 This package is just a small wrapper around waterinfo.be to facilitate researchers and other stakeholders in downloading the data from [waterinfo.be](http://www.waterinfo.be). The availability of this data is made possible by *de Vlaamse Milieumaatschappij, Waterbouwkundig Laboratorium, Maritieme Dienstverlening & Kust, Waterwegen en Zeekanaal NV en De Scheepvaart NV*.
+
+## Meta
+
+* We welcome [contributions](.github/CONTRIBUTING.rst) including bug reports.
+* License: MIT
+* Please note that this project is released with a [Contributor Code of Conduct](.github/CODE_OF_CONDUCT.rst). By participating in this project you agree to abide by its terms.
+
+This project has been set up using PyScaffold 3.2.3. For details and usage
+information on PyScaffold see https://pyscaffold.org/.
