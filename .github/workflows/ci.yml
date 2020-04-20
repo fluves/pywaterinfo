@@ -41,4 +41,4 @@ jobs:
         python setup.py doctest
     - name: Build documentation
       run: |
-        python setup.py build-sphinx
+        python setup.py build_sphinx
