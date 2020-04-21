@@ -445,8 +445,9 @@ class Waterinfo:
             as a valid Timestamp.
         kwargs :
             Additional query parameter options as documented by KIWIS waterinfo API,
-            see https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters& \
-                type=QueryServices&format=html&request=getrequestinfo
+            see `API docoumentation <https://download.waterinfo.be/tsmdownload/
+            KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&
+            request=getrequestinfo>`_
 
         Returns
         -------
@@ -559,8 +560,9 @@ class Waterinfo:
             will select 0 or 1 timeseries per station in the area according to filters
         kwargs :
             Additional query parameter options as documented by KIWIS waterinfo API, see
-            https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters& \
-                type=QueryServices&format=html&request=getrequestinfo
+            `API docoumentation <https://download.waterinfo.be/tsmdownload/
+            KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&
+            request=getrequestinfo>`_
 
         Returns
         -------
@@ -641,8 +643,9 @@ class Waterinfo:
             Specify the type station, parameter or timeseries
         kwargs :
             Additional queryfields as accepted by the KIWIS call getGroupList, see
-            https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters& \
-                type=QueryServices&format=html&request=getrequestinfo
+            `API docoumentation <https://download.waterinfo.be/tsmdownload/
+            KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&
+            request=getrequestinfo>`_
 
         Returns
         -------
@@ -706,8 +709,9 @@ class Waterinfo:
             single or multiple stationparameter_name values, comma-separated
         kwargs :
             Additional queryfields as accepted by the KIWIS call getTimeseriesList, see
-            https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters& \
-                type=QueryServices&format=html&request=getrequestinfo
+            `API docoumentation <https://download.waterinfo.be/tsmdownload/
+            KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&
+            request=getrequestinfo>`_
 
         Returns
         -------
