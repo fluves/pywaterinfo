@@ -5,6 +5,6 @@ Changelog
 Version 0.1
 ===========
 
-- Feature A added
-- FIX: nasty bug #1729 fixed
-- add your changes here!
+- Add Waterinfo class with base HTTP call method `request_kiwis`
+- Handle tokens automatically
+- Provide Python API equivalent for `getTimeseriesValues`, `getTimeseriesValueLayer`, `getGroupList` and `getTimeseriesList`
