@@ -14,8 +14,9 @@ Contents
    :caption: User guide
    :maxdepth: 1
 
-   Tutorial <waterinfo>
-   Module Reference <api/modules>
+   Tutorial <tutorial>
+   Group identifiers <timeseriesgroupids>
+   Module Reference <api/reference>
 
 .. toctree::
    :caption: Developer guide

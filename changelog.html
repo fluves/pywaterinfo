@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Changelog &mdash; pywaterinfo 0.0.post0.dev1+g89ccdf4 documentation</title>
+  <title>Changelog &mdash; pywaterinfo 0.1.1 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.0.post0.dev1+g89ccdf4
+                0.1.1
               </div>
             
           
@@ -90,8 +90,9 @@
 </ul>
 <p class="caption"><span class="caption-text">User guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="waterinfo.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/modules.html">Module Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeseriesgroupids.html">Group identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/reference.html">Module Reference</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer guide</span></p>
 <ul class="current">
@@ -172,10 +173,14 @@
 <span id="changes"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="version-0-1">
 <h2>Version 0.1<a class="headerlink" href="#version-0-1" title="Permalink to this headline">¶</a></h2>
+<p>This version provides a first implementation wrapping the API provided by <a class="reference external" href="https://www.waterinfo.be/">waterinfo.be</a>. The package provides a minimal
+wrapper with the aim to find and download time series data and returns it as Pandas DataFrame. The latter enables methods for plotting and analysis.</p>
 <ul class="simple">
 <li><p>Add Waterinfo class with base HTTP call method <cite>request_kiwis</cite></p></li>
 <li><p>Handle tokens automatically</p></li>
 <li><p>Provide Python API equivalent for <cite>getTimeseriesValues</cite>, <cite>getTimeseriesValueLayer</cite>, <cite>getGroupList</cite> and <cite>getTimeseriesList</cite></p></li>
+<li><p>Create documentation website with SPhinx, unit tests using pytest, doctests</p></li>
+<li><p>Setup of the CI using Github actions</p></li>
 </ul>
 </div>
 </div>

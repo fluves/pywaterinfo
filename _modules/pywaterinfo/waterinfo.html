@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pywaterinfo.waterinfo &mdash; pywaterinfo 0.0.post0.dev1+g89ccdf4 documentation</title>
+  <title>pywaterinfo.waterinfo &mdash; pywaterinfo 0.1.1 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.0.post0.dev1+g89ccdf4
+                0.1.1
               </div>
             
           
@@ -88,8 +88,9 @@
 </ul>
 <p class="caption"><span class="caption-text">User guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../waterinfo.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">Module Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../timeseriesgroupids.html">Group identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/reference.html">Module Reference</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer guide</span></p>
 <ul>
@@ -193,25 +194,25 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="KiwisException"><a class="viewcode-back" href="../../api/pywaterinfo.html#pywaterinfo.waterinfo.KiwisException">[docs]</a><span class="k">class</span> <span class="nc">KiwisException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">KiwisException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when the KIWIS calls contain error&quot;&quot;&quot;</span>
 
-    <span class="k">pass</span></div>
+    <span class="k">pass</span>
 
 
-<div class="viewcode-block" id="WaterinfoException"><a class="viewcode-back" href="../../api/pywaterinfo.html#pywaterinfo.waterinfo.WaterinfoException">[docs]</a><span class="k">class</span> <span class="nc">WaterinfoException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">WaterinfoException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when the Waterinfo data request inputs are wrong&quot;&quot;&quot;</span>
 
-    <span class="k">pass</span></div>
+    <span class="k">pass</span>
 
 
-<div class="viewcode-block" id="SSLAdditionException"><a class="viewcode-back" href="../../api/pywaterinfo.html#pywaterinfo.waterinfo.SSLAdditionException">[docs]</a><span class="k">class</span> <span class="nc">SSLAdditionException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">SSLAdditionException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when the VITO SSL custom CA addition fails&quot;&quot;&quot;</span>
 
-    <span class="k">pass</span></div>
+    <span class="k">pass</span>
 
 
-<div class="viewcode-block" id="Waterinfo"><a class="viewcode-back" href="../../api/pywaterinfo.html#pywaterinfo.waterinfo.Waterinfo">[docs]</a><span class="k">class</span> <span class="nc">Waterinfo</span><span class="p">:</span>
+<div class="viewcode-block" id="Waterinfo"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo">[docs]</a><span class="k">class</span> <span class="nc">Waterinfo</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;vmm&quot;</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Request data from waterinfo.be</span>
 
@@ -297,7 +298,7 @@
         <span class="k">except</span> <span class="n">SSLAdditionException</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;SSL custom certificates failed.&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Waterinfo.request_kiwis"><a class="viewcode-back" href="../../api/pywaterinfo.html#pywaterinfo.waterinfo.Waterinfo.request_kiwis">[docs]</a>    <span class="k">def</span> <span class="nf">request_kiwis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<div class="viewcode-block" id="Waterinfo.request_kiwis"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.request_kiwis">[docs]</a>    <span class="k">def</span> <span class="nf">request_kiwis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; http call to waterinfo.be KIWIS API</span>
 
 <span class="sd">        General call used to request information and data from waterinfo.be, providing</span>
@@ -566,7 +567,7 @@
 
         <span class="k">return</span> <span class="n">period_info</span>
 
-<div class="viewcode-block" id="Waterinfo.get_timeseries_values"><a class="viewcode-back" href="../../api/pywaterinfo.html#pywaterinfo.waterinfo.Waterinfo.get_timeseries_values">[docs]</a>    <span class="k">def</span> <span class="nf">get_timeseries_values</span><span class="p">(</span>
+<div class="viewcode-block" id="Waterinfo.get_timeseries_values"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_timeseries_values">[docs]</a>    <span class="k">def</span> <span class="nf">get_timeseries_values</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">ts_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -699,7 +700,7 @@
 
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Waterinfo.get_timeseries_value_layer"><a class="viewcode-back" href="../../api/pywaterinfo.html#pywaterinfo.waterinfo.Waterinfo.get_timeseries_value_layer">[docs]</a>    <span class="k">def</span> <span class="nf">get_timeseries_value_layer</span><span class="p">(</span>
+<div class="viewcode-block" id="Waterinfo.get_timeseries_value_layer"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_timeseries_value_layer">[docs]</a>    <span class="k">def</span> <span class="nf">get_timeseries_value_layer</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ts_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get metadata and last measured value for group of stations</span>
@@ -792,7 +793,7 @@
 
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Waterinfo.get_group_list"><a class="viewcode-back" href="../../api/pywaterinfo.html#pywaterinfo.waterinfo.Waterinfo.get_group_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_group_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Waterinfo.get_group_list"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_group_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_group_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get a list of time series and station groups</span>
 
 <span class="sd">        The function provides the existing group identifiers. These group_ids enable</span>
@@ -850,7 +851,7 @@
 
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="Waterinfo.get_timeseries_list"><a class="viewcode-back" href="../../api/pywaterinfo.html#pywaterinfo.waterinfo.Waterinfo.get_timeseries_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_timeseries_list</span><span class="p">(</span>
+<div class="viewcode-block" id="Waterinfo.get_timeseries_list"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_timeseries_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_timeseries_list</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">station_no</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stationparameter_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get time series at given station an/or time series which provide</span>

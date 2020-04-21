@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pywaterinfo &mdash; pywaterinfo 0.0.post0.dev1+g89ccdf4 documentation</title>
+  <title>pywaterinfo &mdash; pywaterinfo 0.1.1 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0.post0.dev1+g89ccdf4
+                0.1.1
               </div>
             
           
@@ -89,8 +89,9 @@
 </ul>
 <p class="caption"><span class="caption-text">User guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="waterinfo.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/modules.html">Module Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeseriesgroupids.html">Group identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/reference.html">Module Reference</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer guide</span></p>
 <ul>
@@ -166,7 +167,7 @@
             
   <div class="section" id="pywaterinfo">
 <h1>pywaterinfo<a class="headerlink" href="#pywaterinfo" title="Permalink to this headline">¶</a></h1>
-<p>Python package to download time series data from waterinfo.be</p>
+<p>Python package to download time series data from <a class="reference external" href="https://www.waterinfo.be/">waterinfo.be</a>.</p>
 <div class="section" id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p>pywaterinfo facilitates access to <a class="reference external" href="https://www.waterinfo.be/">waterinfo.be</a>, a
@@ -177,8 +178,58 @@ Flanders (Belgium), such as rainfall, air pressure, discharge, and water level.
 The package provides functions to search for stations and variables, and download
 time series.</p>
 </div>
-<div class="section" id="start-to-develop">
-<h2>Start to develop<a class="headerlink" href="#start-to-develop" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>To install pywaterinfo with <code class="code docutils literal notranslate"><span class="pre">pip</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pywaterinfo</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>To initialize data requests from VMM, setup the <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo" title="pywaterinfo.Waterinfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">Waterinfo</span></code></a> class with <cite>vmm</cite> as input:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The time series provided by waterinfo are all defined by a unique identifier called <code class="code docutils literal notranslate"><span class="pre">ts_id</span></code>. Each combination of a given <strong>variable</strong> (e.g. air pressure)
+measured at a given <strong>location</strong> (e.g. Overpelt) with a certain <strong>frequency</strong> (e.g. 15min) is defined by an <code class="code docutils literal notranslate"><span class="pre">ts_id</span></code> identifier. Using such an identifier,
+one can download the data of a given period with the command <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.get_timeseries_values" title="pywaterinfo.Waterinfo.get_timeseries_values"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_values()</span></code></a>. For example, the 15 min air pressure time series
+at Overpelt has identifier <code class="code docutils literal notranslate"><span class="pre">ts_id</span> <span class="pre">=</span> <span class="pre">78124042</span></code>. To get last day of data for the time series with ID <code class="code docutils literal notranslate"><span class="pre">78124042</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="mi">78124042</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s2">&quot;P1D&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>pywaterinfo returns the data as a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/index.html">Pandas DataFrame</a>, which provides functionlities
+to plot and manipulate the time series.</p>
+<p>Requesting data from from HIC is very similar:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Get last day of data for the time series with ID <code class="code docutils literal notranslate"><span class="pre">39496010</span></code>, corresponding to high-resolution (5 min) conductivity measurements in Dendermonde:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">hic</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="n">ts_id</span><span class="o">=</span><span class="s2">&quot;39496010&quot;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s2">&quot;P1D&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next to the request of time series data for a given time series identifier, other
+requests are supported as well. These functions provide multiple ways to search for the <code class="code docutils literal notranslate"><span class="pre">ts_id</span></code> you need to download
+certain data. See the <a class="reference external" href="https://fluves.github.io/pywaterinfo/">documentation website</a> for more info.</p>
+</div>
+<div class="section" id="note-on-restrictions-of-the-downloads">
+<h2>Note on restrictions of the downloads<a class="headerlink" href="#note-on-restrictions-of-the-downloads" title="Permalink to this headline">¶</a></h2>
+<p>The amount of data downloaded from <a class="reference external" href="https://www.waterinfo.be/">waterinfo.be</a> is limited via a credit system. You do not need to get a token right away to download data. For limited or irregular downloads, a token will not be required.</p>
+<p>When you require more extended data requests, please request a download token from the <a class="reference external" href="https://www.waterinfo.be/">waterinfo.be</a> site administrators
+via the e-mail address &lt;<a class="reference external" href="mailto:hydrometrie&#37;&#52;&#48;waterinfo&#46;be">hydrometrie<span>&#64;</span>waterinfo<span>&#46;</span>be</a>&gt; with a statement of which data and how frequently you would like to download data.
+You will then receive a client-credit code that can be used to obtain a token that is valid for 24 hours, after which the token can be
+refreshed with the same client-credit code. The handling of this token is done by the package itself, but it is important to use
+the code when initializing the <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo" title="pywaterinfo.Waterinfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">Waterinfo</span></code></a> instance. For example, using a VMM token:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<span class="n">vmm_token</span> <span class="o">=</span> <span class="s2">&quot;YOUR TOKEN CODE&quot;</span>
+<span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">,</span>  <span class="n">token</span><span class="o">=</span><span class="n">vmm_token</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="start-to-contribute">
+<h2>Start to contribute<a class="headerlink" href="#start-to-contribute" title="Permalink to this headline">¶</a></h2>
 <p>It’s good practice to create a separate development environment for your package development. Use your preferred
 system (or maybe integrated in your IDE) to setup a Python environment and see those docs to setup an environment
 (conda, pyenv, virtualenv,,…). Once created, you can install all the developer dependencies using pip:</p>
@@ -208,6 +259,15 @@ but make sure to install the pre-commit hook:</p>
 </div>
 <p>The Github actions CI job runs the unit tests, doctest, pre-commit checks and documentation building as well.</p>
 </div>
+<div class="section" id="acknowledgements">
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h2>
+<p>The package development and maintenance is supported by <a class="reference external" href="https://fluves.com/">Fluves</a>. Part of the initial development of this package has been supported by <a class="reference external" href="https://vito.be">VITO</a>.</p>
+<p><a class="reference internal" href="_images/logo_fluves.png"><img alt="logo1" src="_images/logo_fluves.png" style="width: 20%;" /></a>  <a class="reference internal" href="_images/logo_vito.png"><img alt="logo2" src="_images/logo_vito.png" style="width: 20%;" /></a></p>
+<p>This package is just a small wrapper around waterinfo.be to facilitate researchers and other stakeholders in
+downloading the data from <a class="reference external" href="https://www.waterinfo.be/">waterinfo.be</a>. The availability of this data is made
+possible by <em>de Vlaamse Milieumaatschappij, Waterbouwkundig Laboratorium, Maritieme Dienstverlening &amp; Kust, Waterwegen
+en Zeekanaal NV en De Scheepvaart NV</em>.</p>
+</div>
 <div class="section" id="note">
 <h2>Note<a class="headerlink" href="#note" title="Permalink to this headline">¶</a></h2>
 <p>This project has been set up using PyScaffold 3.2.3. For details and usage
@@ -224,8 +284,9 @@ information on PyScaffold see <a class="reference external" href="https://pyscaf
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">User guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="waterinfo.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/modules.html">Module Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeseriesgroupids.html">Group identifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/reference.html">Module Reference</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
