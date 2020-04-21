@@ -2,7 +2,7 @@
 pywaterinfo
 ===========
 
-Python package to download time series data from waterinfo.be <https://www.waterinfo.be/>`_
+Python package to download time series data from `waterinfo.be <https://www.waterinfo.be/>`_.
 
 Description
 ===========
@@ -126,6 +126,24 @@ but make sure to install the pre-commit hook:
     pre-commit autoupdate
 
 The Github actions CI job runs the unit tests, doctest, pre-commit checks and documentation building as well.
+
+Acknowledgements
+================
+
+The package development and maintenance is supported by `Fluves <https://fluves.com/>`_. Part of the initial development of this package has been supported by `VITO <https://vito.be>`_.
+
+|logo1|  |logo2|
+
+.. |logo1| image:: _static/img/logo_fluves.png
+    :width: 20%
+
+.. |logo2| image:: _static/img/logo_vito.png
+    :width: 20%
+
+This package is just a small wrapper around waterinfo.be to facilitate researchers and other stakeholders in
+downloading the data from `waterinfo.be <https://www.waterinfo.be/>`_. The availability of this data is made
+possible by *de Vlaamse Milieumaatschappij, Waterbouwkundig Laboratorium, Maritieme Dienstverlening & Kust, Waterwegen
+en Zeekanaal NV en De Scheepvaart NV*.
 
 Note
 ====
