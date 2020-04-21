@@ -23,27 +23,32 @@ from pywaterinfo import Waterinfo
 vmm = Waterinfo("vmm")
 ```
 
-Get last day of data for the time series with ID `78124042`:
+The time series provided by waterinfo are all defined by a unique identifier called `ts_id`. Each combination of a given __variable__ (e.g. air pressure)
+measured at a given __location__ (e.g. Overpelt) with a certain __frequency__ (e.g. 15min) is defined by an `ts_id` identifier. Using such an identifier,
+one can download the data of a given period with the command `get_timeseries_values()`. For example, the 15min air pressure time series
+at Overpelt has identifier `ts_id = 78124042`. To get last day of data for the time series with ID `78124042`:
+
 ```
 df = vmm.get_timeseries_values(78124042, period="P1D")
 ```
 
-pywaterinfo returns the data mostly as a [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/index.html).
+pywaterinfo returns the data as a [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/index.html), which provides functionlities to plot and manipulate the time series.
 
-Requesting data from from HIC, is very similar:
+Requesting data from from HIC is very similar:
 
 ```
 hic = Waterinfo("hic")
 ```
 
-Get last day of data for the time series with ID `44223010`:
+Get last day of data for the time series with ID `39496010`, corresponding to high-resolution (5min) conductivity measurements in Dendermonde:
+
 ```
-df = hic.get_timeseries_values(ts_id="44223010", period="P1D")
+df = hic.get_timeseries_values(ts_id="39496010", period="P1D")
 ```
 
 Next to the request of time series data for a given time series identifier, other
-requests are supported as well. See the [documentation](TODO) pages for more info.
-
+requests are supported as well. These functions provide multiple ways to search for the
+`ts_id` you need to download certain data. See the [documentation](TODO) pages for more info.
 
 ## Note on restrictions of the downloads
 
