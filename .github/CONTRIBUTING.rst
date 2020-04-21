@@ -42,7 +42,7 @@ can find a solution. Still stuck? Post your question as a `new issue`_ on GitHub
 While we cannot offer user support, we'll try to do our best to address it,
 as questions often lead to better documentation or the discovery of bugs.
 
-.. _documentation: https://github.com/fluves/pywaterinfo
+.. _documentation: https://fluves.github.io/pywaterinfo/
 .. _new issue: https://github.com/fluves/pywaterinfo/issues/new
 
 Propose an idea
@@ -53,7 +53,7 @@ Have an idea for a new pywaterinfo feature? Take a look at the documentation_ an
 your idea as a `new issue`_ on GitHub. While we can't promise to implement
 your idea, it helps to:
 
-.. _documentation: https://github.com/fluves/pywaterinfo
+.. _documentation: https://fluves.github.io/pywaterinfo/
 .. _issue list: https://github.com/fluves/pywaterinfo/issues
 .. _new issue: https://github.com/fluves/pywaterinfo/issues/new
 
@@ -93,7 +93,7 @@ reStructuredText_ files and the package ``conf.py`` settings. If you
 know your way around *Sphinx*, you can `propose a file change`_ to improve
 documentation. If not, `report an issue`_ and we can point you in the right direction.
 
-.. _This website: https://github.com/fluves/pywaterinfo
+.. _This website: https://fluves.github.io/pywaterinfo/
 .. _Sphinx: http://www.sphinx-doc.org/en/master/
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html
 .. _propose a file change: https://help.github.com/articles/editing-files-in-another-user-s-repository/

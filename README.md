@@ -48,7 +48,7 @@ df = hic.get_timeseries_values(ts_id="39496010", period="P1D")
 
 Next to the request of time series data for a given time series identifier, other
 requests are supported as well. These functions provide multiple ways to search for the
-`ts_id` you need to download certain data. See the [documentation](TODO) pages for more info.
+`ts_id` you need to download certain data. See the [documentation website](https://fluves.github.io/pywaterinfo/) for more info.
 
 ## Note on restrictions of the downloads
 
