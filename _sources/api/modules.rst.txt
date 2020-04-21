@@ -1,0 +1,7 @@
+pywaterinfo
+===========
+
+.. toctree::
+   :maxdepth: 4
+
+   pywaterinfo

@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tutorial &mdash; pywaterinfo 0.0.post0.dev1+g93e2cab documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pywaterinfo" href="api/modules.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pywaterinfo
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.post0.dev1+g93e2cab
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#download-with-known-ts-identifier">Download with known ts identifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#time-series-groups">Time series groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#time-series-group-data">Time series group data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#search-identifier-based-on-parameter-or-station-name">Search identifier based on parameter or station name</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-queries">Custom queries</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">Module Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conduct.html">Code of conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pywaterinfo</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Tutorial</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/waterinfo.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tutorial">
+<span id="waterinfo"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>The Waterinfo module facilitates access to <a class="reference external" href="https://waterinfo.be">waterinfo.be</a>, a website managed by the Flanders
+Environment Agency (VMM) and Flanders Hydraulics Research (HIC). The website provides access to real-time water
+and weather related environmental variables for Flanders (Belgium), such as rainfall, air pressure,
+discharge, and water level. The package provides functions to search for stations and variables,
+and download time series.</p>
+<p>The API is a product of  <a class="reference external" href="https://www.kisters.de/en/">Kisters</a>  and is called <em>KIWIS</em>. Hence, the code
+would work on other deployments of this API as well. As VMM and HIC have each another deployment of the API,
+the documentation could be slightly different for <a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">VMM</a>
+versus <a class="reference external" href="https://www.waterinfo.be/tsmhic/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">HIC</a>.</p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The waterinfo.be API uses a system of identifiers, called <code class="code docutils literal notranslate"><span class="pre">ts_id</span></code> to define individual time series.
+For example, the identifier <code class="code docutils literal notranslate"><span class="pre">ts_id</span> <span class="pre">=</span> <span class="pre">78073042</span></code> corresponds to the time series of air pressure data
+for the measurement station in Liedekerke, with a 15 min time resolution. Hence, the ts_id identifier
+defines a variable of interest from a measurement station of interest with a specific frequency
+(e.g. 15 min, hourly,…). The knowledge of the proper identifier is essential to be able to download
+the corresponding data.</p>
+<p>In order to get started, make sure to define the source of the data: VMM or HIC:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span> <span class="c1"># look for data from VMM</span>
+<span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span> <span class="c1"># look for data from HIC</span>
+</pre></div>
+</div>
+<p>One of the reasons is that tokens are provided by them separately. If you have a token available, add this to the
+initiation to make sure all session requests are using the token:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<span class="n">vmm_token</span> <span class="o">=</span> <span class="s2">&quot;DUMMY&quot;</span>
+<span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">,</span>  <span class="n">token</span><span class="o">=</span><span class="n">vmm_token</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="download-with-known-ts-identifier">
+<h2>Download with known ts identifier<a class="headerlink" href="#download-with-known-ts-identifier" title="Permalink to this headline">¶</a></h2>
+<p>In case you already know the <code class="code docutils literal notranslate"><span class="pre">ts_id</span></code> identifier that defines your time series, the class <a class="reference internal" href="api/pywaterinfo.html#pywaterinfo.Waterinfo" title="pywaterinfo.Waterinfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">Waterinfo</span></code></a> provides the method
+<a class="reference internal" href="api/pywaterinfo.html#pywaterinfo.Waterinfo.get_timeseries_values" title="pywaterinfo.Waterinfo.get_timeseries_values"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_values()</span></code></a> to download a specific period of the time series. For example, to download the air pressure time series data of Liedekerke with a 15 min resolution
+(<code class="code docutils literal notranslate"><span class="pre">ts_id</span> <span class="pre">=</span> <span class="pre">78073042</span></code>) for the first of January 2016:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
+<span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="s2">&quot;78073042&quot;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2016-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2016-01-02&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Mostly, you do not know these identifiers. Hence, to search for the required identifiers, different methods are
+provided to support this, as described in the following sections.</p>
+</div>
+<div class="section" id="time-series-groups">
+<h2>Time series groups<a class="headerlink" href="#time-series-groups" title="Permalink to this headline">¶</a></h2>
+<p>A lot of the time series and stations are bundled in so-called <code class="code docutils literal notranslate"><span class="pre">timeseriesgroup_id</span></code>’s. They represent for example all
+available station of rainfall at a given frequency (e.g. 15 Min). To get an overview of the available groups, use
+the method <a class="reference internal" href="api/pywaterinfo.html#pywaterinfo.Waterinfo.get_group_list" title="pywaterinfo.Waterinfo.get_group_list"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_group_list()</span></code></a>, e.g. for the HIC stations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
+<span class="n">hic</span><span class="o">.</span><span class="n">get_group_list</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="time-series-group-data">
+<h2>Time series group data<a class="headerlink" href="#time-series-group-data" title="Permalink to this headline">¶</a></h2>
+<p>To get all the available time series identifiers (<code class="code docutils literal notranslate"><span class="pre">ts_id</span></code>) within a given group, use the <a class="reference internal" href="api/pywaterinfo.html#pywaterinfo.Waterinfo.get_timeseries_value_layer" title="pywaterinfo.Waterinfo.get_timeseries_value_layer"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_value_layer()</span></code></a>
+method. It provides the metadata of these stations and (by default) the latest measured value. The group identifier for
+conductivity measured by HIC is <code class="code docutils literal notranslate"><span class="pre">156173</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
+<span class="n">hic</span><span class="o">.</span><span class="n">get_timeseries_value_layer</span><span class="p">(</span><span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="s2">&quot;156173&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> Multiple identifiers can be combined in a single statement:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
+<span class="c1"># combine oxygen and conductivity in a single call</span>
+<span class="n">hic</span><span class="o">.</span><span class="n">get_timeseries_value_layer</span><span class="p">(</span><span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="s2">&quot;156207,156173&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="search-identifier-based-on-parameter-or-station-name">
+<h2>Search identifier based on parameter or station name<a class="headerlink" href="#search-identifier-based-on-parameter-or-station-name" title="Permalink to this headline">¶</a></h2>
+<p>In the situation you are looking for the identifiers of all measured parameters at a station or all the
+stations measuring a given parameter, use the <a class="reference internal" href="api/pywaterinfo.html#pywaterinfo.Waterinfo.get_timeseries_list" title="pywaterinfo.Waterinfo.get_timeseries_list"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_list()</span></code></a> method.
+It supports wildcards and supports looking based on station information, parameter information or a combination of both:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
+<span class="c1"># for given station ME09_012, which time series are available?</span>
+<span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">station_no</span><span class="o">=</span><span class="s2">&quot;ME09_012&quot;</span><span class="p">)</span>
+<span class="c1"># for a given parameter PET, which time series are available?</span>
+<span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">parametertype_name</span><span class="o">=</span><span class="s2">&quot;PET&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="custom-queries">
+<h2>Custom queries<a class="headerlink" href="#custom-queries" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">VMM</a>
+and <a class="reference external" href="https://www.waterinfo.be/tsmhic/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">HIC</a> APIs
+provide more API paths. Whereas no specialized functions are available, use the <a class="reference internal" href="api/pywaterinfo.html#pywaterinfo.Waterinfo.request_kiwis" title="pywaterinfo.Waterinfo.request_kiwis"><code class="xref py py-func docutils literal notranslate"><span class="pre">request_kiwis()</span></code></a> method
+to do custom calls to the KIWIS API. For example, using the <code class="code docutils literal notranslate"><span class="pre">getStationList</span></code> query for stations starting with a <code class="code docutils literal notranslate"><span class="pre">P</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
+<span class="n">vmm</span><span class="o">.</span><span class="n">request_kiwis</span><span class="p">({</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="s2">&quot;getStationList&quot;</span><span class="p">,</span> <span class="s2">&quot;station_no&quot;</span><span class="p">:</span> <span class="s2">&quot;P*&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api/modules.html" class="btn btn-neutral float-right" title="pywaterinfo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Stijn Van Hoey
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
