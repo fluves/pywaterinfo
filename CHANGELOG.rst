@@ -5,6 +5,11 @@ Changelog
 Version 0.1
 ===========
 
+This version provides a first implementation wrapping the API provided by `waterinfo.be <https://www.waterinfo.be/>`_. The package provides a minimal
+wrapper with the aim to find and download time series data and returns it as Pandas DataFrame. The latter enables methods for plotting and analysis.
+
 - Add Waterinfo class with base HTTP call method `request_kiwis`
 - Handle tokens automatically
 - Provide Python API equivalent for `getTimeseriesValues`, `getTimeseriesValueLayer`, `getGroupList` and `getTimeseriesList`
+- Create documentation website with SPhinx, unit tests using pytest, doctests
+- Setup of the CI using Github actions
