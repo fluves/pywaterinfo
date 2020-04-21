@@ -27,7 +27,7 @@ To install pywaterinfo with :code:`pip`:
 Example
 ========
 
-To initialize data requests from VMM, setup the :code:`Waterinfo` class with `vmm` as input:
+To initialize data requests from VMM, setup the :class:`~pywaterinfo.Waterinfo` class with `vmm` as input:
 
 ::
 
@@ -35,9 +35,9 @@ To initialize data requests from VMM, setup the :code:`Waterinfo` class with `vm
     vmm = Waterinfo("vmm")
 
 
-The time series provided by waterinfo are all defined by a unique identifier called :code:`ts_id`. Each combination of a given __variable__ (e.g. air pressure)
-measured at a given __location__ (e.g. Overpelt) with a certain __frequency__ (e.g. 15min) is defined by an :code:`ts_id` identifier. Using such an identifier,
-one can download the data of a given period with the command :code:`get_timeseries_values()`. For example, the 15min air pressure time series
+The time series provided by waterinfo are all defined by a unique identifier called :code:`ts_id`. Each combination of a given **variable** (e.g. air pressure)
+measured at a given **location** (e.g. Overpelt) with a certain **frequency** (e.g. 15min) is defined by an :code:`ts_id` identifier. Using such an identifier,
+one can download the data of a given period with the command :func:`~pywaterinfo.Waterinfo.get_timeseries_values`. For example, the 15 min air pressure time series
 at Overpelt has identifier :code:`ts_id = 78124042`. To get last day of data for the time series with ID :code:`78124042`:
 
 ::
@@ -68,13 +68,13 @@ certain data. See the `documentation website <https://fluves.github.io/pywaterin
 Note on restrictions of the downloads
 =====================================
 
-The amount of data downloaded from waterinfo.be <https://www.waterinfo.be/>`_ is limited via a credit system. You do not need to get a token right away to download data. For limited or irregular downloads, a token will not be required.
+The amount of data downloaded from `waterinfo.be <https://www.waterinfo.be/>`_ is limited via a credit system. You do not need to get a token right away to download data. For limited or irregular downloads, a token will not be required.
 
-When you require more extended data requests, please request a download token from the waterinfo.be <https://www.waterinfo.be/>`_ site administrators
+When you require more extended data requests, please request a download token from the `waterinfo.be <https://www.waterinfo.be/>`_ site administrators
 via the e-mail address <hydrometrie@waterinfo.be> with a statement of which data and how frequently you would like to download data.
 You will then receive a client-credit code that can be used to obtain a token that is valid for 24 hours, after which the token can be
 refreshed with the same client-credit code. The handling of this token is done by the package itself, but it is important to use
-the code when initializing the :code:`Waterinfo` instance. For example, using a VMM token:
+the code when initializing the :class:`~pywaterinfo.Waterinfo` instance. For example, using a VMM token:
 
 ::
 
