@@ -1,8 +1,8 @@
 .. _waterinfo:
 
-=========
-waterinfo
-=========
+========
+Tutorial
+========
 
 The Waterinfo module facilitates access to `waterinfo.be <https://waterinfo.be>`_, a website managed by the Flanders
 Environment Agency (VMM) and Flanders Hydraulics Research (HIC). The website provides access to real-time water
