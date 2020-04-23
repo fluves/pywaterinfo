@@ -1,10 +1,8 @@
 import datetime
 import logging
-import os
 import pkg_resources
 import re
 
-import certifi
 import pandas as pd
 import requests
 
@@ -37,12 +35,6 @@ class KiwisException(Exception):
 
 class WaterinfoException(Exception):
     """Raised when the Waterinfo data request inputs are wrong"""
-
-    pass
-
-
-class SSLAdditionException(Exception):
-    """Raised when the VITO SSL custom CA addition fails"""
 
     pass
 
@@ -81,8 +73,6 @@ class Waterinfo:
         }
 
         self._token_header = None
-        # self._verify_ssl() # TODO -- check with VITO on how to handle this
-        # (CA file not packaged)
         if token:
             res = requests.post(
                 "http://download.waterinfo.be/kiwis-auth/token",
@@ -119,19 +109,6 @@ class Waterinfo:
 
     def __repr__(self):
         return f"<{self.__class__.__name__} object, " f"Query from {self._base_url!r}>"
-
-    def _verify_ssl(self, filename="VITO-CA.cer"):
-        """check for network SSL issues"""
-        try:
-            logger.debug("Adding custom certs to Certifi store...")
-            cafile = certifi.where()
-            with open(os.path.join(DATA_PATH, filename), "rb") as infile:
-                customca = infile.read()
-            with open(cafile, "ab") as outfile:
-                outfile.write(customca)
-            logger.debug("SSL certificate added to store.")
-        except SSLAdditionException:
-            logger.debug("SSL custom certificates failed.")
 
     def request_kiwis(self, query: dict, headers: dict = None) -> dict:
         """ http call to waterinfo.be KIWIS API

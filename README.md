@@ -37,7 +37,7 @@ pywaterinfo returns the data as a [Pandas DataFrame](https://pandas.pydata.org/p
 Requesting data from from HIC is very similar:
 
 ```
-from pywaterinfo import Waterinfo
+
 hic = Waterinfo("hic")
 ```
 
