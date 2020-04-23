@@ -32,6 +32,11 @@ def add_ssl_cert(ssl_cert: str):
     ----------
     ssl_cert: str
         The full path/filename to the SSL certificate file to add
+
+    Examples
+    --------
+    >>> from pywaterinfo.utils import add_ssl_cert
+    >>> add_ssl_cert("CA-FILE-PATH")  # doctest: +SKIP
     """
 
     try:
