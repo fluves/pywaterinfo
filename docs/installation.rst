@@ -29,3 +29,13 @@ Go into the directory of the package itself and install the package using setupt
 
     cd pywaterinfo
     python setup.py install
+
+
+Issues with SSL
+---------------
+
+Note that for some companies/environments, you may have to add a custom SSL certificate to the certifi repository for
+the urllib queries to work. This is typically the case if you experience “SSL: CERTIFICATE_VERIFY_FAILED” errors. There
+in the utils module, there is a convenient helper routine to do just that (utils.add_ssl_cert). Please contact your 
+network administrator / ICT staff to obtain the relevant certificat to use inside your domain to enable the https requests
+with urllib. 
