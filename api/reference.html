@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pywaterinfo package &mdash; pywaterinfo 0.1.1 documentation</title>
+  <title>pywaterinfo package &mdash; pywaterinfo 0.2.0 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.2.0
               </div>
             
           
@@ -170,13 +170,13 @@
 <span id="pywaterinfo-package"></span><h1>pywaterinfo package<a class="headerlink" href="#module-pywaterinfo" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="#pywaterinfo.Waterinfo" title="pywaterinfo.Waterinfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">pywaterinfo.Waterinfo</span></code></a> is the main
 class for waterinfo.be data query interactions.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pywaterinfo.Waterinfo">
-<em class="property">class </em><code class="sig-prename descclassname">pywaterinfo.</code><code class="sig-name descname">Waterinfo</code><span class="sig-paren">(</span><em class="sig-param">provider: str = 'vmm'</em>, <em class="sig-param">token: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pywaterinfo.</code><code class="sig-name descname">Waterinfo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">provider</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)">str</a></span> <span class="o">=</span> <span class="default_value">'vmm'</span></em>, <em class="sig-param"><span class="n">token</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)">str</a></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<dl class="method">
+<dl class="py method">
 <dt id="pywaterinfo.Waterinfo.get_group_list">
-<code class="sig-name descname">get_group_list</code><span class="sig-paren">(</span><em class="sig-param">group_name=None</em>, <em class="sig-param">group_type=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.get_group_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.get_group_list" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_group_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">group_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.get_group_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.get_group_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of time series and station groups</p>
 <p>The function provides the existing group identifiers. These group_ids enable
 the user to request all values of a given group at the same time (method
@@ -219,9 +219,9 @@ the user to request all values of a given group at the same time (method
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pywaterinfo.Waterinfo.get_timeseries_list">
-<code class="sig-name descname">get_timeseries_list</code><span class="sig-paren">(</span><em class="sig-param">station_no=None</em>, <em class="sig-param">stationparameter_name=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.get_timeseries_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.get_timeseries_list" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_timeseries_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">station_no</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stationparameter_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.get_timeseries_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.get_timeseries_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get time series at given station an/or time series which provide
 certain parameter</p>
 <p>The station_no and stationparameter_name are provided as arguments, as these
@@ -282,9 +282,9 @@ argument.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pywaterinfo.Waterinfo.get_timeseries_value_layer">
-<code class="sig-name descname">get_timeseries_value_layer</code><span class="sig-paren">(</span><em class="sig-param">timeseriesgroup_id=None</em>, <em class="sig-param">ts_id=None</em>, <em class="sig-param">bbox=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.get_timeseries_value_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.get_timeseries_value_layer" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_timeseries_value_layer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ts_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bbox</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.get_timeseries_value_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.get_timeseries_value_layer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metadata and last measured value for group of stations</p>
 <p>Either ts_id, timeseriesgroup_id or bbox can be used to request data. The
 function provides metadata and the last measured value for the group of
@@ -338,9 +338,9 @@ measurement and metadata</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pywaterinfo.Waterinfo.get_timeseries_values">
-<code class="sig-name descname">get_timeseries_values</code><span class="sig-paren">(</span><em class="sig-param">ts_id=None</em>, <em class="sig-param">timeseriesgroup_id=None</em>, <em class="sig-param">period=None</em>, <em class="sig-param">start=None</em>, <em class="sig-param">end=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.get_timeseries_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.get_timeseries_values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_timeseries_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">period</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">end</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.get_timeseries_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.get_timeseries_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get time series data from waterinfo.be</p>
 <p>Using the ts_id codes or group identifiers and by providing a given date
 period, download the corresponding time series from the waterinfo.be website.
@@ -414,9 +414,9 @@ see <a class="reference external" href="https://download.waterinfo.be/tsmdownloa
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pywaterinfo.Waterinfo.request_kiwis">
-<code class="sig-name descname">request_kiwis</code><span class="sig-paren">(</span><em class="sig-param">query: dict</em>, <em class="sig-param">headers: dict = None</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.request_kiwis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.request_kiwis" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">request_kiwis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></span></em>, <em class="sig-param"><span class="n">headers</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.request_kiwis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.request_kiwis" title="Permalink to this definition">¶</a></dt>
 <dd><p>http call to waterinfo.be KIWIS API</p>
 <p>General call used to request information and data from waterinfo.be, providing
 error handling and json parsing. The service, type, format (json),

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pywaterinfo.waterinfo &mdash; pywaterinfo 0.1.1 documentation</title>
+  <title>pywaterinfo.waterinfo &mdash; pywaterinfo 0.2.0 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.2.0
               </div>
             
           
@@ -165,11 +165,9 @@
   <h1>Source code for pywaterinfo.waterinfo</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="kn">import</span> <span class="nn">certifi</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 
@@ -202,12 +200,6 @@
 
 <span class="k">class</span> <span class="nc">WaterinfoException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when the Waterinfo data request inputs are wrong&quot;&quot;&quot;</span>
-
-    <span class="k">pass</span>
-
-
-<span class="k">class</span> <span class="nc">SSLAdditionException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Raised when the VITO SSL custom CA addition fails&quot;&quot;&quot;</span>
 
     <span class="k">pass</span>
 
@@ -246,8 +238,6 @@
         <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_token_header</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="c1"># self._verify_ssl() # TODO -- check with VITO on how to handle this</span>
-        <span class="c1"># (CA file not packaged)</span>
         <span class="k">if</span> <span class="n">token</span><span class="p">:</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
                 <span class="s2">&quot;http://download.waterinfo.be/kiwis-auth/token&quot;</span><span class="p">,</span>
@@ -284,19 +274,6 @@
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> object, &quot;</span> <span class="sa">f</span><span class="s2">&quot;Query from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="si">!r}</span><span class="s2">&gt;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">_verify_ssl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;VITO-CA.cer&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;check for network SSL issues&quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Adding custom certs to Certifi store...&quot;</span><span class="p">)</span>
-            <span class="n">cafile</span> <span class="o">=</span> <span class="n">certifi</span><span class="o">.</span><span class="n">where</span><span class="p">()</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_PATH</span><span class="p">,</span> <span class="n">filename</span><span class="p">),</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
-                <span class="n">customca</span> <span class="o">=</span> <span class="n">infile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cafile</span><span class="p">,</span> <span class="s2">&quot;ab&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
-                <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">customca</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;SSL certificate added to store.&quot;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">SSLAdditionException</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;SSL custom certificates failed.&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Waterinfo.request_kiwis"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.request_kiwis">[docs]</a>    <span class="k">def</span> <span class="nf">request_kiwis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; http call to waterinfo.be KIWIS API</span>

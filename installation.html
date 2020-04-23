@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; pywaterinfo 0.1.1 documentation</title>
+  <title>Installation &mdash; pywaterinfo 0.2.0 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.2.0
               </div>
             
           
@@ -89,6 +89,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#using-pip">Using pip</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-setuptools">Using setuptools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#issues-with-ssl">Issues with SSL</a></li>
 </ul>
 </li>
 </ul>
@@ -191,6 +192,14 @@
 <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="issues-with-ssl">
+<h2>Issues with SSL<a class="headerlink" href="#issues-with-ssl" title="Permalink to this headline">¶</a></h2>
+<p>Note that for some companies/environments, you may have to add a custom SSL certificate to the certifi repository for
+the urllib queries to work. This is typically the case if you experience <code class="code docutils literal notranslate"><span class="pre">SSL:</span> <span class="pre">CERTIFICATE_VERIFY_FAILED</span></code> errors. There
+in the utils module, there is a convenient helper routine to do just that (<code class="xref py py-func docutils literal notranslate"><span class="pre">add_ssl_cert()</span></code>).
+Please contact your network administrator / ICT staff to obtain the relevant certificat to use inside your
+domain to enable the https requests with urllib.</p>
 </div>
 </div>
 
