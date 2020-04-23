@@ -1,6 +1,5 @@
 import datetime
 import logging
-import os
 import pkg_resources
 import re
 
@@ -40,12 +39,6 @@ class WaterinfoException(Exception):
     pass
 
 
-class SSLAdditionException(Exception):
-    """Raised when the VITO SSL custom CA addition fails"""
-
-    pass
-
-
 class Waterinfo:
     def __init__(self, provider: str = "vmm", token: str = None):
         """Request data from waterinfo.be
@@ -79,7 +72,7 @@ class Waterinfo:
             "timezone": "UTC",
         }
 
-        self._token_header = None        
+        self._token_header = None
         if token:
             res = requests.post(
                 "http://download.waterinfo.be/kiwis-auth/token",
@@ -116,7 +109,6 @@ class Waterinfo:
 
     def __repr__(self):
         return f"<{self.__class__.__name__} object, " f"Query from {self._base_url!r}>"
-
 
     def request_kiwis(self, query: dict, headers: dict = None) -> dict:
         """ http call to waterinfo.be KIWIS API
