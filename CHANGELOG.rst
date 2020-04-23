@@ -2,8 +2,13 @@
 Changelog
 =========
 
-Version 0.1
-===========
+Version 0.2.0
+=============
+
+Add support for SSL certificate handling.
+
+Version 0.1.1
+=============
 
 This version provides a first implementation wrapping the API provided by `waterinfo.be <https://www.waterinfo.be/>`_. The package provides a minimal
 wrapper with the aim to find and download time series data and returns it as Pandas DataFrame. The latter enables methods for plotting and analysis.
