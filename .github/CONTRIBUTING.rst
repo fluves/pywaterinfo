@@ -2,7 +2,7 @@ Contributing to pywaterinfo
 ===========================
 
 First of all, thanks for considering contributing to pywaterinfo! It's people like you that make it
-rewarding for us - the project :ref:`authors` - to work on pydov.
+rewarding for us - the project :ref:`authors` - to work on pywaterinfo.
 
 .. _maintainers: .
 
@@ -118,7 +118,7 @@ function description:
 Contribute code
 ^^^^^^^^^^^^^^^
 
-Care to fix bugs or implement new functionality for pydov? Awesome! Have a
+Care to fix bugs or implement new functionality for pywaterinfo? Awesome! Have a
 look at the `issue list`_ and leave a comment on the things you want
 to work on. See also the development guidelines below.
 
@@ -136,7 +136,7 @@ following these rules when submitting new code makes the review easier so new
 code can be integrated in less time.
 
 Uniformly formatted code makes it easier to share code ownership. The
-pydov project tries to closely follow the official Python guidelines
+pywaterinfo project tries to closely follow the official Python guidelines
 detailed in `PEP8 <https://www.python.org/dev/peps/pep-0008/>`_ which detail
 how code should be formatted and indented. Please read it and follow it.
 
