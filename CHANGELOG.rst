@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 0.2.1
+=============
+
+Hot fix on token handling (Thanks to Erik Bollen for reporting)
+
 Version 0.2.0
 =============
 
