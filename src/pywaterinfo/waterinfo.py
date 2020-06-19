@@ -87,7 +87,7 @@ class Waterinfo:
             res.raise_for_status()
             res_parsed = res.json()
             self._token_header = {
-                "Authorization": f"{res_parsed['token_type']}"
+                "Authorization": f"{res_parsed['token_type']} "
                 f"{res_parsed['access_token']}"
             }
             expires_in = res_parsed["expires_in"]
