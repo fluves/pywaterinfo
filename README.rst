@@ -150,7 +150,7 @@ Other clients
 
 Besides this Python client to gather data from `waterinfo.be <https://www.waterinfo.be/>`_, there is also an R client available, the `wateRinfo <https://docs.ropensci.org/wateRinfo//>`_ package which is part of the `ropensci <https://ropensci.org/>`_ package suite and contains similar functionalities.
 
-The `Flanders Hydraulics Research center <https://www.waterbouwkundiglaboratorium.be/en/>`_ also distributes clients for R, Python and Matlab upon request to download the data they share on `waterinfo.be <https://www.waterinfo.be/>`_. For more information, contact them directly via [hic@vlaanderen.be](mailto:hic@vlaanderen.be).
+The `Flanders Hydraulics Research center <https://www.waterbouwkundiglaboratorium.be/en/>`_ also distributes clients for R, Python and Matlab upon request to download the data they share on `waterinfo.be <https://www.waterinfo.be/>`_. For more information, contact them directly via hic@vlaanderen.be.
 
 Note
 ====
