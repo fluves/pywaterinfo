@@ -120,10 +120,10 @@ An example use case is to get the available parameters (in waterinfo also called
 
         vmm = Waterinfo("vmm")
         # for station L11_518, which station parameters are available?
-        station_l11_518 = vmm.get_timeseries_list(station_no="L11_518", 
+        station_l11_518 = vmm.get_timeseries_list(station_no="L11_518",
                                                   returnfields="ts_id,station_name,stationparameter_longname")
         station_l11_518["stationparameter_longname"].unique()
-        
+
 
 Custom queries
 --------------
