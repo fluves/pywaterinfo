@@ -113,7 +113,7 @@ It supports wildcards and supports looking based on station information, paramet
         vmm.get_timeseries_list(station_no="ME09_012")
         # for a given parameter PET, which time series are available?
         vmm.get_timeseries_list(parametertype_name="PET")
-        
+
 An example use case is to get the available parameters (in waterinfo also called ``stationparameter``) at a given station? As pywaterinfo returns a Pandas DataFrame, combine pywaterinfo with the functionalities from Pandas (e.g. ``unique`` method):
 
 ::
