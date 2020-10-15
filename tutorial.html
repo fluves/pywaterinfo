@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tutorial &mdash; pywaterinfo 0.2.1 documentation</title>
+  <title>Tutorial &mdash; pywaterinfo 0.0.post0.dev1+g06d6099 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.2.1
+                0.0.post0.dev1+g06d6099
               </div>
             
           
@@ -268,6 +268,14 @@ It supports wildcards and supports looking based on station information, paramet
 <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">station_no</span><span class="o">=</span><span class="s2">&quot;ME09_012&quot;</span><span class="p">)</span>
 <span class="c1"># for a given parameter PET, which time series are available?</span>
 <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">parametertype_name</span><span class="o">=</span><span class="s2">&quot;PET&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An example use case is to get the available parameters (in waterinfo also called <code class="docutils literal notranslate"><span class="pre">stationparameter</span></code>) at a given station? As pywaterinfo returns a Pandas DataFrame, combine pywaterinfo with the functionalities from Pandas (e.g. <code class="docutils literal notranslate"><span class="pre">unique</span></code> method):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
+<span class="c1"># for station L11_518, which station parameters are available?</span>
+<span class="n">station_l11_518</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">station_no</span><span class="o">=</span><span class="s2">&quot;L11_518&quot;</span><span class="p">,</span>
+                                          <span class="n">returnfields</span><span class="o">=</span><span class="s2">&quot;ts_id,station_name,stationparameter_longname&quot;</span><span class="p">)</span>
+<span class="n">station_l11_518</span><span class="p">[</span><span class="s2">&quot;stationparameter_longname&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
