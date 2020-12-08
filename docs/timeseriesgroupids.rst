@@ -93,6 +93,7 @@ in the following table.
       neerslag, dag, 156166, rainfall, day
       neerslag, maand, 156190, rainfall, month
       neerslag, jaar, 156191, rainfall, year
+      saliniteit, hoge resolutie, 421208, salinity, high resolution
       sediment concentratie, hoge resolutie, 156188, sediment concentration, high resolution
       stroomrichting, hoge resolutie, 156158, flow direction, high resolution
       stroomsnelheid, hoge resolutie, 156199, flow speed, high resolution
