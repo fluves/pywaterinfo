@@ -2,6 +2,8 @@
 
 from __future__ import absolute_import, division, print_function
 
+import os
+
 import pytest
 
 from pywaterinfo.waterinfo import Waterinfo
@@ -12,7 +14,7 @@ vmm_client = (
     "RhZGE4NzFhLTk1MjgtNGI0ZC1iZmQ1LWI1NzBjZThmNGQyZA=="
 )
 
-hic_client = ""  # TODO - add test token
+hic_client = os.environ.get("HIC_TOKEN")
 
 
 @pytest.fixture(scope="module")

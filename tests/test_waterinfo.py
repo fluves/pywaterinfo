@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import os
+
 import pytest
 
 import pandas as pd
@@ -76,7 +78,7 @@ def test_token_hic():
 
     # token, token header, authentication in request header
     # this client code is received by VMM for unit testing purposes only
-    client = ""  # TODO - add test token
+    client = os.environ.get("HIC_TOKEN")
     hic = Waterinfo("hic", token=client)
     assert hic._token_header is not None
     _, res = hic.request_kiwis({"request": "getRequestInfo"})
