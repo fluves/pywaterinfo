@@ -24,7 +24,10 @@ def vmm_connection():
 
 @pytest.fixture(scope="module")
 def hic_connection():
-    return Waterinfo("hic", token=hic_client)
+    if hic_client:
+        return Waterinfo("hic", token=hic_client)
+    else:
+        return Waterinfo("hic")
 
 
 @pytest.fixture(scope="module")
