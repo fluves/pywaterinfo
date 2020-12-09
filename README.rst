@@ -106,6 +106,22 @@ Tests are defined with `pytest <https://docs.pytest.org>`_. Write tests and run 
 
     python setup.py test
 
+In order to run all the tests, you need a HIC token, defined as an environmental variable ``HIC_TOKEN``. When you do
+not have a HIC token, you can ignore the token tests for HIC webservice, be defining to not run the tests
+marked with the `nohictoken` label:
+
+::
+
+    python setup.py test --addopts "-m 'not nohictoken'"
+
+or with pytest directly:
+
+::
+
+    pytest -m 'not nohictoken'
+
+The Github actions CI does have the token stored as a *secret*, so you do not really need a token for local testing, as eventual failures
+will be noticed by the CI.
 
 Documentation lives in the `docs` directory and is setup using `Sphinx package <http://www.sphinx-doc.org/en/master/>`_.
 You can edit the documentation using any text editor and then generate the HTML output by with the command:
