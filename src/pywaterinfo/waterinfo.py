@@ -18,7 +18,9 @@ other KIWIS-python clients:
 
 
 VMM_BASE = "https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS"
+VMM_AUTH = "http://download.waterinfo.be/kiwis-auth/token"
 HIC_BASE = "https://www.waterinfo.be/tsmhic/KiWIS/KiWIS"
+HIC_AUTH = "https://hicwsauth.vlaanderen.be/auth"
 DATA_PATH = pkg_resources.resource_filename(__name__, "/data")
 
 # Custom hard-coded fix for the decoding issue #1 of given returnfields
@@ -55,9 +57,11 @@ class Waterinfo:
         # set the base string linked to the data provider
         if provider == "vmm":
             self._base_url = VMM_BASE
+            self._auth_url = VMM_AUTH
             self._datasource = "1"
         elif provider == "hic":
             self._base_url = HIC_BASE
+            self._auth_url = HIC_AUTH
             self._datasource = "4"
         else:
             raise WaterinfoException("Provider is either 'vmm' or 'hic'.")
@@ -75,7 +79,7 @@ class Waterinfo:
         self._token_header = None
         if token:
             res = requests.post(
-                "http://download.waterinfo.be/kiwis-auth/token",
+                self._auth_url,
                 headers={
                     "Authorization": f"Basic {token}",
                     "scope": "none",

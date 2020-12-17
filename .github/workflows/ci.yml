@@ -36,6 +36,8 @@ jobs:
         pre-commit run --all-files
       if: matrix.python-version == '3.7'
     - name: Test with pytest
+      env:
+        HIC_TOKEN: ${{ secrets.HIC_TOKEN }}
       run: |
         python setup.py test
     - name: Test doctests

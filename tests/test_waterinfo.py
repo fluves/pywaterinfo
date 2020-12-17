@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import os
+
 import pytest
 
 import pandas as pd
@@ -41,7 +43,7 @@ def test_ssl_handling():
     NotImplemented
 
 
-def test_token():
+def test_token_vmm():
     """Check if submitting of a token is tackled properly"""
     # no token, no token header, no authentication in request header
     vmm = Waterinfo("vmm")
@@ -64,6 +66,29 @@ def test_token():
     with pytest.raises(Exception):
         client = "DUMMY"
         Waterinfo("vmm", token=client)
+
+
+@pytest.mark.nohictoken
+def test_token_hic():
+    """Check if submitting of a token is tackled properly"""
+    # no token, no token header, no authentication in request header
+    hic = Waterinfo("hic")
+    assert hic._token_header is None
+    _, res = hic.request_kiwis({"request": "getRequestInfo"})
+    assert "Authorization" not in res.request.headers.keys()
+
+    # token, token header, authentication in request header
+    # this client code is received by VMM for unit testing purposes only
+    client = os.environ.get("HIC_TOKEN")
+    hic = Waterinfo("hic", token=client)
+    assert hic._token_header is not None
+    _, res = hic.request_kiwis({"request": "getRequestInfo"})
+    assert "Authorization" in res.request.headers.keys()
+
+    # wrong token results in error
+    with pytest.raises(Exception):
+        client = "DUMMY"
+        Waterinfo("hic", token=client)
 
 
 class TestPeriodDates:

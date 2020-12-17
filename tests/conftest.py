@@ -2,15 +2,19 @@
 
 from __future__ import absolute_import, division, print_function
 
+import os
+
 import pytest
 
 from pywaterinfo.waterinfo import Waterinfo
 
-# use a session for VMM/HIC that can be used among tests
+# use a session for VMM that can be used among tests
 vmm_client = (
-    "MTU1MzRiYzgtZDQ2ZS00ZTEyLWI0ZmYtYzA0OWIzYzljYjI"
-    "3OjQ1ZmU5M2ExLWNiNzUtNGExZi1hZDZkLWU2ODk1OGU0MWQwMg=="
+    "MzJkY2VlY2UtODI2Yy00Yjk4LTljMmQtYjE2OTc4ZjBjYTZhOj"
+    "RhZGE4NzFhLTk1MjgtNGI0ZC1iZmQ1LWI1NzBjZThmNGQyZA=="
 )
+
+hic_client = os.environ.get("HIC_TOKEN")
 
 
 @pytest.fixture(scope="module")
@@ -20,7 +24,10 @@ def vmm_connection():
 
 @pytest.fixture(scope="module")
 def hic_connection():
-    return Waterinfo("hic")
+    if hic_client:
+        return Waterinfo("hic", token=hic_client)
+    else:
+        return Waterinfo("hic")
 
 
 @pytest.fixture(scope="module")
