@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pywaterinfo &mdash; pywaterinfo 0.0.post0.dev1+gd59e326 documentation</title>
+  <title>pywaterinfo &mdash; pywaterinfo 0.2.2 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.0.post0.dev1+gd59e326
+                0.2.2
               </div>
             
           
@@ -247,6 +247,18 @@ system (or maybe integrated in your IDE) to setup a Python environment and see t
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">test</span>
 </pre></div>
 </div>
+<p>In order to run all the tests, you need a HIC token, defined as an environmental variable <code class="docutils literal notranslate"><span class="pre">HIC_TOKEN</span></code>. When you do
+not have a HIC token, you can ignore the token tests for HIC webservice, be defining to not run the tests
+marked with the <cite>nohictoken</cite> label:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">test</span> <span class="o">--</span><span class="n">addopts</span> <span class="s2">&quot;-m &#39;not nohictoken&#39;&quot;</span>
+</pre></div>
+</div>
+<p>or with pytest directly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="o">-</span><span class="n">m</span> <span class="s1">&#39;not nohictoken&#39;</span>
+</pre></div>
+</div>
+<p>The Github actions CI does have the token stored as a <em>secret</em>, so you do not really need a token for local testing, as eventual failures
+will be noticed by the CI.</p>
 <p>Documentation lives in the <cite>docs</cite> directory and is setup using <a class="reference external" href="http://www.sphinx-doc.org/en/master/">Sphinx package</a>.
 You can edit the documentation using any text editor and then generate the HTML output by with the command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">build_sphinx</span>
