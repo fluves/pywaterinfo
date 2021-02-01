@@ -1,12 +1,11 @@
+import pkg_resources
+
 import datetime
 import logging
-import pkg_resources
-import re
-
 import pandas as pd
+import re
 import requests
 import requests_cache
-
 
 """
 INFO:
@@ -136,7 +135,7 @@ class Waterinfo:
         self._request.cache.clear()
 
     def request_kiwis(self, query: dict, headers: dict = None) -> dict:
-        """ http call to waterinfo.be KIWIS API
+        """http call to waterinfo.be KIWIS API
 
         General call used to request information and data from waterinfo.be, providing
         error handling and json parsing. The service, type, format (json),
@@ -294,8 +293,7 @@ class Waterinfo:
         return period_string
 
     def _check_return_date_format(self, dateformat, request="getTimeseriesValues"):
-        """Check if the requested output date format is known to the KIWIS webservice
-        """
+        """Check if the requested output date format is known to the KIWIS webservice"""
         supported_formats = set(
             self._kiwis_info[request]["Dateformats"]["Content"].keys()
         )
@@ -348,33 +346,7 @@ class Waterinfo:
         )
 
     def _parse_period(self, start=None, end=None, period=None):
-        """Check the from/to/period arguments when requesting (valid for
-        getTimeseriesValues and getGraph)
-
-        Handle the information of provided date information on the period and provide
-        feedback to the user. Valid combinations of the arguments are:
-        from/to, from/period, to/period, period, from
-
-        - from + to: will return the requested range
-        - from + period: will return the given period starting at the from date
-        - to + period: will return the given period backdating from the to date
-        - period: will return the given period backdating from the current system time
-        - from:	will return all data starting at the given from date until
-          the current system time
-
-        Parameters
-        ----------
-        start : str
-            valid datetime string representation as defined in the KIWIS getRequestInfo
-        end : str
-            valid datetime string representation as defined in the KIWIS getRequestInfo
-        period: str
-            @param period input string according to format required by waterinfo
-
-        Returns
-        -------
-        dict with the relevant period/date information
-        """
+        """Check the from/to/period arguments when requesting"""
 
         # if none of 3 provided, error
         if (not start) and (not end) and (not period):

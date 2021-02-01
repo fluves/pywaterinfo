@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import os
-
 import pytest
 
+import os
 import pandas as pd
 from pandas.api import types
 from pandas.api.types import is_datetime64tz_dtype

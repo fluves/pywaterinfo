@@ -2,10 +2,10 @@
 
 from __future__ import absolute_import, division, print_function
 
-import os
-import datetime
-
 import pytest
+
+import datetime
+import os
 
 from pywaterinfo.waterinfo import Waterinfo
 
