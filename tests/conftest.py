@@ -3,6 +3,7 @@
 from __future__ import absolute_import, division, print_function
 
 import os
+import datetime
 
 import pytest
 
@@ -15,6 +16,12 @@ vmm_client = (
 )
 
 hic_client = os.environ.get("HIC_TOKEN")
+
+
+@pytest.fixture
+def patch_retention(monkeypatch):
+    retention = datetime.timedelta(seconds=1)
+    monkeypatch.setattr("pywaterinfo.waterinfo.CACHE_RETENTION", retention)
 
 
 @pytest.fixture(scope="module")
