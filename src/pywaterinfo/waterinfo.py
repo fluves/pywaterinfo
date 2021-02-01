@@ -73,9 +73,10 @@ class Waterinfo:
 
         # Use requests-cache session
         self._request = requests_cache.CachedSession(
-            cache_name='pywaterinfo_cache',
-            backend='sqlite',
-            expire_after=CACHE_RETENTION)
+            cache_name="pywaterinfo_cache",
+            backend="sqlite",
+            expire_after=CACHE_RETENTION,
+        )
 
         self.__default_args = {
             "service": "kisters",
@@ -123,7 +124,9 @@ class Waterinfo:
 
         # clean up cache old entries (requests-cache only removes/updates
         # entries that are reused, so this remove piling too much cache.)
-        self._request.cache.remove_old_entries(datetime.datetime.utcnow() - CACHE_RETENTION)
+        self._request.cache.remove_old_entries(
+            datetime.datetime.utcnow() - CACHE_RETENTION
+        )
 
     def __repr__(self):
         return f"<{self.__class__.__name__} object, " f"Query from {self._base_url!r}>"

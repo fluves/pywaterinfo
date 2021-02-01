@@ -32,6 +32,7 @@ def test_clear_cache(vmm_connection):
     data, res = vmm_connection.request_kiwis({"request": "getRequestInfo"})
     assert not res.from_cache
 
+
 def test_cache_retention(patch_retention):
     """Request is not from cache after expiration date.
 
