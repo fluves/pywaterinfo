@@ -346,7 +346,36 @@ class Waterinfo:
         )
 
     def _parse_period(self, start=None, end=None, period=None):
-        """Check the from/to/period arguments when requesting"""
+        """Check the from/to/period arguments when requesting
+
+        Valid for getTimeseriesValues and getGraph. Handle the information of
+        provided date information on the period and provide
+        feedback to the user. Valid combinations of the arguments are:
+        from/to, from/period, to/period, period, from:
+
+        - ``from`` and ``to``: will return the requested range
+        - ``from`` and ``period``: will return the given period starting at
+          the from date
+        - ``to`` and ``period``: will return the given period backdating
+          from the to date
+        - ``period``: will return the given period backdating from the current
+          system time
+        - ``from`` : will return all data starting at the given from date until
+          the current system time
+
+        Parameters
+        ----------
+        start : str
+            valid datetime string representation as defined in the KIWIS getRequestInfo
+        end : str
+            valid datetime string representation as defined in the KIWIS getRequestInfo
+        period: str
+            period input string according to format required by waterinfo
+
+        Returns
+        -------
+        dict with the relevant period/date information
+        """
 
         # if none of 3 provided, error
         if (not start) and (not end) and (not period):
