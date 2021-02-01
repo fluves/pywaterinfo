@@ -1,5 +1,3 @@
-import pytest
-
 import time
 
 from pywaterinfo import Waterinfo
