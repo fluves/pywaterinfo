@@ -276,7 +276,7 @@ class TestDatetimeHandling:
             end="20190501 14:10",
             timezone="UTC",
         )
-        # UTC data should be the same as CET, taken into accoutn 2h difference
+        # UTC data should be the same as CET, taken into account 2h difference
         df_cet = vmm_connection.get_timeseries_values(
             ts_id="60992042",
             start="20190501 16:05",
@@ -303,6 +303,43 @@ class TestDatetimeHandling:
         )
         assert is_datetime64tz_dtype(df["Timestamp"])
         assert df["Timestamp"].dt.tz == pytz.FixedOffset(120)
+
+    def test_start_end_timezone(self, vmm_connection):
+        """pywaterinfo can handle start/end dates already containing tz info"""
+        # string containing offset
+        df_utc_string = vmm_connection.get_timeseries_values(
+            ts_id="60992042",
+            start="20190501 14:05:00+00:00",
+            end="20190501 14:05:00+00:00",
+            timezone="UTC",
+        )
+        assert df_utc_string.loc[0, "Timestamp"] == pd.to_datetime(
+            "2019-05-01 14:05:00+00:00"
+        )
+
+        # datetime objects containing timezone info
+        df_cet_zone = vmm_connection.get_timeseries_values(
+            ts_id="60992042",
+            start=pd.to_datetime("20190501 14:05:00").tz_localize("CET"),
+            end=pd.to_datetime("20190501 14:10:00").tz_localize("CET"),
+            timezone="CET",
+        )
+        assert df_cet_zone.loc[0, "Timestamp"] == pd.to_datetime(
+            "2019-05-01 14:05:00"
+        ).tz_localize("CET")
+
+        # no assumptions are made on the tz of the input dates and the requested output,
+        # CET input dates with UTC output will work and return the corresponding UTC
+        # datetime of the input datetimes
+        df_mixed = vmm_connection.get_timeseries_values(
+            ts_id="60992042",
+            start="20190501 14:05:00+02:00",
+            end="20190501 14:10:00+02:00",
+            timezone="UTC",
+        )
+        assert df_mixed.loc[0, "Timestamp"] == pd.to_datetime(
+            "2019-05-01 12:05:00+00:00"
+        )
 
     def test_return_date_format(self, vmm_connection):
         """Input to requested return date format should be existing on KIWIS API"""
