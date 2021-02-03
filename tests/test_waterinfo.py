@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 
 import pytest
 
 import pandas as pd
+import pytz
 from pandas.api import types
 from pandas.api.types import is_datetime64tz_dtype
 
@@ -177,13 +179,16 @@ class TestPeriodDates:
             vmm_connection._parse_period(end="2013-12-01", period="P3D").keys()
         ) == set(["to", "period"])
 
-    def test_date_formats(self, vmm_connection):
+
+class TestDatetimeHandling:
+    def test_input_date_formats_utc_default(self, vmm_connection):
         """Date formats accepted as UTC, but provided to API as CET in order to get
         the time series as UTC
 
-        Input datetime of the KIWIS API is always CET (and is not tz-aware), but we
-        normalize everything to UTC. Hence, we interpret the package user input as UTC,
-        provide the input to the API as CET and request the returned output data as UTC.
+        Input datetime of the KIWIS API is always CET (and is not tz-aware), but (by
+        default) we normalize everything to UTC. Hence, we interpret the package user
+        input as UTC, provide the input to the API as CET and request the returned
+        output data as UTC.
         """
         assert vmm_connection._parse_date("2017-01-01") == "2017-01-01 01:00:00"
         assert vmm_connection._parse_date("2017-08-01") == "2017-08-01 02:00:00"
@@ -197,7 +202,7 @@ class TestPeriodDates:
         )
         assert vmm_connection._parse_date("01-01-2017") == "2017-01-01 01:00:00"
 
-    def test_utc_return(self, df_timeseries):
+    def test_utc_default_return(self, df_timeseries):
         """Check that the returned dates are UTC aware and according to the user
         input in UTC
         """
@@ -210,6 +215,94 @@ class TestPeriodDates:
         )
         assert types.is_datetime64tz_dtype(pd.to_datetime(df_timeseries["Timestamp"]))
         assert pd.to_datetime(df_timeseries.loc[0, "Timestamp"]).tz.zone == "UTC"
+
+    def test_kiwis_requires_cet(self, vmm_connection, caplog):
+        """Check on the KIWIS behavior of CET date format as request parameter
+
+        When using the KIWIS API, the input date format is always CET, whereas the
+        output data format can be requested. In pywaterinfo, we change this behavior
+        so when requesting a timezone, the input date format is assumed in this format
+        as well and the query will be adjusted as such.
+        """
+        # Requesting data at CET 14h should equal requesting data at UTC 16h (+2h)
+        with caplog.at_level(logging.INFO):
+            df_utc = vmm_connection.get_timeseries_values(
+                ts_id="60992042",
+                start="20190501 14:05:00",
+                end="20190501 14:10:00",
+                returnfields="Timestamp,Value",
+                timezone="UTC",
+            )
+            assert "timezone=UTC" in caplog.text
+            # from/to request parameter adjusted to link input date format to timezone
+            assert "from=2019-05-01+16%3A05%3A00" in caplog.text
+            assert "to=2019-05-01+16%3A10%3A00" in caplog.text
+        caplog.clear()
+
+        with caplog.at_level(logging.INFO):
+            df_cet = vmm_connection.get_timeseries_values(
+                ts_id="60992042",
+                start="20190501 16:05:00",
+                end="20190501 16:10:00",
+                returnfields="Timestamp,Value",
+                timezone="CET",
+            )
+            assert "timezone=CET" in caplog.text
+            assert "from=2019-05-01+16%3A05%3A00" in caplog.text
+            assert "to=2019-05-01+16%3A10%3A00" in caplog.text
+        caplog.clear()
+        pd.testing.assert_series_equal(
+            df_utc["Timestamp"], df_cet["Timestamp"].dt.tz_convert("UTC")
+        )
+        pd.testing.assert_series_equal(df_utc["Value"], df_cet["Value"])
+
+    def test_input_date_formats_custom_timezone(self, vmm_connection):
+        """User provides custom timezone for date inputs and returned time series
+
+        Input datetime of the KIWIS API is always CET (and is not tz-aware). When a user
+        defines a custom time zone-, input date is interpreted as the custom timezone,
+        request is sent as CET and returned data is converted to custom timezone
+        provided by the user.
+
+        Note, there is no query option to check the timezone string for the java
+        app of kisters, so we only check if string is supported by pytz.
+        """
+        df_utc_default = vmm_connection.get_timeseries_values(
+            ts_id="60992042", start="20190501 14:05", end="20190501 14:10"
+        )
+        df_utc = vmm_connection.get_timeseries_values(
+            ts_id="60992042",
+            start="20190501 14:05",
+            end="20190501 14:10",
+            timezone="UTC",
+        )
+        # UTC data should be the same as CET, taken into accoutn 2h difference
+        df_cet = vmm_connection.get_timeseries_values(
+            ts_id="60992042",
+            start="20190501 16:05",
+            end="20190501 16:10",
+            timezone="CET",
+        )
+        pd.testing.assert_series_equal(df_utc_default["Timestamp"], df_utc["Timestamp"])
+        pd.testing.assert_series_equal(
+            df_cet["Timestamp"].dt.tz_convert("UTC"), df_utc["Timestamp"]
+        )
+
+    def test_overwrite_timezone(self, vmm_connection):
+        """Check if timezone is overwritten"""
+        df = vmm_connection.get_timeseries_values(
+            ts_id="60992042", start="20190501 14:05", end="20190501 14:10"
+        )
+        assert df["Timestamp"].dt.tz == pytz.UTC
+
+        df = vmm_connection.get_timeseries_values(
+            ts_id="60992042",
+            start="20190501 14:05",
+            end="20190501 14:10",
+            timezone="CET",
+        )
+        assert is_datetime64tz_dtype(df["Timestamp"])
+        assert df["Timestamp"].dt.tz == pytz.FixedOffset(120)
 
     def test_return_date_format(self, vmm_connection):
         """Input to requested return date format should be existing on KIWIS API"""
