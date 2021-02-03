@@ -171,7 +171,13 @@ class Waterinfo:
         if "returnfields" in query.keys():
             self._check_return_fields_format(query["returnfields"], query["request"])
 
-        query.update(self.__default_args)
+        # User can overwrite the default arguments
+        defaults = {
+            key: value
+            for (key, value) in self.__default_args.items()
+            if key not in query.keys()
+        }
+        query.update(defaults)
         if not headers:
             headers = dict()
         if self._token_header:
