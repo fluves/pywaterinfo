@@ -4,6 +4,7 @@ import pkg_resources
 import re
 
 import pandas as pd
+import pytz
 import requests
 
 """
@@ -305,7 +306,7 @@ class Waterinfo:
             )
 
     @staticmethod
-    def _parse_date(input_datetime):
+    def _parse_date(input_datetime, timezone=None):
         """Evaluate date and transform to format accepted by KIWIS API
 
         Dates can be specified on a courser-than-day basis, but will always be
@@ -313,22 +314,32 @@ class Waterinfo:
         translated to '20170101 00:00'.
 
         Note, the input datetime of the KIWIS API is always CET (and is not tz-aware),
-        but we normalize everything to UTC. Hence, we interpret the user input as UTC,
-        provide the input to the API as CET and request the returned
-        output data as UTC.
+        we normalize everything to UTC by default. Hence, we interpret the user
+        input as UTC, provide the input to the API as CET and request the returned
+        output data as UTC. If the user provides a timezone, we interpret user input as
+        the given timezone, doe the request in CET and return th output data in the
+        requested timezone.
 
         Parameters
         ----------
         input_datetime : str
             datetime string
         """
+        if not timezone:
+            timezone = "UTC"
+        if timezone not in pytz.all_timezones:
+            raise pytz.exceptions.UnknownTimeZoneError(
+                f"{timezone} is not a valid timezone string."
+            )
+
         return (
-            pd.to_datetime(input_datetime, utc=True)
+            pd.to_datetime(input_datetime)
+            .tz_localize(timezone)
             .tz_convert("CET")
             .strftime("%Y-%m-%d %H:%M:%S")
         )
 
-    def _parse_period(self, start=None, end=None, period=None):
+    def _parse_period(self, start=None, end=None, period=None, timezone=None):
         """Check the from/to/period arguments when requesting (valid for
         getTimeseriesValues and getGraph)
 
@@ -349,8 +360,10 @@ class Waterinfo:
             valid datetime string representation as defined in the KIWIS getRequestInfo
         end : str
             valid datetime string representation as defined in the KIWIS getRequestInfo
-        period: str
-            @param period input string according to format required by waterinfo
+        period : str
+            period input string according to format required by waterinfo
+        timezone: str
+            User defined custom timezone to use.
 
         Returns
         -------
@@ -381,9 +394,9 @@ class Waterinfo:
         period_info = dict()
 
         if start:
-            period_info["from"] = self._parse_date(start)
+            period_info["from"] = self._parse_date(start, timezone=timezone)
         if end:
-            period_info["to"] = self._parse_date(end)
+            period_info["to"] = self._parse_date(end, timezone=timezone)
         if period:
             period_info["period"] = self._check_period_format(period)
 
@@ -475,8 +488,15 @@ class Waterinfo:
         >>> df = hic.get_timeseries_values(ts_id="44223010", period="P1D",
         ...          returnfields="Timestamp,Value,Interpolation Type,Quality Code")
         """
+        if "timezone" in kwargs.keys():
+            timezone = kwargs["timezone"]
+        else:
+            timezone = None
+
         # check the period information
-        period_info = self._parse_period(start=start, end=end, period=period)
+        period_info = self._parse_period(
+            start=start, end=end, period=period, timezone=timezone
+        )
 
         # add either ts_id or timeseriesgroup_id
         if ts_id and timeseriesgroup_id:
