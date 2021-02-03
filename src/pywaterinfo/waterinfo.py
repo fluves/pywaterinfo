@@ -418,7 +418,7 @@ class Waterinfo:
         Each identifier ts_id corresponds to a given variable-location-frequency
         combination (e.g. precipitation, Waregem, daily). When interested in daily,
         monthly, yearly aggregates look for these identifiers in order to overcome
-        too much/large requests.
+        too many/large requests.
 
         Note: The usage of 'start' and 'end' instead of the API default from/to is done
         to avoid the usage of from, which is a protected name in Python.
@@ -473,6 +473,10 @@ class Waterinfo:
         >>> # Note: UTC as time unit is used as input and asked as output by default
         >>> df = vmm.get_timeseries_values("60992042,60968042",
         ...                           start="20190502", end="20190503")
+        >>>
+        >>> # One can overwrite the timezone to request data in another time zone:
+        >>> df = vmm.get_timeseries_values("60992042,60968042",
+        ...                           start="20190502", end="20190503", timezone="CET")
         >>>
         >>> # get the data for all stations from groups 192900 (yearly rain sum)
         >>> # and 192895 (yearly discharge average) for the last 2 years
