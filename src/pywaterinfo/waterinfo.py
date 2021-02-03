@@ -332,12 +332,16 @@ class Waterinfo:
                 f"{timezone} is not a valid timezone string."
             )
 
-        return (
-            pd.to_datetime(input_datetime)
-            .tz_localize(timezone)
-            .tz_convert("CET")
-            .strftime("%Y-%m-%d %H:%M:%S")
-        )
+        input_timestamp = pd.to_datetime(input_datetime)
+
+        if input_timestamp.tz:  # timestamp already contains tz info
+            return input_timestamp.tz_convert("CET").strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            return (
+                input_timestamp.tz_localize(timezone)
+                .tz_convert("CET")
+                .strftime("%Y-%m-%d %H:%M:%S")
+            )
 
     def _parse_period(self, start=None, end=None, period=None, timezone=None):
         """Check the from/to/period arguments when requesting (valid for
