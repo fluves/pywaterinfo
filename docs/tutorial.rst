@@ -76,6 +76,10 @@ Apart from the :code:`start` and :code:`end` configuration, the usage of the :co
 way of requesting time series. See the :func:`~pywaterinfo.Waterinfo.get_timeseries_values` for
 more information and examples.
 
+.. note::
+
+    If you want 'naive' timestamps in the returned time series, use the :code:`tz_localize`
+    function of Pandas, e.g. :code:`df["Timestamp"] = df["Timestamp"].dt.tz_localize(None)`.
 
 Time series groups
 ------------------
