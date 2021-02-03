@@ -568,6 +568,10 @@ class Waterinfo:
         >>> df = vmm.get_timeseries_value_layer(timeseriesgroup_id=192928,
         ...                                     date="20190501")
         >>>
+        >>> # Limit the number of returned fields/columns in response
+        >>> df = vmm.get_timeseries_value_layer("192780",
+        ...     returnfields="timestamp,ts_value", metadata="false")
+        >>>
         >>> hic = Waterinfo("hic")
         >>>
         >>> # get the metadata and last measured value of the oxygen concentration
