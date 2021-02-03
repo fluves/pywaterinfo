@@ -58,6 +58,25 @@ In case you already know the :code:`ts_id` identifier that defines your time ser
 Mostly, you do not know these identifiers. Hence, to search for the required identifiers, different methods are
 provided to support this, as described in the following sections.
 
+The datetime inputs (:code:`start` and :code:`end`) are assumed to be 'UTC' by
+default. To request data in another (supported) time zone (e.g. :code:`CET`, :code:`GMT`,
+:code:`Etc/GMT+1`,...), add the :code:`timezone` parameter, e.g. :code:`timezone='CET'`.
+
+.. warning::
+
+    This behavior is different to the KIWIS API itself, which interprets the incoming
+    date format always as :code:`CET`. Hence, requesting data to the REST API directly
+    from '2019-05-01 14:00:00' with timezone 'UTC' will return data starting
+    from '2019-05-01 12:00:00+00' (UTC). In the pywaterinfo package, the
+    :code:`start` and :code:`end` parameters are assumed in the timezone of the request
+    parameter :code:`timezone` (unless the :code:`start` and :code:`end` already contain
+    time zone info).
+
+Apart from the :code:`start` and :code:`end` configuration, the usage of the :code:`period` is a convenient
+way of requesting time series. See the :func:`~pywaterinfo.Waterinfo.get_timeseries_values` for
+more information and examples.
+
+
 Time series groups
 ------------------
 
