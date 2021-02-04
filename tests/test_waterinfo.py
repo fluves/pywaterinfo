@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import logging
-import os
-
 import pytest
 
+import logging
+import os
 import pandas as pd
 import pytz
 from pandas.api import types
@@ -28,6 +27,7 @@ def test_valid_sources():
 
 def test_default_api_arguments(vmm_connection):
     """Check if default arguments end up in query"""
+    vmm_connection.clear_cache()
     _, res = vmm_connection.request_kiwis({"request": "getRequestInfo"})
     default_arg = {
         "service": "kisters",
@@ -49,6 +49,7 @@ def test_token_vmm():
     """Check if submitting of a token is tackled properly"""
     # no token, no token header, no authentication in request header
     vmm = Waterinfo("vmm")
+    vmm.clear_cache()
     assert vmm._token_header is None
     _, res = vmm.request_kiwis({"request": "getRequestInfo"})
     assert "Authorization" not in res.request.headers.keys()
@@ -60,6 +61,7 @@ def test_token_vmm():
         "4NzFhLTk1MjgtNGI0ZC1iZmQ1LWI1NzBjZThmNGQyZA=="
     )
     vmm = Waterinfo("vmm", token=client)
+    vmm.clear_cache()
     assert vmm._token_header is not None
     _, res = vmm.request_kiwis({"request": "getRequestInfo"})
     assert "Authorization" in res.request.headers.keys()
@@ -75,6 +77,7 @@ def test_token_hic():
     """Check if submitting of a token is tackled properly"""
     # no token, no token header, no authentication in request header
     hic = Waterinfo("hic")
+    hic.clear_cache()
     assert hic._token_header is None
     _, res = hic.request_kiwis({"request": "getRequestInfo"})
     assert "Authorization" not in res.request.headers.keys()
@@ -83,6 +86,7 @@ def test_token_hic():
     # this client code is received by VMM for unit testing purposes only
     client = os.environ.get("HIC_TOKEN")
     hic = Waterinfo("hic", token=client)
+    hic.clear_cache()
     assert hic._token_header is not None
     _, res = hic.request_kiwis({"request": "getRequestInfo"})
     assert "Authorization" in res.request.headers.keys()
@@ -355,6 +359,7 @@ class TestDatetimeHandling:
 class TestTimeseriesValues:
     def test_one_of_two_ids(self, vmm_connection):
         """either ts_id or timeseriesgroup_id should be used"""
+        vmm_connection.clear_cache()
         with pytest.raises(Exception):
             vmm_connection.get_timeseries_values(
                 ts_id="78124042", timeseriesgroup_id="192900", period="P1D"
@@ -364,6 +369,7 @@ class TestTimeseriesValues:
 
     def test_multiple_ids(self, vmm_connection):
         """Call worksxpected for multiple identifiers combined in single dataframe"""
+        vmm_connection.clear_cache()
         df = vmm_connection.get_timeseries_values(
             ts_id="60992042,60968042", start="20190501 14:05", end="20190501 14:10"
         )
@@ -371,10 +377,13 @@ class TestTimeseriesValues:
 
     def test_no_data(self, vmm_connection):
         """return empty dataframe when no data"""
+        vmm_connection.clear_cache()
         df = vmm_connection.get_timeseries_values(
             ts_id="60992042", start="21500501 14:05", end="21500501 14:10"
         )
         assert len(df) == 0
+
+        vmm_connection.clear_cache()
         df = vmm_connection.get_timeseries_values(
             ts_id="60992042,60968042", start="21500501 14:05", end="21500501 14:10"
         )

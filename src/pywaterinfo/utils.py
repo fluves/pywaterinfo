@@ -1,6 +1,5 @@
-import logging
-
 import certifi
+import logging
 
 """
 INFO: Additional utilities for waterinfo
