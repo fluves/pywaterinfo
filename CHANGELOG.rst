@@ -2,6 +2,16 @@
 Changelog
 =========
 
+Version 0.3.0
+=============
+
+- Add local caching of API requests using the `requests-cache` package.
+- Adjust root URL for HIC based API calls according to online documentation https://hicws.vlaanderen.be/.
+- User can use custom time zone instead of UTC as default.
+- Extend examples/documentation for specific:
+    - Limit the returned fields of `get_timeseries_value_layer` with `metadata=False`.
+    - Add example on how to request tide numbers for high/low tide data.
+
 Version 0.2.2
 =============
 
