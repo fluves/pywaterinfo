@@ -20,7 +20,7 @@ other KIWIS-python clients:
 
 VMM_BASE = "https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS"
 VMM_AUTH = "http://download.waterinfo.be/kiwis-auth/token"
-HIC_BASE = "https://www.waterinfo.be/tsmhic/KiWIS/KiWIS"
+HIC_BASE = "https://hicws.vlaanderen.be/KiWIS/KiWIS"
 HIC_AUTH = "https://hicwsauth.vlaanderen.be/auth"
 DATA_PATH = pkg_resources.resource_filename(__name__, "/data")
 
