@@ -306,7 +306,7 @@ class Waterinfo:
             )
 
     @staticmethod
-    def _parse_date(input_datetime, timezone=None):
+    def _parse_date(input_datetime, timezone="UTC"):
         """Evaluate date and transform to format accepted by KIWIS API
 
         Dates can be specified on a courser-than-day basis, but will always be
@@ -324,9 +324,9 @@ class Waterinfo:
         ----------
         input_datetime : str
             datetime string
+        timezone : str, default 'UTC'
+            user defined timezone to use
         """
-        if not timezone:
-            timezone = "UTC"
         if timezone not in pytz.all_timezones:
             raise pytz.exceptions.UnknownTimeZoneError(
                 f"{timezone} is not a valid timezone string."
@@ -343,7 +343,7 @@ class Waterinfo:
                 .strftime("%Y-%m-%d %H:%M:%S")
             )
 
-    def _parse_period(self, start=None, end=None, period=None, timezone=None):
+    def _parse_period(self, start=None, end=None, period=None, timezone="UTC"):
         """Check the from/to/period arguments when requesting (valid for
         getTimeseriesValues and getGraph)
 
@@ -366,8 +366,8 @@ class Waterinfo:
             valid datetime string representation as defined in the KIWIS getRequestInfo
         period : str
             period input string according to format required by waterinfo
-        timezone: str
-            User defined custom timezone to use.
+        timezone: str, default 'UTC'
+            User defined timezone to use.
 
         Returns
         -------
@@ -499,7 +499,7 @@ class Waterinfo:
         if "timezone" in kwargs.keys():
             timezone = kwargs["timezone"]
         else:
-            timezone = None
+            timezone = "UTC"
 
         # check the period information
         period_info = self._parse_period(
