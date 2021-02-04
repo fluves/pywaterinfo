@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pywaterinfo package &mdash; pywaterinfo 0.2.2 documentation</title>
+  <title>pywaterinfo package &mdash; pywaterinfo 0.3.0 documentation</title>
   
 
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -51,7 +53,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pywaterinfo
+            <a href="../index.html" class="icon icon-home"> pywaterinfo
           
 
           
@@ -61,7 +63,7 @@
             
             
               <div class="version">
-                0.2.2
+                0.3.0
               </div>
             
           
@@ -148,6 +150,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -159,7 +163,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/api/reference.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -181,8 +185,14 @@
 class for waterinfo.be data query interactions.</p>
 <dl class="py class">
 <dt id="pywaterinfo.Waterinfo">
-<em class="property">class </em><code class="sig-prename descclassname">pywaterinfo.</code><code class="sig-name descname">Waterinfo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">provider</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)">str</a></span> <span class="o">=</span> <span class="default_value">'vmm'</span></em>, <em class="sig-param"><span class="n">token</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)">str</a></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pywaterinfo.</code><code class="sig-name descname">Waterinfo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">provider</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)">str</a></span> <span class="o">=</span> <span class="default_value">'vmm'</span></em>, <em class="sig-param"><span class="n">token</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt id="pywaterinfo.Waterinfo.clear_cache">
+<code class="sig-name descname">clear_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.clear_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.clear_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up the cache.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="pywaterinfo.Waterinfo.get_group_list">
 <code class="sig-name descname">get_group_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">group_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.get_group_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.get_group_list" title="Permalink to this definition">¶</a></dt>
@@ -338,6 +348,10 @@ measurement and metadata</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_value_layer</span><span class="p">(</span><span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="mi">192928</span><span class="p">,</span>
 <span class="gp">... </span>                                    <span class="n">date</span><span class="o">=</span><span class="s2">&quot;20190501&quot;</span><span class="p">)</span>
 <span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Limit the number of returned fields/columns in response</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_value_layer</span><span class="p">(</span><span class="s2">&quot;192780&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">returnfields</span><span class="o">=</span><span class="s2">&quot;timestamp,ts_value&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="s2">&quot;false&quot;</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get the metadata and last measured value of the oxygen concentration</span>
@@ -356,7 +370,7 @@ period, download the corresponding time series from the waterinfo.be website.
 Each identifier ts_id corresponds to a given variable-location-frequency
 combination (e.g. precipitation, Waregem, daily). When interested in daily,
 monthly, yearly aggregates look for these identifiers in order to overcome
-too much/large requests.</p>
+too many/large requests.</p>
 <p>Note: The usage of ‘start’ and ‘end’ instead of the API default from/to is done
 to avoid the usage of from, which is a protected name in Python.</p>
 <dl class="field-list simple">
@@ -406,6 +420,10 @@ see <a class="reference external" href="https://download.waterinfo.be/tsmdownloa
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="s2">&quot;60992042,60968042&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">start</span><span class="o">=</span><span class="s2">&quot;20190502&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;20190503&quot;</span><span class="p">)</span>
 <span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># One can overwrite the timezone to request data in another time zone:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="s2">&quot;60992042,60968042&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                          <span class="n">start</span><span class="o">=</span><span class="s2">&quot;20190502&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;20190503&quot;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;CET&quot;</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get the data for all stations from groups 192900 (yearly rain sum)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># and 192895 (yearly discharge average) for the last 2 years</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="s2">&quot;192900,192895&quot;</span><span class="p">,</span>
@@ -419,13 +437,19 @@ see <a class="reference external" href="https://download.waterinfo.be/tsmdownloa
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get last day data of time series with ID 44223010 with subset of columns</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">hic</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="n">ts_id</span><span class="o">=</span><span class="s2">&quot;44223010&quot;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s2">&quot;P1D&quot;</span><span class="p">,</span>
 <span class="gp">... </span>         <span class="n">returnfields</span><span class="o">=</span><span class="s2">&quot;Timestamp,Value,Interpolation Type,Quality Code&quot;</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># get last 10 hours data from Antwerpen tij/Zeeschelde (ts_id 53995010)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># containing &#39;Tide Number&#39; info. Tide number is useful when requesting</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># tidal extremes (high water/low water, &#39;ts_name&#39;=Pv.HWLW)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">hic</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="n">ts_id</span><span class="o">=</span><span class="s2">&quot;53995010&quot;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s2">&quot;PT10H&quot;</span><span class="p">,</span>
+<span class="gp">... </span>         <span class="n">returnfields</span><span class="o">=</span><span class="s2">&quot;Timestamp,Value,Tide Number&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pywaterinfo.Waterinfo.request_kiwis">
-<code class="sig-name descname">request_kiwis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></span></em>, <em class="sig-param"><span class="n">headers</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.request_kiwis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.request_kiwis" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">request_kiwis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></span></em>, <em class="sig-param"><span class="n">headers</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.request_kiwis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.request_kiwis" title="Permalink to this definition">¶</a></dt>
 <dd><p>http call to waterinfo.be KIWIS API</p>
 <p>General call used to request information and data from waterinfo.be, providing
 error handling and json parsing. The service, type, format (json),
@@ -515,37 +539,29 @@ network adminstrator.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../contributing.html" class="btn btn-neutral float-right" title="Contributing to pywaterinfo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../timeseriesgroupids.html" class="btn btn-neutral float-left" title="Timeseriesgroup_ids" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="../contributing.html" class="btn btn-neutral float-right" title="Contributing to pywaterinfo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../timeseriesgroupids.html" class="btn btn-neutral float-left" title="Timeseriesgroup_ids" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Stijn Van Hoey
+        &#169; Copyright 2020, Stijn Van Hoey.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

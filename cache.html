@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Code of Conduct &mdash; pywaterinfo 0.3.0 documentation</title>
+  <title>Caching &mdash; pywaterinfo 0.3.0 documentation</title>
   
 
   
@@ -37,9 +37,7 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="License" href="license.html" />
-    <link rel="prev" title="Contributors" href="authors.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,12 +97,12 @@
 <li class="toctree-l1"><a class="reference internal" href="api/reference.html">Module Reference</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Developer guide</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Code of conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conduct.html">Code of conduct</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
 
@@ -154,13 +152,13 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Code of Conduct</li>
+      <li>Caching</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/conduct.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/cache.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -173,26 +171,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="code-of-conduct">
-<span id="code-conduct"></span><h1>Code of Conduct<a class="headerlink" href="#code-of-conduct" title="Permalink to this headline">¶</a></h1>
-<p>As contributors and maintainers of this project, we pledge to respect all people who
-contribute through reporting issues, posting feature requests, updating documentation,
-submitting pull requests or patches, and other activities.</p>
-<p>We are committed to making participation in this project a harassment-free experience for
-everyone, regardless of level of experience, gender, gender identity and expression,
-sexual orientation, disability, personal appearance, body size, race, ethnicity, age, or religion.</p>
-<p>Examples of unacceptable behavior by participants include the use of sexual language or
-imagery, derogatory comments or personal attacks, trolling, public or private harassment,
-insults, or other unprofessional conduct.</p>
-<p>Project maintainers have the right and responsibility to remove, edit, or reject comments,
-commits, code, wiki edits, issues, and other contributions that are not aligned to this
-Code of Conduct. Project maintainers who do not follow the Code of Conduct may be removed
-from the project team.</p>
-<p>Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by
-opening an issue or contacting one or more of the project maintainers.</p>
-<p>This Code of Conduct is adapted from the Contributor Covenant
-(<a class="reference external" href="http:contributor-covenant.org">http:contributor-covenant.org</a>), version 1.0.0, available at
-<a class="reference external" href="http://contributor-covenant.org/version/1/0/0/">http://contributor-covenant.org/version/1/0/0/</a></p>
+  <div class="section" id="caching">
+<h1>Caching<a class="headerlink" href="#caching" title="Permalink to this headline">¶</a></h1>
+<p>To overcome redundant requests of the same data to the waterinfo endpoints, the package relies on the <a class="reference external" href="https://pypi.org/project/requests-cache/">requests-cache</a> package to cache the <code class="code docutils literal notranslate"><span class="pre">GET</span></code> requests.</p>
+<p>The cache is stored in a sqlite database called <code class="code docutils literal notranslate"><span class="pre">pywaterinfo_cache.sqlite</span></code> and the default retention time of the cache is 7 days.
+When you want to make sure to not use a cached requests, make sure to empty the cache first using the <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.clear_cache" title="pywaterinfo.Waterinfo.clear_cache"><code class="xref py py-func docutils literal notranslate"><span class="pre">clear_cache()</span></code></a> method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
+<span class="n">vmm</span><span class="o">.</span><span class="n">clear_cache</span><span class="p">()</span>
+<span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">station_no</span><span class="o">=</span><span class="s2">&quot;ME09_012&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To see if the response is retrieved from cache or not, activate the loggin, see <a class="reference external" href="logging">page on logging</a>.</p>
 </div>
 
 
@@ -200,10 +190,6 @@ opening an issue or contacting one or more of the project maintainers.</p>
            
           </div>
           <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="authors.html" class="btn btn-neutral float-left" title="Contributors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
 
   <hr/>
 

@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pywaterinfo.waterinfo &mdash; pywaterinfo 0.2.2 documentation</title>
+  <title>pywaterinfo.waterinfo &mdash; pywaterinfo 0.3.0 documentation</title>
   
 
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -49,7 +51,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> pywaterinfo
+            <a href="../../index.html" class="icon icon-home"> pywaterinfo
           
 
           
@@ -59,7 +61,7 @@
             
             
               <div class="version">
-                0.2.2
+                0.3.0
               </div>
             
           
@@ -142,6 +144,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -166,13 +170,15 @@
            <div itemprop="articleBody">
             
   <h1>Source code for pywaterinfo.waterinfo</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">pkg_resources</span>
-<span class="kn">import</span> <span class="nn">re</span>
+<span></span><span class="kn">import</span> <span class="nn">pkg_resources</span>
 
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pytz</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">requests_cache</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">INFO:</span>
@@ -187,12 +193,15 @@
 
 <span class="n">VMM_BASE</span> <span class="o">=</span> <span class="s2">&quot;https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS&quot;</span>
 <span class="n">VMM_AUTH</span> <span class="o">=</span> <span class="s2">&quot;http://download.waterinfo.be/kiwis-auth/token&quot;</span>
-<span class="n">HIC_BASE</span> <span class="o">=</span> <span class="s2">&quot;https://www.waterinfo.be/tsmhic/KiWIS/KiWIS&quot;</span>
+<span class="n">HIC_BASE</span> <span class="o">=</span> <span class="s2">&quot;https://hicws.vlaanderen.be/KiWIS/KiWIS&quot;</span>
 <span class="n">HIC_AUTH</span> <span class="o">=</span> <span class="s2">&quot;https://hicwsauth.vlaanderen.be/auth&quot;</span>
 <span class="n">DATA_PATH</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;/data&quot;</span><span class="p">)</span>
 
 <span class="c1"># Custom hard-coded fix for the decoding issue #1 of given returnfields</span>
 <span class="n">DECODE_ERRORS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AV Quality Code Color&quot;</span><span class="p">,</span> <span class="s2">&quot;RV Quality Code Color&quot;</span><span class="p">]</span>
+
+<span class="c1"># Default cache configuration</span>
+<span class="n">CACHE_RETENTION</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -234,7 +243,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WaterinfoException</span><span class="p">(</span><span class="s2">&quot;Provider is either &#39;vmm&#39; or &#39;hic&#39;.&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+        <span class="c1"># Use requests-cache session</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="n">requests_cache</span><span class="o">.</span><span class="n">CachedSession</span><span class="p">(</span>
+            <span class="n">cache_name</span><span class="o">=</span><span class="s2">&quot;pywaterinfo_cache&quot;</span><span class="p">,</span>
+            <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;sqlite&quot;</span><span class="p">,</span>
+            <span class="n">expire_after</span><span class="o">=</span><span class="n">CACHE_RETENTION</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__default_args</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;service&quot;</span><span class="p">:</span> <span class="s2">&quot;kisters&quot;</span><span class="p">,</span>
@@ -246,6 +260,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_token_header</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">token</span><span class="p">:</span>
+            <span class="c1"># Token request outside cached session</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_auth_url</span><span class="p">,</span>
                 <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
@@ -279,11 +294,21 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_params</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="s2">&quot;returnfields&quot;</span><span class="p">,</span> <span class="s2">&quot;request&quot;</span><span class="p">]</span>
 
+        <span class="c1"># clean up cache old entries (requests-cache only removes/updates</span>
+        <span class="c1"># entries that are reused, so this remove piling too much cache.)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">remove_old_entries</span><span class="p">(</span>
+            <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">-</span> <span class="n">CACHE_RETENTION</span>
+        <span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> object, &quot;</span> <span class="sa">f</span><span class="s2">&quot;Query from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="si">!r}</span><span class="s2">&gt;&quot;</span>
 
+<div class="viewcode-block" id="Waterinfo.clear_cache"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.clear_cache">[docs]</a>    <span class="k">def</span> <span class="nf">clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clean up the cache.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
 <div class="viewcode-block" id="Waterinfo.request_kiwis"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.request_kiwis">[docs]</a>    <span class="k">def</span> <span class="nf">request_kiwis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot; http call to waterinfo.be KIWIS API</span>
+        <span class="sd">&quot;&quot;&quot;http call to waterinfo.be KIWIS API</span>
 
 <span class="sd">        General call used to request information and data from waterinfo.be, providing</span>
 <span class="sd">        error handling and json parsing. The service, type, format (json),</span>
@@ -339,7 +364,13 @@
         <span class="k">if</span> <span class="s2">&quot;returnfields&quot;</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_check_return_fields_format</span><span class="p">(</span><span class="n">query</span><span class="p">[</span><span class="s2">&quot;returnfields&quot;</span><span class="p">],</span> <span class="n">query</span><span class="p">[</span><span class="s2">&quot;request&quot;</span><span class="p">])</span>
 
-        <span class="n">query</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__default_args</span><span class="p">)</span>
+        <span class="c1"># User can overwrite the default arguments</span>
+        <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="n">value</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__default_args</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="n">query</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">defaults</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">headers</span><span class="p">:</span>
             <span class="n">headers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token_header</span><span class="p">:</span>
@@ -351,7 +382,11 @@
                 <span class="sa">f</span><span class="s2">&quot;Waterinfo call returned </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> error&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;with the message </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successful waterinfo API request with call </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">from_cache</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> reused from cache.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successful waterinfo API request with call </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">parsed</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="k">if</span> <span class="p">(</span>
@@ -437,8 +472,7 @@
         <span class="k">return</span> <span class="n">period_string</span>
 
     <span class="k">def</span> <span class="nf">_check_return_date_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dateformat</span><span class="p">,</span> <span class="n">request</span><span class="o">=</span><span class="s2">&quot;getTimeseriesValues&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check if the requested output date format is known to the KIWIS webservice</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Check if the requested output date format is known to the KIWIS webservice&quot;&quot;&quot;</span>
         <span class="n">supported_formats</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_kiwis_info</span><span class="p">[</span><span class="n">request</span><span class="p">][</span><span class="s2">&quot;Dateformats&quot;</span><span class="p">][</span><span class="s2">&quot;Content&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="p">)</span>
@@ -467,7 +501,7 @@
             <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_parse_date</span><span class="p">(</span><span class="n">input_datetime</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_parse_date</span><span class="p">(</span><span class="n">input_datetime</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;UTC&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Evaluate date and transform to format accepted by KIWIS API</span>
 
 <span class="sd">        Dates can be specified on a courser-than-day basis, but will always be</span>
@@ -475,34 +509,51 @@
 <span class="sd">        translated to &#39;20170101 00:00&#39;.</span>
 
 <span class="sd">        Note, the input datetime of the KIWIS API is always CET (and is not tz-aware),</span>
-<span class="sd">        but we normalize everything to UTC. Hence, we interpret the user input as UTC,</span>
-<span class="sd">        provide the input to the API as CET and request the returned</span>
-<span class="sd">        output data as UTC.</span>
+<span class="sd">        we normalize everything to UTC by default. Hence, we interpret the user</span>
+<span class="sd">        input as UTC, provide the input to the API as CET and request the returned</span>
+<span class="sd">        output data as UTC. If the user provides a timezone, we interpret user input as</span>
+<span class="sd">        the given timezone, doe the request in CET and return th output data in the</span>
+<span class="sd">        requested timezone.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        input_datetime : str</span>
 <span class="sd">            datetime string</span>
+<span class="sd">        timezone : str, default &#39;UTC&#39;</span>
+<span class="sd">            user defined timezone to use</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">input_datetime</span><span class="p">,</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="s2">&quot;CET&quot;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">timezone</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pytz</span><span class="o">.</span><span class="n">all_timezones</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">pytz</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">UnknownTimeZoneError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">timezone</span><span class="si">}</span><span class="s2"> is not a valid timezone string.&quot;</span>
+            <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_parse_period</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check the from/to/period arguments when requesting (valid for</span>
-<span class="sd">        getTimeseriesValues and getGraph)</span>
+        <span class="n">input_timestamp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">input_datetime</span><span class="p">)</span>
 
-<span class="sd">        Handle the information of provided date information on the period and provide</span>
+        <span class="k">if</span> <span class="n">input_timestamp</span><span class="o">.</span><span class="n">tz</span><span class="p">:</span>  <span class="c1"># timestamp already contains tz info</span>
+            <span class="k">return</span> <span class="n">input_timestamp</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="s2">&quot;CET&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">input_timestamp</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="n">timezone</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="s2">&quot;CET&quot;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_parse_period</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;UTC&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check the from/to/period arguments when requesting</span>
+
+<span class="sd">        Valid for getTimeseriesValues and getGraph. Handle the information of</span>
+<span class="sd">        provided date information on the period and provide</span>
 <span class="sd">        feedback to the user. Valid combinations of the arguments are:</span>
-<span class="sd">        from/to, from/period, to/period, period, from</span>
+<span class="sd">        from/to, from/period, to/period, period, from:</span>
 
-<span class="sd">        - from + to: will return the requested range</span>
-<span class="sd">        - from + period: will return the given period starting at the from date</span>
-<span class="sd">        - to + period: will return the given period backdating from the to date</span>
-<span class="sd">        - period: will return the given period backdating from the current system time</span>
-<span class="sd">        - from:	will return all data starting at the given from date until</span>
+<span class="sd">        - ``from`` and ``to``: will return the requested range</span>
+<span class="sd">        - ``from`` and ``period``: will return the given period starting at</span>
+<span class="sd">          the from date</span>
+<span class="sd">        - ``to`` and ``period``: will return the given period backdating</span>
+<span class="sd">          from the to date</span>
+<span class="sd">        - ``period``: will return the given period backdating from the current</span>
+<span class="sd">          system time</span>
+<span class="sd">        - ``from`` : will return all data starting at the given from date until</span>
 <span class="sd">          the current system time</span>
 
 <span class="sd">        Parameters</span>
@@ -511,8 +562,10 @@
 <span class="sd">            valid datetime string representation as defined in the KIWIS getRequestInfo</span>
 <span class="sd">        end : str</span>
 <span class="sd">            valid datetime string representation as defined in the KIWIS getRequestInfo</span>
-<span class="sd">        period: str</span>
-<span class="sd">            @param period input string according to format required by waterinfo</span>
+<span class="sd">        period : str</span>
+<span class="sd">            period input string according to format required by waterinfo</span>
+<span class="sd">        timezone: str, default &#39;UTC&#39;</span>
+<span class="sd">            User defined timezone to use.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -543,9 +596,9 @@
         <span class="n">period_info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">start</span><span class="p">:</span>
-            <span class="n">period_info</span><span class="p">[</span><span class="s2">&quot;from&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_date</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+            <span class="n">period_info</span><span class="p">[</span><span class="s2">&quot;from&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_date</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="n">timezone</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">end</span><span class="p">:</span>
-            <span class="n">period_info</span><span class="p">[</span><span class="s2">&quot;to&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_date</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+            <span class="n">period_info</span><span class="p">[</span><span class="s2">&quot;to&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_date</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="n">timezone</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">period</span><span class="p">:</span>
             <span class="n">period_info</span><span class="p">[</span><span class="s2">&quot;period&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_period_format</span><span class="p">(</span><span class="n">period</span><span class="p">)</span>
 
@@ -567,7 +620,7 @@
 <span class="sd">        Each identifier ts_id corresponds to a given variable-location-frequency</span>
 <span class="sd">        combination (e.g. precipitation, Waregem, daily). When interested in daily,</span>
 <span class="sd">        monthly, yearly aggregates look for these identifiers in order to overcome</span>
-<span class="sd">        too much/large requests.</span>
+<span class="sd">        too many/large requests.</span>
 
 <span class="sd">        Note: The usage of &#39;start&#39; and &#39;end&#39; instead of the API default from/to is done</span>
 <span class="sd">        to avoid the usage of from, which is a protected name in Python.</span>
@@ -623,6 +676,10 @@
 <span class="sd">        &gt;&gt;&gt; df = vmm.get_timeseries_values(&quot;60992042,60968042&quot;,</span>
 <span class="sd">        ...                           start=&quot;20190502&quot;, end=&quot;20190503&quot;)</span>
 <span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # One can overwrite the timezone to request data in another time zone:</span>
+<span class="sd">        &gt;&gt;&gt; df = vmm.get_timeseries_values(&quot;60992042,60968042&quot;,</span>
+<span class="sd">        ...                           start=&quot;20190502&quot;, end=&quot;20190503&quot;, timezone=&quot;CET&quot;)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; # get the data for all stations from groups 192900 (yearly rain sum)</span>
 <span class="sd">        &gt;&gt;&gt; # and 192895 (yearly discharge average) for the last 2 years</span>
 <span class="sd">        &gt;&gt;&gt; df = vmm.get_timeseries_values(timeseriesgroup_id=&quot;192900,192895&quot;,</span>
@@ -636,9 +693,22 @@
 <span class="sd">        &gt;&gt;&gt; # get last day data of time series with ID 44223010 with subset of columns</span>
 <span class="sd">        &gt;&gt;&gt; df = hic.get_timeseries_values(ts_id=&quot;44223010&quot;, period=&quot;P1D&quot;,</span>
 <span class="sd">        ...          returnfields=&quot;Timestamp,Value,Interpolation Type,Quality Code&quot;)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # get last 10 hours data from Antwerpen tij/Zeeschelde (ts_id 53995010)</span>
+<span class="sd">        &gt;&gt;&gt; # containing &#39;Tide Number&#39; info. Tide number is useful when requesting</span>
+<span class="sd">        &gt;&gt;&gt; # tidal extremes (high water/low water, &#39;ts_name&#39;=Pv.HWLW)</span>
+<span class="sd">        &gt;&gt;&gt; df = hic.get_timeseries_values(ts_id=&quot;53995010&quot;, period=&quot;PT10H&quot;,</span>
+<span class="sd">        ...          returnfields=&quot;Timestamp,Value,Tide Number&quot;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;timezone&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">timezone</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;timezone&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">timezone</span> <span class="o">=</span> <span class="s2">&quot;UTC&quot;</span>
+
         <span class="c1"># check the period information</span>
-        <span class="n">period_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_period</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="n">period</span><span class="p">)</span>
+        <span class="n">period_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_period</span><span class="p">(</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="n">period</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="n">timezone</span>
+        <span class="p">)</span>
 
         <span class="c1"># add either ts_id or timeseriesgroup_id</span>
         <span class="k">if</span> <span class="n">ts_id</span> <span class="ow">and</span> <span class="n">timeseriesgroup_id</span><span class="p">:</span>
@@ -735,6 +805,10 @@
 <span class="sd">        &gt;&gt;&gt; # a given time stamp</span>
 <span class="sd">        &gt;&gt;&gt; df = vmm.get_timeseries_value_layer(timeseriesgroup_id=192928,</span>
 <span class="sd">        ...                                     date=&quot;20190501&quot;)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Limit the number of returned fields/columns in response</span>
+<span class="sd">        &gt;&gt;&gt; df = vmm.get_timeseries_value_layer(&quot;192780&quot;,</span>
+<span class="sd">        ...     returnfields=&quot;timestamp,ts_value&quot;, metadata=&quot;false&quot;)</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; hic = Waterinfo(&quot;hic&quot;)</span>
 <span class="sd">        &gt;&gt;&gt;</span>
@@ -930,28 +1004,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Stijn Van Hoey
+        &#169; Copyright 2020, Stijn Van Hoey.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
