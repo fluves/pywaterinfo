@@ -3,6 +3,7 @@ import pkg_resources
 import datetime
 import logging
 import pandas as pd
+import pytz
 import re
 import requests
 import requests_cache
@@ -191,7 +192,13 @@ class Waterinfo:
         if "returnfields" in query.keys():
             self._check_return_fields_format(query["returnfields"], query["request"])
 
-        query.update(self.__default_args)
+        # User can overwrite the default arguments
+        defaults = {
+            key: value
+            for (key, value) in self.__default_args.items()
+            if key not in query.keys()
+        }
+        query.update(defaults)
         if not headers:
             headers = dict()
         if self._token_header:
@@ -322,7 +329,7 @@ class Waterinfo:
             )
 
     @staticmethod
-    def _parse_date(input_datetime):
+    def _parse_date(input_datetime, timezone="UTC"):
         """Evaluate date and transform to format accepted by KIWIS API
 
         Dates can be specified on a courser-than-day basis, but will always be
@@ -330,22 +337,36 @@ class Waterinfo:
         translated to '20170101 00:00'.
 
         Note, the input datetime of the KIWIS API is always CET (and is not tz-aware),
-        but we normalize everything to UTC. Hence, we interpret the user input as UTC,
-        provide the input to the API as CET and request the returned
-        output data as UTC.
+        we normalize everything to UTC by default. Hence, we interpret the user
+        input as UTC, provide the input to the API as CET and request the returned
+        output data as UTC. If the user provides a timezone, we interpret user input as
+        the given timezone, doe the request in CET and return th output data in the
+        requested timezone.
 
         Parameters
         ----------
         input_datetime : str
             datetime string
+        timezone : str, default 'UTC'
+            user defined timezone to use
         """
-        return (
-            pd.to_datetime(input_datetime, utc=True)
-            .tz_convert("CET")
-            .strftime("%Y-%m-%d %H:%M:%S")
-        )
+        if timezone not in pytz.all_timezones:
+            raise pytz.exceptions.UnknownTimeZoneError(
+                f"{timezone} is not a valid timezone string."
+            )
 
-    def _parse_period(self, start=None, end=None, period=None):
+        input_timestamp = pd.to_datetime(input_datetime)
+
+        if input_timestamp.tz:  # timestamp already contains tz info
+            return input_timestamp.tz_convert("CET").strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            return (
+                input_timestamp.tz_localize(timezone)
+                .tz_convert("CET")
+                .strftime("%Y-%m-%d %H:%M:%S")
+            )
+
+    def _parse_period(self, start=None, end=None, period=None, timezone="UTC"):
         """Check the from/to/period arguments when requesting
 
         Valid for getTimeseriesValues and getGraph. Handle the information of
@@ -369,8 +390,10 @@ class Waterinfo:
             valid datetime string representation as defined in the KIWIS getRequestInfo
         end : str
             valid datetime string representation as defined in the KIWIS getRequestInfo
-        period: str
+        period : str
             period input string according to format required by waterinfo
+        timezone: str, default 'UTC'
+            User defined timezone to use.
 
         Returns
         -------
@@ -401,9 +424,9 @@ class Waterinfo:
         period_info = dict()
 
         if start:
-            period_info["from"] = self._parse_date(start)
+            period_info["from"] = self._parse_date(start, timezone=timezone)
         if end:
-            period_info["to"] = self._parse_date(end)
+            period_info["to"] = self._parse_date(end, timezone=timezone)
         if period:
             period_info["period"] = self._check_period_format(period)
 
@@ -425,7 +448,7 @@ class Waterinfo:
         Each identifier ts_id corresponds to a given variable-location-frequency
         combination (e.g. precipitation, Waregem, daily). When interested in daily,
         monthly, yearly aggregates look for these identifiers in order to overcome
-        too much/large requests.
+        too many/large requests.
 
         Note: The usage of 'start' and 'end' instead of the API default from/to is done
         to avoid the usage of from, which is a protected name in Python.
@@ -481,6 +504,10 @@ class Waterinfo:
         >>> df = vmm.get_timeseries_values("60992042,60968042",
         ...                           start="20190502", end="20190503")
         >>>
+        >>> # One can overwrite the timezone to request data in another time zone:
+        >>> df = vmm.get_timeseries_values("60992042,60968042",
+        ...                           start="20190502", end="20190503", timezone="CET")
+        >>>
         >>> # get the data for all stations from groups 192900 (yearly rain sum)
         >>> # and 192895 (yearly discharge average) for the last 2 years
         >>> df = vmm.get_timeseries_values(timeseriesgroup_id="192900,192895",
@@ -501,8 +528,15 @@ class Waterinfo:
         >>> df = hic.get_timeseries_values(ts_id="53995010", period="PT10H",
         ...          returnfields="Timestamp,Value,Tide Number")
         """
+        if "timezone" in kwargs.keys():
+            timezone = kwargs["timezone"]
+        else:
+            timezone = "UTC"
+
         # check the period information
-        period_info = self._parse_period(start=start, end=end, period=period)
+        period_info = self._parse_period(
+            start=start, end=end, period=period, timezone=timezone
+        )
 
         # add either ts_id or timeseriesgroup_id
         if ts_id and timeseriesgroup_id:
