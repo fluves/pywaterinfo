@@ -4,71 +4,71 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>pywaterinfo package &mdash; pywaterinfo 0.3.1.post0.dev1+g7cd7601 documentation</title>
-  
 
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>pywaterinfo package &mdash; pywaterinfo 0.3.1 documentation</title>
+
+
+
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
 
-  
-  
 
-  
-  
 
-  
 
-  
+
+
+
+
+
+
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-    
+
+
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
+
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-    
+
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Contributing to pywaterinfo" href="../contributing.html" />
-    <link rel="prev" title="Timeseriesgroup_ids" href="../timeseriesgroupids.html" /> 
+    <link rel="prev" title="Timeseriesgroup_ids" href="../timeseriesgroupids.html" />
 </head>
 
 <body class="wy-body-for-nav">
 
-   
+
   <div class="wy-grid-for-nav">
-    
+
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
-          
+
+
             <a href="../index.html" class="icon icon-home"> pywaterinfo
-          
 
-          
+
+
           </a>
 
-          
-            
-            
-              <div class="version">
-                0.3.1.post0.dev1+g7cd7601
-              </div>
-            
-          
 
-          
+
+
+              <div class="version">
+                0.3.1
+              </div>
+
+
+
+
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -77,17 +77,17 @@
   </form>
 </div>
 
-          
+
         </div>
 
-        
+
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+
+
+
+
+
+
               <p class="caption"><span class="caption-text">Getting started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
@@ -113,29 +113,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 </ul>
 
-            
-          
+
+
         </div>
-        
+
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
-      
+
       <nav class="wy-nav-top" aria-label="top navigation">
-        
+
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">pywaterinfo</a>
-        
+
       </nav>
 
 
       <div class="wy-nav-content">
-        
+
         <div class="rst-content">
-        
-          
+
+
 
 
 
@@ -156,28 +156,28 @@
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
-    
+
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
+
       <li>pywaterinfo package</li>
-    
-    
+
+
       <li class="wy-breadcrumbs-aside">
-        
-          
+
+
             <a href="../_sources/api/reference.rst.txt" rel="nofollow"> View page source</a>
-          
-        
+
+
       </li>
-    
+
   </ul>
 
-  
+
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+
   <div class="section" id="pywaterinfo-package">
 <h1>pywaterinfo package<a class="headerlink" href="#pywaterinfo-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-pywaterinfo">
@@ -273,10 +273,10 @@ argument.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># for given station ME09_012, which time series are available?</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">station_no</span><span class="o">=</span><span class="s2">&quot;ME09_012&quot;</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">station_no</span><span class="o">=</span><span class="s2">&quot;ME09_012&quot;</span><span class="p">)</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># for a given parameter PET, which time series are available?</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">parametertype_name</span><span class="o">=</span><span class="s2">&quot;PET&quot;</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">parametertype_name</span><span class="o">=</span><span class="s2">&quot;PET&quot;</span><span class="p">)</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># for a given parameter PET and station ME09_012, which time series</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># are available?</span>
@@ -428,7 +428,7 @@ see <a class="reference external" href="https://download.waterinfo.be/tsmdownloa
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get the data for all stations from groups 192900 (yearly rain sum)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># and 192895 (yearly discharge average) for the last 2 years</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="s2">&quot;192900,192895&quot;</span><span class="p">,</span>
-<span class="gp">... </span>                               <span class="n">period</span><span class="o">=</span><span class="s2">&quot;P2Y&quot;</span><span class="p">)</span>  
+<span class="gp">... </span>                               <span class="n">period</span><span class="o">=</span><span class="s2">&quot;P2Y&quot;</span><span class="p">)</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
 <span class="go">&gt;&gt;&gt;</span>
@@ -478,7 +478,7 @@ can be used to use the other available queries as well.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get the API info/documentation from kiwis</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">request_kiwis</span><span class="p">({</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="s2">&quot;getRequestInfo&quot;</span><span class="p">})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span>        
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span>
 <span class="go">[{&#39;Title&#39;: &#39;KISTERS QueryServices - Request Inform...file&#39;}}}}}}]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span>
 <span class="go">200</span>
@@ -486,12 +486,12 @@ can be used to use the other available queries as well.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">request_kiwis</span><span class="p">({</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="s2">&quot;getTimeseriesValues&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                               <span class="s2">&quot;ts_id&quot;</span><span class="p">:</span> <span class="s2">&quot;78124042&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                               <span class="s2">&quot;period&quot;</span><span class="p">:</span> <span class="s2">&quot;P1D&quot;</span><span class="p">})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span>        
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span>
 <span class="go">[{&#39;ts_id&#39;: &#39;78124042&#39;...]]}]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get all stations starting with a P in the station_no</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">request_kiwis</span><span class="p">({</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="s2">&quot;getStationList&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                               <span class="s2">&quot;station_no&quot;</span><span class="p">:</span> <span class="s2">&quot;P*&quot;</span><span class="p">})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span>        
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span>
 <span class="go">[[&#39;station_name&#39;...]]</span>
 </pre></div>
 </div>
@@ -527,7 +527,7 @@ network adminstrator.</p>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pywaterinfo.utils</span> <span class="kn">import</span> <span class="n">add_ssl_cert</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">add_ssl_cert</span><span class="p">(</span><span class="s2">&quot;CA-FILE-PATH&quot;</span><span class="p">)</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_ssl_cert</span><span class="p">(</span><span class="s2">&quot;CA-FILE-PATH&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -537,7 +537,7 @@ network adminstrator.</p>
 
 
            </div>
-           
+
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
@@ -553,14 +553,14 @@ network adminstrator.</p>
 
     </p>
   </div>
-    
-    
-    
+
+
+
     Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
 
 </footer>
         </div>
@@ -569,7 +569,7 @@ network adminstrator.</p>
     </section>
 
   </div>
-  
+
 
   <script type="text/javascript">
       jQuery(function () {
@@ -577,10 +577,10 @@ network adminstrator.</p>
       });
   </script>
 
-  
-  
-    
-   
+
+
+
+
 
 </body>
 </html>
