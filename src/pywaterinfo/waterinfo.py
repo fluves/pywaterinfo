@@ -494,6 +494,12 @@ class Waterinfo:
         >>> # get last day data of time series with ID 44223010 with subset of columns
         >>> df = hic.get_timeseries_values(ts_id="44223010", period="P1D",
         ...          returnfields="Timestamp,Value,Interpolation Type,Quality Code")
+        >>>
+        >>> # get last 10 hours data from Antwerpen tij/Zeeschelde (ts_id 53995010)
+        >>> # containing 'Tide Number' info. Tide number is useful when requesting
+        >>> # tidal extremes (high water/low water, 'ts_name'=Pv.HWLW)
+        >>> df = hic.get_timeseries_values(ts_id="53995010", period="PT10H",
+        ...          returnfields="Timestamp,Value,Tide Number")
         """
         # check the period information
         period_info = self._parse_period(start=start, end=end, period=period)
