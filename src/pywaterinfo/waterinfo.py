@@ -1,10 +1,11 @@
+import pkg_resources
+
 import datetime
 import logging
-import pkg_resources
-import re
-
 import pandas as pd
+import re
 import requests
+import requests_cache
 
 """
 INFO:
@@ -25,6 +26,9 @@ DATA_PATH = pkg_resources.resource_filename(__name__, "/data")
 
 # Custom hard-coded fix for the decoding issue #1 of given returnfields
 DECODE_ERRORS = ["AV Quality Code Color", "RV Quality Code Color"]
+
+# Default cache configuration
+CACHE_RETENTION = datetime.timedelta(days=7)
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +70,12 @@ class Waterinfo:
         else:
             raise WaterinfoException("Provider is either 'vmm' or 'hic'.")
 
-        self._request = requests.Session()
+        # Use requests-cache session
+        self._request = requests_cache.CachedSession(
+            cache_name="pywaterinfo_cache",
+            backend="sqlite",
+            expire_after=CACHE_RETENTION,
+        )
 
         self.__default_args = {
             "service": "kisters",
@@ -78,6 +87,7 @@ class Waterinfo:
 
         self._token_header = None
         if token:
+            # Token request outside cached session
             res = requests.post(
                 self._auth_url,
                 headers={
@@ -111,11 +121,21 @@ class Waterinfo:
 
         self._default_params = ["format", "returnfields", "request"]
 
+        # clean up cache old entries (requests-cache only removes/updates
+        # entries that are reused, so this remove piling too much cache.)
+        self._request.cache.remove_old_entries(
+            datetime.datetime.utcnow() - CACHE_RETENTION
+        )
+
     def __repr__(self):
         return f"<{self.__class__.__name__} object, " f"Query from {self._base_url!r}>"
 
+    def clear_cache(self):
+        """Clean up the cache."""
+        self._request.cache.clear()
+
     def request_kiwis(self, query: dict, headers: dict = None) -> dict:
-        """ http call to waterinfo.be KIWIS API
+        """http call to waterinfo.be KIWIS API
 
         General call used to request information and data from waterinfo.be, providing
         error handling and json parsing. The service, type, format (json),
@@ -183,7 +203,11 @@ class Waterinfo:
                 f"Waterinfo call returned {res.status_code} error"
                 f"with the message {res.content}"
             )
-        logging.info(f"Successful waterinfo API request with call {res.url}")
+
+        if res.from_cache:
+            logging.info(f"Request {res.url} reused from cache.")
+        else:
+            logging.info(f"Successful waterinfo API request with call {res.url}")
 
         parsed = res.json()
         if (
@@ -269,8 +293,7 @@ class Waterinfo:
         return period_string
 
     def _check_return_date_format(self, dateformat, request="getTimeseriesValues"):
-        """Check if the requested output date format is known to the KIWIS webservice
-        """
+        """Check if the requested output date format is known to the KIWIS webservice"""
         supported_formats = set(
             self._kiwis_info[request]["Dateformats"]["Content"].keys()
         )
@@ -323,18 +346,21 @@ class Waterinfo:
         )
 
     def _parse_period(self, start=None, end=None, period=None):
-        """Check the from/to/period arguments when requesting (valid for
-        getTimeseriesValues and getGraph)
+        """Check the from/to/period arguments when requesting
 
-        Handle the information of provided date information on the period and provide
+        Valid for getTimeseriesValues and getGraph. Handle the information of
+        provided date information on the period and provide
         feedback to the user. Valid combinations of the arguments are:
-        from/to, from/period, to/period, period, from
+        from/to, from/period, to/period, period, from:
 
-        - from + to: will return the requested range
-        - from + period: will return the given period starting at the from date
-        - to + period: will return the given period backdating from the to date
-        - period: will return the given period backdating from the current system time
-        - from:	will return all data starting at the given from date until
+        - ``from`` and ``to``: will return the requested range
+        - ``from`` and ``period``: will return the given period starting at
+          the from date
+        - ``to`` and ``period``: will return the given period backdating
+          from the to date
+        - ``period``: will return the given period backdating from the current
+          system time
+        - ``from`` : will return all data starting at the given from date until
           the current system time
 
         Parameters
@@ -344,7 +370,7 @@ class Waterinfo:
         end : str
             valid datetime string representation as defined in the KIWIS getRequestInfo
         period: str
-            @param period input string according to format required by waterinfo
+            period input string according to format required by waterinfo
 
         Returns
         -------
