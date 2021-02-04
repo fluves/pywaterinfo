@@ -90,7 +90,7 @@ conductivity measured by HIC is :code:`156173`:
     hic = Waterinfo("hic")
     hic.get_timeseries_value_layer(timeseriesgroup_id="156173")
 
-**Note:** Multiple identifiers can be combined in a single statement:
+Multiple identifiers can be combined in a single statement:
 
 ::
 
@@ -98,6 +98,19 @@ conductivity measured by HIC is :code:`156173`:
     hic = Waterinfo("hic")
     # combine oxygen and conductivity in a single call
     hic.get_timeseries_value_layer(timeseriesgroup_id="156207,156173")
+
+.. note::
+
+    When requesting only a subset of the fields using :code:`returnfields`, the resulting dataframe
+    still contains a lot of metadata fields added by default. To exclude these in the respond,
+    use the :code:`metadata` parameter equal to :code:`False`. For example:
+
+    ::
+
+        water_level = vmm.get_timeseries_value_layer("192780",
+            returnfields="timestamp,ts_value",
+            metadata="false")
+
 
 Search identifier based on parameter or station name
 ----------------------------------------------------
