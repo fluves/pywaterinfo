@@ -245,6 +245,14 @@ html_static_path = ["_static"]
 # Output file base name for HTML help builder.
 htmlhelp_basename = "pywaterinfo-doc"
 
+html_context = {
+    "display_github": True,
+    "github_user": "fluves",
+    "github_repo": "pywaterinfo",
+    "github_version": "master",
+    "conf_py_path": "/docs/",
+}
+
 
 # -- Options for LaTeX output --------------------------------------------------
 
