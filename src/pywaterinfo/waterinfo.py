@@ -7,6 +7,8 @@ import pytz
 import re
 import requests
 import requests_cache
+import tempfile
+from pathlib import Path
 
 """
 INFO:
@@ -73,7 +75,7 @@ class Waterinfo:
 
         # Use requests-cache session
         self._request = requests_cache.CachedSession(
-            cache_name="pywaterinfo_cache",
+            cache_name=Path(tempfile.gettempdir()) / "pywaterinfo_cache.sqlite",
             backend="sqlite",
             expire_after=CACHE_RETENTION,
         )
