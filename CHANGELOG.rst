@@ -2,12 +2,18 @@
 Changelog
 =========
 
+Version 0.4.0
+=============
+
+- Switch local caching (#32) to temporary os directoy instead of project directory
+- Extend example/documentation:
+    - Add example on how to request start/end date of a time series metadata (#33)
+
 Version 0.3.1
 =============
 
-- Patch local caching (#32) to temporary os directoy instead of project directory
 - Extend example/documentation:
-    - Add example on how to request start/end date of a time series metadata (#33)
+    - Add caching page to index of manual pages
 
 Version 0.3.0
 =============
