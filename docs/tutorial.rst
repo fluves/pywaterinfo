@@ -76,6 +76,23 @@ Apart from the :code:`start` and :code:`end` configuration, the usage of the :co
 way of requesting time series. See the :func:`~pywaterinfo.Waterinfo.get_timeseries_values` for
 more information and examples.
 
+When interested in all available data of a time series (! watch out with credit limits) or using the start/end
+of the time series in the request, one can find these in the metadata of a
+time series as illustrated in the following example:
+
+.. code:: python
+
+    from pywaterinfo import Waterinfo
+
+    hic = Waterinfo("hic")
+
+    # Request the start/end of the time series
+    station_metadata = hic.get_timeseries_list(ts_id = 51814010)
+    start, end = station_metadata[["from", "to"]].values[0]
+
+    # Get data from start of time series up to next two days
+    df = hic.get_timeseries_values(51814010, start=start, period="P2D")
+
 .. note::
 
     If you want 'naive' timestamps in the returned time series, use the :code:`tz_localize`
