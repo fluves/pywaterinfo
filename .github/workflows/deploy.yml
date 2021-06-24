@@ -22,16 +22,16 @@ jobs:
         pip install setuptools wheel twine
     - name: Build documentation
       run: |
-        python setup.py build_sphinx
+        tox -e docs
     - name: Deploy documentation
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./build/sphinx/html
+        publish_dir: ./docs/_build/html
     - name: Build and publish package to pypi
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        python setup.py sdist bdist_wheel
+        tox -e build
         twine upload dist/*
