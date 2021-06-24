@@ -39,7 +39,7 @@ jobs:
       env:
         HIC_TOKEN: ${{ secrets.HIC_TOKEN }}
       run: |
-        python setup.py test
+        pytest
     - name: Test doctests
       run: |
         python setup.py doctest
