@@ -1,8 +1,7 @@
-name: Upload Python Package
 
+name: Update docs
 on:
-  release:
-    types: [created]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -28,10 +27,3 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./build/sphinx/html
-    - name: Build and publish package to pypi
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      run: |
-        python setup.py sdist bdist_wheel
-        twine upload dist/*

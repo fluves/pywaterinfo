@@ -1,3 +1,4 @@
+.. _logging:
 
 ====================
 Print versus logging

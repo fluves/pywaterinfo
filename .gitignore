@@ -50,3 +50,6 @@ MANIFEST
 .venv*/
 
 .vscode
+
+# ignore sqlite
+*.sqlite

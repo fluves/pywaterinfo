@@ -9,7 +9,7 @@ on:
   pull_request:
     branches: [ master ]
   schedule:
-    - cron: '0 1 * * 4'
+    - cron: '0 15 * * 4'
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8, 3.9]
         fail-fast: [false]
 
     steps:
@@ -36,6 +36,8 @@ jobs:
         pre-commit run --all-files
       if: matrix.python-version == '3.7'
     - name: Test with pytest
+      env:
+        HIC_TOKEN: ${{ secrets.HIC_TOKEN }}
       run: |
         python setup.py test
     - name: Test doctests

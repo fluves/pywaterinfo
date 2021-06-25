@@ -106,6 +106,22 @@ Tests are defined with `pytest <https://docs.pytest.org>`_. Write tests and run 
 
     python setup.py test
 
+In order to run all the tests, you need a HIC token, defined as an environmental variable ``HIC_TOKEN``. When you do
+not have a HIC token, you can ignore the token tests for HIC webservice, be defining to not run the tests
+marked with the `nohictoken` label:
+
+::
+
+    python setup.py test --addopts "-m 'not nohictoken'"
+
+or with pytest directly:
+
+::
+
+    pytest -m 'not nohictoken'
+
+The Github actions CI does have the token stored as a *secret*, so you do not really need a token for local testing, as eventual failures
+will be noticed by the CI.
 
 Documentation lives in the `docs` directory and is setup using `Sphinx package <http://www.sphinx-doc.org/en/master/>`_.
 You can edit the documentation using any text editor and then generate the HTML output by with the command:
@@ -144,6 +160,13 @@ This package is just a small wrapper around waterinfo.be to facilitate researche
 downloading the data from `waterinfo.be <https://www.waterinfo.be/>`_. The availability of this data is made
 possible by *de Vlaamse Milieumaatschappij, Waterbouwkundig Laboratorium, Maritieme Dienstverlening & Kust, Waterwegen
 en Zeekanaal NV en De Scheepvaart NV*.
+
+Other clients
+=============
+
+Besides this Python client to gather data from `waterinfo.be <https://www.waterinfo.be/>`_, there is also an R client available, the `wateRinfo <https://docs.ropensci.org/wateRinfo//>`_ package which is part of the `ropensci <https://ropensci.org/>`_ package suite and contains similar functionalities.
+
+The `Flanders Hydraulics Research center <https://www.waterbouwkundiglaboratorium.be/en/>`_ also distributes clients for R, Python and Matlab upon request to download the data they share on `waterinfo.be <https://www.waterinfo.be/>`_. For more information, contact them directly via hic@vlaanderen.be.
 
 Note
 ====

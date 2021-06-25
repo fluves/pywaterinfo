@@ -15,6 +15,7 @@ Contents
    :maxdepth: 1
 
    Tutorial <tutorial>
+   Caching <cache>
    Group identifiers <timeseriesgroupids>
    Module Reference <api/reference>
 

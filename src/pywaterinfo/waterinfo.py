@@ -1,10 +1,14 @@
+import pkg_resources
+
 import datetime
 import logging
-import pkg_resources
-import re
-
 import pandas as pd
+import pytz
+import re
 import requests
+import requests_cache
+import tempfile
+from pathlib import Path
 
 """
 INFO:
@@ -18,11 +22,16 @@ other KIWIS-python clients:
 
 
 VMM_BASE = "https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS"
-HIC_BASE = "https://www.waterinfo.be/tsmhic/KiWIS/KiWIS"
+VMM_AUTH = "http://download.waterinfo.be/kiwis-auth/token"
+HIC_BASE = "https://hicws.vlaanderen.be/KiWIS/KiWIS"
+HIC_AUTH = "https://hicwsauth.vlaanderen.be/auth"
 DATA_PATH = pkg_resources.resource_filename(__name__, "/data")
 
 # Custom hard-coded fix for the decoding issue #1 of given returnfields
 DECODE_ERRORS = ["AV Quality Code Color", "RV Quality Code Color"]
+
+# Default cache configuration
+CACHE_RETENTION = datetime.timedelta(days=7)
 
 logger = logging.getLogger(__name__)
 
@@ -55,14 +64,21 @@ class Waterinfo:
         # set the base string linked to the data provider
         if provider == "vmm":
             self._base_url = VMM_BASE
+            self._auth_url = VMM_AUTH
             self._datasource = "1"
         elif provider == "hic":
             self._base_url = HIC_BASE
+            self._auth_url = HIC_AUTH
             self._datasource = "4"
         else:
             raise WaterinfoException("Provider is either 'vmm' or 'hic'.")
 
-        self._request = requests.Session()
+        # Use requests-cache session
+        self._request = requests_cache.CachedSession(
+            cache_name=Path(tempfile.gettempdir()) / "pywaterinfo_cache.sqlite",
+            backend="sqlite",
+            expire_after=CACHE_RETENTION,
+        )
 
         self.__default_args = {
             "service": "kisters",
@@ -74,8 +90,9 @@ class Waterinfo:
 
         self._token_header = None
         if token:
+            # Token request outside cached session
             res = requests.post(
-                "http://download.waterinfo.be/kiwis-auth/token",
+                self._auth_url,
                 headers={
                     "Authorization": f"Basic {token}",
                     "scope": "none",
@@ -87,7 +104,7 @@ class Waterinfo:
             res.raise_for_status()
             res_parsed = res.json()
             self._token_header = {
-                "Authorization": f"{res_parsed['token_type']}"
+                "Authorization": f"{res_parsed['token_type']} "
                 f"{res_parsed['access_token']}"
             }
             expires_in = res_parsed["expires_in"]
@@ -107,11 +124,21 @@ class Waterinfo:
 
         self._default_params = ["format", "returnfields", "request"]
 
+        # clean up cache old entries (requests-cache only removes/updates
+        # entries that are reused, so this remove piling too much cache.)
+        self._request.cache.remove_expired_responses(
+            datetime.datetime.utcnow() - CACHE_RETENTION
+        )
+
     def __repr__(self):
         return f"<{self.__class__.__name__} object, " f"Query from {self._base_url!r}>"
 
+    def clear_cache(self):
+        """Clean up the cache."""
+        self._request.cache.clear()
+
     def request_kiwis(self, query: dict, headers: dict = None) -> dict:
-        """ http call to waterinfo.be KIWIS API
+        """http call to waterinfo.be KIWIS API
 
         General call used to request information and data from waterinfo.be, providing
         error handling and json parsing. The service, type, format (json),
@@ -167,7 +194,13 @@ class Waterinfo:
         if "returnfields" in query.keys():
             self._check_return_fields_format(query["returnfields"], query["request"])
 
-        query.update(self.__default_args)
+        # User can overwrite the default arguments
+        defaults = {
+            key: value
+            for (key, value) in self.__default_args.items()
+            if key not in query.keys()
+        }
+        query.update(defaults)
         if not headers:
             headers = dict()
         if self._token_header:
@@ -179,7 +212,11 @@ class Waterinfo:
                 f"Waterinfo call returned {res.status_code} error"
                 f"with the message {res.content}"
             )
-        logging.info(f"Successful waterinfo API request with call {res.url}")
+
+        if res.from_cache:
+            logging.info(f"Request {res.url} reused from cache.")
+        else:
+            logging.info(f"Successful waterinfo API request with call {res.url}")
 
         parsed = res.json()
         if (
@@ -265,8 +302,7 @@ class Waterinfo:
         return period_string
 
     def _check_return_date_format(self, dateformat, request="getTimeseriesValues"):
-        """Check if the requested output date format is known to the KIWIS webservice
-        """
+        """Check if the requested output date format is known to the KIWIS webservice"""
         supported_formats = set(
             self._kiwis_info[request]["Dateformats"]["Content"].keys()
         )
@@ -295,7 +331,7 @@ class Waterinfo:
             )
 
     @staticmethod
-    def _parse_date(input_datetime):
+    def _parse_date(input_datetime, timezone="UTC"):
         """Evaluate date and transform to format accepted by KIWIS API
 
         Dates can be specified on a courser-than-day basis, but will always be
@@ -303,34 +339,51 @@ class Waterinfo:
         translated to '20170101 00:00'.
 
         Note, the input datetime of the KIWIS API is always CET (and is not tz-aware),
-        but we normalize everything to UTC. Hence, we interpret the user input as UTC,
-        provide the input to the API as CET and request the returned
-        output data as UTC.
+        we normalize everything to UTC by default. Hence, we interpret the user
+        input as UTC, provide the input to the API as CET and request the returned
+        output data as UTC. If the user provides a timezone, we interpret user input as
+        the given timezone, doe the request in CET and return th output data in the
+        requested timezone.
 
         Parameters
         ----------
         input_datetime : str
             datetime string
+        timezone : str, default 'UTC'
+            user defined timezone to use
         """
-        return (
-            pd.to_datetime(input_datetime, utc=True)
-            .tz_convert("CET")
-            .strftime("%Y-%m-%d %H:%M:%S")
-        )
+        if timezone not in pytz.all_timezones:
+            raise pytz.exceptions.UnknownTimeZoneError(
+                f"{timezone} is not a valid timezone string."
+            )
 
-    def _parse_period(self, start=None, end=None, period=None):
-        """Check the from/to/period arguments when requesting (valid for
-        getTimeseriesValues and getGraph)
+        input_timestamp = pd.to_datetime(input_datetime)
 
-        Handle the information of provided date information on the period and provide
+        if input_timestamp.tz:  # timestamp already contains tz info
+            return input_timestamp.tz_convert("CET").strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            return (
+                input_timestamp.tz_localize(timezone)
+                .tz_convert("CET")
+                .strftime("%Y-%m-%d %H:%M:%S")
+            )
+
+    def _parse_period(self, start=None, end=None, period=None, timezone="UTC"):
+        """Check the from/to/period arguments when requesting
+
+        Valid for getTimeseriesValues and getGraph. Handle the information of
+        provided date information on the period and provide
         feedback to the user. Valid combinations of the arguments are:
-        from/to, from/period, to/period, period, from
+        from/to, from/period, to/period, period, from:
 
-        - from + to: will return the requested range
-        - from + period: will return the given period starting at the from date
-        - to + period: will return the given period backdating from the to date
-        - period: will return the given period backdating from the current system time
-        - from:	will return all data starting at the given from date until
+        - ``from`` and ``to``: will return the requested range
+        - ``from`` and ``period``: will return the given period starting at
+          the from date
+        - ``to`` and ``period``: will return the given period backdating
+          from the to date
+        - ``period``: will return the given period backdating from the current
+          system time
+        - ``from`` : will return all data starting at the given from date until
           the current system time
 
         Parameters
@@ -339,8 +392,10 @@ class Waterinfo:
             valid datetime string representation as defined in the KIWIS getRequestInfo
         end : str
             valid datetime string representation as defined in the KIWIS getRequestInfo
-        period: str
-            @param period input string according to format required by waterinfo
+        period : str
+            period input string according to format required by waterinfo
+        timezone: str, default 'UTC'
+            User defined timezone to use.
 
         Returns
         -------
@@ -371,9 +426,9 @@ class Waterinfo:
         period_info = dict()
 
         if start:
-            period_info["from"] = self._parse_date(start)
+            period_info["from"] = self._parse_date(start, timezone=timezone)
         if end:
-            period_info["to"] = self._parse_date(end)
+            period_info["to"] = self._parse_date(end, timezone=timezone)
         if period:
             period_info["period"] = self._check_period_format(period)
 
@@ -395,7 +450,7 @@ class Waterinfo:
         Each identifier ts_id corresponds to a given variable-location-frequency
         combination (e.g. precipitation, Waregem, daily). When interested in daily,
         monthly, yearly aggregates look for these identifiers in order to overcome
-        too much/large requests.
+        too many/large requests.
 
         Note: The usage of 'start' and 'end' instead of the API default from/to is done
         to avoid the usage of from, which is a protected name in Python.
@@ -451,6 +506,10 @@ class Waterinfo:
         >>> df = vmm.get_timeseries_values("60992042,60968042",
         ...                           start="20190502", end="20190503")
         >>>
+        >>> # One can overwrite the timezone to request data in another time zone:
+        >>> df = vmm.get_timeseries_values("60992042,60968042",
+        ...                           start="20190502", end="20190503", timezone="CET")
+        >>>
         >>> # get the data for all stations from groups 192900 (yearly rain sum)
         >>> # and 192895 (yearly discharge average) for the last 2 years
         >>> df = vmm.get_timeseries_values(timeseriesgroup_id="192900,192895",
@@ -464,9 +523,22 @@ class Waterinfo:
         >>> # get last day data of time series with ID 44223010 with subset of columns
         >>> df = hic.get_timeseries_values(ts_id="44223010", period="P1D",
         ...          returnfields="Timestamp,Value,Interpolation Type,Quality Code")
+        >>>
+        >>> # get last 10 hours data from Antwerpen tij/Zeeschelde (ts_id 53995010)
+        >>> # containing 'Tide Number' info. Tide number is useful when requesting
+        >>> # tidal extremes (high water/low water, 'ts_name'=Pv.HWLW)
+        >>> df = hic.get_timeseries_values(ts_id="53995010", period="PT10H",
+        ...          returnfields="Timestamp,Value,Tide Number")
         """
+        if "timezone" in kwargs.keys():
+            timezone = kwargs["timezone"]
+        else:
+            timezone = "UTC"
+
         # check the period information
-        period_info = self._parse_period(start=start, end=end, period=period)
+        period_info = self._parse_period(
+            start=start, end=end, period=period, timezone=timezone
+        )
 
         # add either ts_id or timeseriesgroup_id
         if ts_id and timeseriesgroup_id:
@@ -563,6 +635,10 @@ class Waterinfo:
         >>> # a given time stamp
         >>> df = vmm.get_timeseries_value_layer(timeseriesgroup_id=192928,
         ...                                     date="20190501")
+        >>>
+        >>> # Limit the number of returned fields/columns in response
+        >>> df = vmm.get_timeseries_value_layer("192780",
+        ...     returnfields="timestamp,ts_value", metadata="false")
         >>>
         >>> hic = Waterinfo("hic")
         >>>
