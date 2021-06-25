@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Contributing to pywaterinfo &mdash; pywaterinfo 0.4.0 documentation</title>
+  <title>Contributing to pywaterinfo &mdash; pywaterinfo 0.0.0 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.4.0
+                0.0.0
               </div>
             
           
@@ -104,7 +104,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Developer guide</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to pywaterinfo</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#code-of-conduct">Code of conduct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#how-you-can-contribute">How you can contribute?</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#share-the-love">Share the love</a></li>
@@ -115,10 +115,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#contribute-code">Contribute code</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#development-guidelines">Development guidelines</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#coding-guidelines">Coding guidelines</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="#development-guidelines">Development guidelines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pre-commit-hooks">Pre-commit hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unit-testing-with-pytest">Unit testing with pytest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-with-sphinx">Documentation with sphinx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#coding-guidelines">Coding guidelines</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
@@ -278,10 +281,79 @@ look at the <a class="reference external" href="https://github.com/fluves/pywate
 to work on. See also the development guidelines below.</p>
 </div>
 </div>
+</div>
 <div class="section" id="development-guidelines">
-<span id="dev-guidelines"></span><h2>Development guidelines<a class="headerlink" href="#development-guidelines" title="Permalink to this headline">¶</a></h2>
+<span id="dev-guidelines"></span><h1>Development guidelines<a class="headerlink" href="#development-guidelines" title="Permalink to this headline">¶</a></h1>
+<p>It’s good practice to create a separate development environment for your package development. Use your preferred
+system (or maybe integrated in your IDE) to setup a Python environment and see those docs to setup an environment
+(conda, pyenv, virtualenv,,…). Once created, you can install the package with all the developer dependencies
+using pip:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span><span class="p">[</span><span class="n">develop</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Alternatively, if you are already familiar with <code class="docutils literal notranslate"><span class="pre">tox</span></code>, run the <code class="docutils literal notranslate"><span class="pre">dev</span></code> tox command, which will create a <code class="docutils literal notranslate"><span class="pre">venv</span></code> with a
+development install of the package and it will register the environment as a ipykernel (for usage
+inside a jupyter notebook):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tox</span> <span class="o">-</span><span class="n">e</span> <span class="n">dev</span>
+</pre></div>
+</div>
+<p>For development purposes using conda, make sure to first run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.[develop]</span></code> environment
+to prepare the development environment and install all development tools. (When using <code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">dev</span></code> this
+is already done).</p>
+<p>When starting on the development of the <code class="docutils literal notranslate"><span class="pre">pywaterinfo</span></code> package, makes sure to be familiar with the following tools. Do
+not hesitate to ask the other contributors when having trouble using these tools.</p>
+<div class="section" id="pre-commit-hooks">
+<h2>Pre-commit hooks<a class="headerlink" href="#pre-commit-hooks" title="Permalink to this headline">¶</a></h2>
+<p>To ensure a more common code formatting and limit the git diff, make sure to install the pre-commit hooks. For example,
+<a class="reference external" href="https://black.readthedocs.io/en/stable/index.html">black</a>. is used to make the code formatting as consistent as possible.The
+required dependencies are included in the development requirements installed when running <code class="docutils literal notranslate"><span class="pre">``pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.[develop]</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Install and update the <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code> hooks before your first git commit to the package!</p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">install</span>
+<span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">autoupdate</span>
+</pre></div>
+</div>
+<p>on the main level of the package (<code class="docutils literal notranslate"><span class="pre">pywaterinfo</span></code> folder, location where the file <code class="docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code> is located)</p>
+<p>If you just want to run the hooks on your files to see the effect (not during a git commit),
+you can use the command at any time:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">run</span> <span class="o">--</span><span class="nb">all</span><span class="o">-</span><span class="n">files</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="unit-testing-with-pytest">
+<h2>Unit testing with pytest<a class="headerlink" href="#unit-testing-with-pytest" title="Permalink to this headline">¶</a></h2>
+<p>Run the test suite using the <a class="reference external" href="https://docs.pytest.org">pytest</a> package, from within the main package folder (<cite>pyhdas</cite>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span>
+</pre></div>
+</div>
+<p>Or using tox (i.e. in a separate environment)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tox</span>
+</pre></div>
+</div>
+<p>You will receive information on the test status and the test coverage of the unit tests.</p>
+<p>In order to run all the tests, you need a HIC token, defined as an environmental variable <code class="docutils literal notranslate"><span class="pre">HIC_TOKEN</span></code>. When you do
+not have a HIC token, you can ignore the token tests for HIC webservice, be defining to not run the tests
+marked with the <cite>nohictoken</cite> label:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="o">-</span><span class="n">m</span> <span class="s1">&#39;not nohictoken&#39;</span>
+</pre></div>
+</div>
+<p>The Github actions CI does have the token stored as a <em>secret</em>, so you do not really need a token for local testing, as eventual failures
+will be noticed by the Github Actions CI.</p>
+</div>
+<div class="section" id="documentation-with-sphinx">
+<h2>Documentation with sphinx<a class="headerlink" href="#documentation-with-sphinx" title="Permalink to this headline">¶</a></h2>
+<p>Build the documentation locally with Sphinx:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tox</span> <span class="o">-</span><span class="n">e</span> <span class="n">docs</span>
+</pre></div>
+</div>
+<p>which will create the docs in the <code class="docutils literal notranslate"><span class="pre">docs/_build/html</span></code> folder. The <code class="docutils literal notranslate"><span class="pre">docs/_build</span></code> directory itself is
+left out of version control (and we rather keep it as such ;-)). Double click the <cite>index.html</cite> to see the
+website on your local computer.</p>
+</div>
 <div class="section" id="coding-guidelines">
-<h3>Coding guidelines<a class="headerlink" href="#coding-guidelines" title="Permalink to this headline">¶</a></h3>
+<h2>Coding guidelines<a class="headerlink" href="#coding-guidelines" title="Permalink to this headline">¶</a></h2>
 <p>The following are some guidelines on how new code should be written. Of course,
 there are special cases and there will be exceptions to these rules. However,
 following these rules when submitting new code makes the review easier so new
@@ -300,7 +372,6 @@ how code should be formatted and indented. Please read it and follow it.</p>
 </ul>
 </div>
 </div>
-</div>
 
 
            </div>
@@ -316,7 +387,7 @@ how code should be formatted and indented. Please read it and follow it.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Stijn Van Hoey.
+        &#169; Copyright 2021, Fluves.
 
     </p>
   </div>
