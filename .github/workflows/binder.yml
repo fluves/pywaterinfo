@@ -1,5 +1,6 @@
-name: Binder
-on: 
+name: Binder Link
+
+on:
   pull_request:
     types: [opened, reopened]
 
@@ -24,7 +25,6 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             body: `[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/${context.repo.owner}/${context.repo.repo}/${BRANCH_NAME}) :point_left: Launch a binder notebook on this branch`
-          }) 
+          })
       env:
         BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
-
