@@ -125,10 +125,99 @@ to work on. See also the development guidelines below.
 .. _dev-guidelines:
 
 Development guidelines
------------------------
+===========================
+
+It's good practice to create a separate development environment for your package development. Use your preferred
+system (or maybe integrated in your IDE) to setup a Python environment and see those docs to setup an environment
+(conda, pyenv, virtualenv,,...). Once created, you can install the package with all the developer dependencies
+using pip:
+
+::
+
+    pip install -e .[develop]
+
+Alternatively, if you are already familiar with ``tox``, run the ``dev`` tox command, which will create a ``venv`` with a
+development install of the package and it will register the environment as a ipykernel (for usage
+inside a jupyter notebook):
+
+::
+
+    tox -e dev
+
+For development purposes using conda, make sure to first run ``pip install -e .[develop]`` environment
+to prepare the development environment and install all development tools. (When using ``tox -e dev`` this
+is already done).
+
+When starting on the development of the ``pywaterinfo`` package, makes sure to be familiar with the following tools. Do
+not hesitate to ask the other contributors when having trouble using these tools.
+
+Pre-commit hooks
+----------------
+
+To ensure a more common code formatting and limit the git diff, make sure to install the pre-commit hooks. For example,
+`black <https://black.readthedocs.io/en/stable/index.html>`_. is used to make the code formatting as consistent as possible.The
+required dependencies are included in the development requirements installed when running ````pip install -e .[develop]``.
+
+.. warning::
+   Install and update the ``pre-commit`` hooks before your first git commit to the package!
+
+::
+
+    pre-commit install
+    pre-commit autoupdate
+
+on the main level of the package (``pywaterinfo`` folder, location where the file ``.pre-commit-config.yaml`` is located)
+
+If you just want to run the hooks on your files to see the effect (not during a git commit),
+you can use the command at any time:
+
+::
+
+    pre-commit run --all-files
+
+Unit testing with pytest
+-------------------------
+
+Run the test suite using the `pytest <https://docs.pytest.org>`_ package, from within the main package folder (`pyhdas`):
+
+::
+
+    pytest
+
+Or using tox (i.e. in a separate environment)
+
+::
+
+    tox
+
+You will receive information on the test status and the test coverage of the unit tests.
+
+In order to run all the tests, you need a HIC token, defined as an environmental variable ``HIC_TOKEN``. When you do
+not have a HIC token, you can ignore the token tests for HIC webservice, be defining to not run the tests
+marked with the `nohictoken` label:
+
+::
+
+    pytest -m 'not nohictoken'
+
+The Github actions CI does have the token stored as a *secret*, so you do not really need a token for local testing, as eventual failures
+will be noticed by the Github Actions CI.
+
+Documentation with sphinx
+--------------------------
+
+Build the documentation locally with Sphinx:
+
+::
+
+    tox -e docs
+
+which will create the docs in the ``docs/_build/html`` folder. The ``docs/_build`` directory itself is
+left out of version control (and we rather keep it as such ;-)). Double click the `index.html` to see the
+website on your local computer.
 
 Coding guidelines
-^^^^^^^^^^^^^^^^^^
+-----------------
 
 The following are some guidelines on how new code should be written. Of course,
 there are special cases and there will be exceptions to these rules. However,

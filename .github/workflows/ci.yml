@@ -39,10 +39,18 @@ jobs:
       env:
         HIC_TOKEN: ${{ secrets.HIC_TOKEN }}
       run: |
-        python setup.py test
+        pytest
+    - name: Test with tox
+      env:
+        HIC_TOKEN: ${{ secrets.HIC_TOKEN }}
+      run: |
+        tox
     - name: Test doctests
       run: |
-        python setup.py doctest
+        tox -e doctests
     - name: Build documentation
       run: |
-        python setup.py build_sphinx
+        tox -e docs
+    - name: Test package build
+      run: |
+        tox -e build
