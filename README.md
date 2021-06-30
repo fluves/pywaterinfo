@@ -68,63 +68,7 @@ vmm = Waterinfo("vmm",  token=vmm_token)
 
 ## Contribute
 
-It's good practice to create a separate development environment for your package development. Use your preferred
-system (or maybe integrated in your IDE) to setup a Python environment and see those docs to setup an environment
-(conda, pyenv, virtualenv,,...). Once created, you can install all the developer dependencies using pip:
-
-```
-pip install -e .[develop]
-```
-
-You can do a local development install to start using the package. Activate your environment and run:
-
-```
-python setup.py develop
-```
-
-Tests are defined with `pytest <https://docs.pytest.org>`_. Write tests and run them using the command:
-
-```
-python setup.py test
-```
-
-In order to run all the tests, you need a HIC token, defined as an environmental variable `HIC_TOKEN`. When you do not have a HIC token, you can ignore the token tests for HIC webservice, be defining to not run the tests marked with the `nohictoken` label:
-
-```
-python setup.py test --addopts "-m 'not nohictoken'"
-```
-
-or with pytest directly:
-
-```
-pytest -m 'not nohictoken'
-```
-
-The Github actions CI does have the token stored as a _secret_, so you do not really need a token for local testing, as eventual failures
-will be noticed by the CI.
-
-Documentation lives in the `docs` directory and is setup using `Sphinx package <http://www.sphinx-doc.org/en/master/>`_.
-You can edit the documentation using any text editor and then generate the HTML output by with the command:
-
-```
-python setup.py build_sphinx
-```
-
-The resulting html files will be in the `docs\_build\html folder`. Double click the `index.html` to see the website on your local computer.
-
-To keep the code formatting uniform, `black <https://black.readthedocs.io/en/stable/index.html>`_. is used to make the
-code styling as consistent as possible. Also a number of other checks are included in the
-pre-commit handle (`flake` check of PEP8 guidelines, limit committing large files, trailing whitespaces,...)
-
-The required dependencies are part of the development requirements
-in the `setup.cfg` file, but make sure to install the pre-commit hook:
-
-```
-pre-commit install
-pre-commit autoupdate
-```
-
-The Github actions CI job runs the unit tests, doctest, pre-commit checks and documentation building as well.
+Want to contribute code or functionalities to the `pywaterinfo` package? Great news! Check out the [contributing guidelines](https://fluves.github.io/pywaterinfo/contributing.html) and the [development guidelines](https://fluves.github.io/pywaterinfo/contributing.html#development-guidelines) in the documentation website.
 
 ## Acknowledgements
 
