@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pywaterinfo package &mdash; pywaterinfo 0.4.0.post1.dev13+ge26cf01 documentation</title>
+  <title>pywaterinfo package &mdash; pywaterinfo 0.4.0.post1.dev21+gc7b3856 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.4.0.post1.dev13+ge26cf01
+                0.4.0.post1.dev21+gc7b3856
               </div>
             
           
@@ -211,7 +211,7 @@ the user to request all values of a given group at the same time (method
 <li><p><strong>group_name</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Name of the time series group, can contain wildcards, e.g. ‘<em>Download</em>’</p></li>
 <li><p><strong>group_type</strong> (<em>'station' | 'parameter' | 'timeseries'</em>) – Specify the type station, parameter or timeseries</p></li>
 <li><p><strong>kwargs</strong> – Additional queryfields as accepted by the KIWIS call getGroupList, see
-<a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">API docoumentation</a></p></li>
+<a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">API documentation</a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -260,9 +260,8 @@ argument.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>station_no</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – single or multiple station_no values, comma-separated</p></li>
 <li><p><strong>stationparameter_name</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – single or multiple stationparameter_name values, comma-separated</p></li>
-<li><p><strong>kwargs</strong> – <p>Additional queryfields as accepted by the KIWIS call getTimeseriesList, see
-<a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">API docoumentation</a></p>
-</p></li>
+<li><p><strong>kwargs</strong> – Additional queryfields as accepted by the KIWIS call getTimeseriesList, see
+<a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">API docoumentation</a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -325,7 +324,7 @@ use ‘crs’ parameter to choose between local and global coordinates. fields
 stationparameter_no and ts_shortname are required for bbox; the function
 will select 0 or 1 timeseries per station in the area according to filters</p></li>
 <li><p><strong>kwargs</strong> – <p>Additional query parameter options as documented by KIWIS waterinfo API, see
-<a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">API docoumentation</a></p>
+<a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">API documentation</a></p>
 </p></li>
 </ul>
 </dd>
@@ -395,7 +394,7 @@ as a valid Timestamp.</p></li>
 <li><p><strong>end</strong> (<em>datetime | str</em>) – Either Python datetime object or a string which can be interpreted
 as a valid Timestamp.</p></li>
 <li><p><strong>kwargs</strong> – <p>Additional query parameter options as documented by KIWIS waterinfo API,
-see <a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">API docoumentation</a></p>
+see <a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">API documentation</a></p>
 </p></li>
 </ul>
 </dd>
@@ -522,8 +521,8 @@ git you are experiencing an issue with an SSL: CERTIFICATE_VERIFY_FAILED
 error. This should only be done once for your environment.</p>
 <p>For more details, see also :
 <a class="reference external" href="https://stackoverflow.com/questions/27835619/urllib-and-ssl-certificate-verify-failed-error">https://stackoverflow.com/questions/27835619/urllib-and-ssl-certificate-verify-failed-error</a></p>
-<p>The ssl certificate should ususally be issued by your company, please contact your
-network adminstrator.</p>
+<p>The ssl certificate should usually be issued by your company, please contact your
+network administrator.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>ssl_cert</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The full path/filename to the SSL certificate file to add</p>
