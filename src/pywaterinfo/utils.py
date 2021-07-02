@@ -24,8 +24,8 @@ def add_ssl_cert(ssl_cert: str):
     For more details, see also :
     https://stackoverflow.com/questions/27835619/urllib-and-ssl-certificate-verify-failed-error
 
-    The ssl certificate should ususally be issued by your company, please contact your
-    network adminstrator.
+    The ssl certificate should usually be issued by your company, please contact your
+    network administrator.
 
     Parameters
     ----------
