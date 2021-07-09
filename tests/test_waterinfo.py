@@ -446,10 +446,15 @@ class TestRequestKiwis:
 
 class TestTimeseriesValueLayer:
     def test_one_of_three(self, vmm_connection):
+        """Should be either ts_id, bbox or timeseriesgroup_id"""
         with pytest.raises(Exception):
             vmm_connection.get_timeseries_value_layer(
                 ts_id="78124042", timeseriesgroup_id="192900", bbox="DUMMY"
             )
+
+    def test_hic(self, hic_connection):
+        df = hic_connection.get_timeseries_value_layer(timeseriesgroup_id="156207")
+        assert "ts_id" in df.columns
 
 
 class TestGroupList:
@@ -462,6 +467,10 @@ class TestGroupList:
         with pytest.raises(Exception):
             vmm_connection.get_group_list(group_type="DUMMY")
 
+    def test_hic(self, hic_connection):
+        df = hic_connection.get_group_list()
+        assert "group_id" in df.columns
+
 
 class TestTimeseriesList:
     def test_no_data(self, vmm_connection):
@@ -469,3 +478,8 @@ class TestTimeseriesList:
         assert vmm_connection.get_timeseries_list(station_no="DUMMY").equals(
             pd.DataFrame([])
         )
+
+    def test_hic(self, hic_connection):
+        """"""
+        df = hic_connection.get_timeseries_list(station_no="plu03a-1066")
+        assert "station_no" in df.columns
