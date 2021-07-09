@@ -10,6 +10,7 @@ from pandas.api import types
 from pandas.api.types import is_datetime64tz_dtype
 
 from pywaterinfo import HIC_BASE, VMM_BASE, Waterinfo
+from pywaterinfo.waterinfo import WaterinfoException
 
 
 def test_waterinfo_repr(vmm_connection, hic_connection):
@@ -345,10 +346,22 @@ class TestDatetimeHandling:
             "2019-05-01 12:05:00+00:00"
         )
 
+    def test_invalid_timezone(self, vmm_connection):
+        """Unknown timezone should raise error"""
+        with pytest.raises(pytz.exceptions.UnknownTimeZoneError):
+            vmm_connection.get_timeseries_values(
+                ts_id="60992042",
+                start="20190501 14:05:00+02:00",
+                end="20190501 14:10:00+02:00",
+                timezone="DUMMY",
+            )
+
     def test_return_date_format(self, vmm_connection):
         """Input to requested return date format should be existing on KIWIS API"""
         with pytest.raises(Exception):
             vmm_connection._check_return_date_format("DUMMY")
+
+        assert vmm_connection._check_return_date_format("yyyy-MM-dd HH:mm:ss") is None
 
     def test_return_fields_format(self, vmm_connection):
         """Input to requested returnfields should be existing on KIWIS API"""
@@ -388,6 +401,47 @@ class TestTimeseriesValues:
             ts_id="60992042,60968042", start="21500501 14:05", end="21500501 14:10"
         )
         assert len(df) == 0
+
+    def test_datetime_conversion(self, vmm_connection):
+        """Datetime in the returned data sets are pd.Timestamps with timezone info"""
+        vmm_connection.clear_cache()
+        df = vmm_connection.get_timeseries_values(
+            ts_id="60992042,60968042", start="20190501 14:05", end="20190501 14:10"
+        )
+        assert pd.core.dtypes.common.is_datetime64tz_dtype(df["Timestamp"])
+
+
+class TestRequestKiwis:
+    def test_period_check_call(self, vmm_connection):
+        """period format checked when included"""
+        with pytest.raises(WaterinfoException):
+            vmm_connection.request_kiwis(
+                {
+                    "request": "getTimeseriesValues",
+                    "ts_id": "78124042",
+                    "period": "PTT1D",
+                }
+            )
+
+    def test_dateformat_check(self, vmm_connection):
+        """dateformat checked when included"""
+        with pytest.raises(WaterinfoException) as e:
+            vmm_connection.request_kiwis(
+                {
+                    "request": "getTimeseriesValues",
+                    "ts_id": "78124042",
+                    "period": "P1D",
+                    "dateformat": "",
+                }
+            )
+            assert str(e.value).contains("The requested returned datetime")
+
+    def test_queryparam_check(self, vmm_connection):
+        """dateformat checked when included"""
+        with pytest.raises(WaterinfoException):
+            vmm_connection.request_kiwis(
+                {"request": "getTimeseriesValues", "ts_id": "78124042", "DUMMY": ""}
+            )
 
 
 class TestTimeseriesValueLayer:
