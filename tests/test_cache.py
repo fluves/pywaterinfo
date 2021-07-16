@@ -15,10 +15,17 @@ def test_cache_vmm(vmm_connection):
 def test_cache_hic(hic_connection):
     """Second call of the same request is retrieved from cache for HIC requests."""
     hic_connection.clear_cache()
-    data, res = hic_connection.request_kiwis({"request": "getRequestInfo"})
+    data, res = hic_connection.request_kiwis(
+        query={"request": "getTimeseriesValueLayer", "timeseriesgroup_id": "156207"}
+    )
     assert not res.from_cache
-    data, res = hic_connection.request_kiwis({"request": "getRequestInfo"})
+    data, res = hic_connection.request_kiwis(
+        query={"request": "getTimeseriesValueLayer", "timeseriesgroup_id": "156207"}
+    )
     assert res.from_cache
+
+
+{"request": "getTimeseriesValueLayer", "timeseriesgroup_id": "156207"}
 
 
 def test_clear_cache(vmm_connection):
@@ -37,7 +44,7 @@ def test_cache_retention(patch_retention):
     Uses monkeypatch version of the CACHE_RETENTION timing for unit testing.
     """
     vmm = Waterinfo("vmm")
-    data, res = vmm.request_kiwis({"request": "getRequestInfo"})
+    _, _ = vmm.request_kiwis({"request": "getRequestInfo"})
 
     time.sleep(2)
     data, res = vmm.request_kiwis({"request": "getRequestInfo"})
