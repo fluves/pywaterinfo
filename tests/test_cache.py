@@ -38,14 +38,42 @@ def test_clear_cache(vmm_connection):
     assert not res.from_cache
 
 
+def test_cache_retention_between_sessions():
+    """Requests are chached in between two sessions."""
+    vmm = Waterinfo("vmm")
+    vmm.clear_cache()
+    _, res = vmm.request_kiwis({"request": "getRequestInfo"})
+    assert not res.from_cache
+
+    # New session reuses the same database
+    vmm = Waterinfo("vmm")
+    _, res = vmm.request_kiwis({"request": "getRequestInfo"})
+    assert res.from_cache
+
+
 def test_cache_retention(patch_retention):
     """Request is not from cache after expiration date.
 
     Uses monkeypatch version of the CACHE_RETENTION timing for unit testing.
+
+    Notes
+    -----
+    See requests-cache.readthedocs.io/en/stable/user_guide/headers.html,
+    conditional requests are automatically sent for any servers that support them. Once
+    a cached response expires, it will only be updated if the
+    remote content has changed. Hence, we check here for expiration first, remove the
+    expired cache and check for `from_cache` in a new request.
     """
     vmm = Waterinfo("vmm")
-    _, _ = vmm.request_kiwis({"request": "getRequestInfo"})
+    vmm.clear_cache()
+    _, res = vmm.request_kiwis({"request": "getRequestInfo"})
+    assert not res.from_cache
 
-    time.sleep(2)
-    data, res = vmm.request_kiwis({"request": "getRequestInfo"})
+    time.sleep(1)
+    vmm = Waterinfo("vmm")
+    _, res = vmm.request_kiwis({"request": "getRequestInfo"})
+    assert res.is_expired
+
+    vmm._request.remove_expired_responses()
+    _, res = vmm.request_kiwis({"request": "getRequestInfo"})
     assert not res.from_cache
