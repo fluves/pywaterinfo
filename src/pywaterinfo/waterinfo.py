@@ -126,7 +126,7 @@ class Waterinfo:
 
         # clean up cache old entries (requests-cache only removes/updates
         # entries that are reused, so this remove piling too much cache.)
-        self._request.cache.remove_expired_responses(
+        self._request.remove_expired_responses(
             datetime.datetime.utcnow() - CACHE_RETENTION
         )
 
