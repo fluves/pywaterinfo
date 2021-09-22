@@ -7,8 +7,6 @@ import pytz
 import re
 import requests
 import requests_cache
-import tempfile
-from pathlib import Path
 
 """
 INFO:
@@ -75,9 +73,11 @@ class Waterinfo:
 
         # Use requests-cache session
         self._request = requests_cache.CachedSession(
-            cache_name=Path(tempfile.gettempdir()) / "pywaterinfo_cache.sqlite",
+            cache_name="pywaterinfo_cache.sqlite",
             backend="sqlite",
             expire_after=CACHE_RETENTION,
+            stale_if_error=False,
+            use_temp=True,
         )
 
         self.__default_args = {
@@ -126,9 +126,7 @@ class Waterinfo:
 
         # clean up cache old entries (requests-cache only removes/updates
         # entries that are reused, so this remove piling too much cache.)
-        self._request.cache.remove_expired_responses(
-            datetime.datetime.utcnow() - CACHE_RETENTION
-        )
+        self._request.remove_expired_responses(CACHE_RETENTION)
 
     def __repr__(self):
         return f"<{self.__class__.__name__} object, " f"Query from {self._base_url!r}>"

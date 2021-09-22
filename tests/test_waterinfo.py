@@ -57,10 +57,7 @@ def test_token_vmm():
 
     # token, token header, authentication in request header
     # this client code is received by VMM for unit testing purposes only
-    client = (
-        "MzJkY2VlY2UtODI2Yy00Yjk4LTljMmQtYjE2OTc4ZjBjYTZhOjRhZGE"
-        "4NzFhLTk1MjgtNGI0ZC1iZmQ1LWI1NzBjZThmNGQyZA=="
-    )
+    client = os.environ.get("VMM_TOKEN")
     vmm = Waterinfo("vmm", token=client)
     vmm.clear_cache()
     assert vmm._token_header is not None

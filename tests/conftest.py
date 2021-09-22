@@ -20,7 +20,7 @@ hic_client = os.environ.get("HIC_TOKEN")
 
 @pytest.fixture
 def patch_retention(monkeypatch):
-    retention = datetime.timedelta(seconds=1)
+    retention = datetime.timedelta(seconds=0.01)
     monkeypatch.setattr("pywaterinfo.waterinfo.CACHE_RETENTION", retention)
 
 
