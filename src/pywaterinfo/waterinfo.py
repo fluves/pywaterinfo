@@ -237,9 +237,13 @@ class Waterinfo:
         supported_parameters = set(
             self._kiwis_info[request]["QueryFields"]["Content"].keys()
         )
-        optional_parameters = set(
-            self._kiwis_info[request]["Optionalfields"]["Content"].keys()
-        )
+
+        if "Optionalfields" in self._kiwis_info[request]:
+            optional_parameters = set(
+                self._kiwis_info[request]["Optionalfields"]["Content"].keys()
+            )
+        else:
+            optional_parameters = set()
 
         for (parameter, _) in query.items():
             if parameter not in (
