@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 0.5.1
+=============
+
+- Fix wrong package metadata on supported Python versions.
+
 Version 0.5.0
 =============
 
