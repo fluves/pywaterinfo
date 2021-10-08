@@ -2,6 +2,17 @@
 Changelog
 =========
 
+Version 0.5.0
+=============
+
+- The package now also supports requests without 'optional fields' (#42).
+- Deprecate python 3.6 dus to incompatibility with requests-cache.
+- Fix cache retention handling in new requests-cache version.
+- Update the pyscaffold blueprint of the package with updated development workflow (#36).
+- Fix deprecation warning on loading pkgresources with relative path (#39 ).
+- Improve docstrings (#38).
+
+
 Version 0.4.0
 =============
 
