@@ -440,6 +440,21 @@ class TestRequestKiwis:
                 {"request": "getTimeseriesValues", "ts_id": "78124042", "DUMMY": ""}
             )
 
+    def test_query_optional_fields(self, vmm_connection):
+        """Query check on optional fields works for requests without optional fields"""
+
+        # Kiwis calls without optional fields
+        no_optional_fields = [
+            "getColorClassifications",
+            "getQualityCodes",
+            "getTimeseriesReleaseStateList",
+        ]
+        for kiwis_request in no_optional_fields:
+            assert (
+                vmm_connection._check_query_parameters({"request": kiwis_request})
+                is None
+            )
+
 
 class TestTimeseriesValueLayer:
     def test_one_of_three(self, vmm_connection):
