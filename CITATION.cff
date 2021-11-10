@@ -24,7 +24,7 @@ url: 'https://fluves.github.io/pywaterinfo/'
 repository-artifact: 'https://pypi.org/project/pywaterinfo/'
 abstract: >-
   Python package to download time series data from
-  waterinfo.be 
+  waterinfo.be
 keywords:
   - water
   - weather
