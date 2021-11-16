@@ -4,12 +4,12 @@ message: 'If you use this software, please cite it as below.'
 type: software
 authors:
   - given-names: Stijn
-    family-names: ' Van Hoey'
+    family-names: 'Van Hoey'
     email: stijn@fluves.com
     affiliation: Fluves
     orcid: 'https://orcid.org/0000-0001-6413-3185'
   - given-names: Johan
-    name-particle: 'van de '
+    name-particle: Van de'
     family-names: Wauw
     email: johan@fluves.com
     affiliation: Fluves
