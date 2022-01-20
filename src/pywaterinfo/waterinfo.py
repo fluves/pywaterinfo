@@ -344,7 +344,7 @@ class Waterinfo:
         we normalize everything to UTC by default. Hence, we interpret the user
         input as UTC, provide the input to the API as CET and request the returned
         output data as UTC. If the user provides a timezone, we interpret user input as
-        the given timezone, doe the request in CET and return th output data in the
+        the given timezone, do the request in CET and return the output data in the
         requested timezone.
 
         Parameters
@@ -359,16 +359,12 @@ class Waterinfo:
                 f"{timezone} is not a valid timezone string."
             )
 
-        input_timestamp = pd.to_datetime(input_datetime)
+        input_timestamp = pd.to_datetime(str(input_datetime))
 
-        if input_timestamp.tz:  # timestamp already contains tz info
-            return input_timestamp.tz_convert("CET").strftime("%Y-%m-%d %H:%M:%S")
-        else:
-            return (
-                input_timestamp.tz_localize(timezone)
-                .tz_convert("CET")
-                .strftime("%Y-%m-%d %H:%M:%S")
-            )
+        if not input_timestamp.tz:  # timestamp does not contain tz info
+            input_timestamp = input_timestamp.tz_localize(timezone)
+        
+        return input_timestamp.tz_convert("CET").strftime("%Y-%m-%d %H:%M:%S")
 
     def _parse_period(self, start=None, end=None, period=None, timezone="UTC"):
         """Check the from/to/period arguments when requesting
