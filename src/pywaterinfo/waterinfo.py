@@ -363,7 +363,7 @@ class Waterinfo:
 
         if not input_timestamp.tz:  # timestamp does not contain tz info
             input_timestamp = input_timestamp.tz_localize(timezone)
-        
+
         return input_timestamp.tz_convert("CET").strftime("%Y-%m-%d %H:%M:%S")
 
     def _parse_period(self, start=None, end=None, period=None, timezone="UTC"):
