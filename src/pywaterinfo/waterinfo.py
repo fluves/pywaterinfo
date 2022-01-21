@@ -344,7 +344,7 @@ class Waterinfo:
         we normalize everything to UTC by default. Hence, we interpret the user
         input as UTC, provide the input to the API as CET and request the returned
         output data as UTC. If the user provides a timezone, we interpret user input as
-        the given timezone, doe the request in CET and return th output data in the
+        the given timezone, do the request in CET and return the output data in the
         requested timezone.
 
         Parameters
