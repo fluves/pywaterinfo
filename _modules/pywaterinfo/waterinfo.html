@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pywaterinfo.waterinfo &mdash; pywaterinfo 0.5.1 documentation</title>
+  <title>pywaterinfo.waterinfo &mdash; pywaterinfo 0.6.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -27,7 +27,7 @@
             <a href="../../index.html" class="icon icon-home"> pywaterinfo
           </a>
               <div class="version">
-                0.5.1
+                0.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -430,7 +430,7 @@
 <span class="sd">        we normalize everything to UTC by default. Hence, we interpret the user</span>
 <span class="sd">        input as UTC, provide the input to the API as CET and request the returned</span>
 <span class="sd">        output data as UTC. If the user provides a timezone, we interpret user input as</span>
-<span class="sd">        the given timezone, doe the request in CET and return th output data in the</span>
+<span class="sd">        the given timezone, do the request in CET and return the output data in the</span>
 <span class="sd">        requested timezone.</span>
 
 <span class="sd">        Parameters</span>
@@ -445,16 +445,12 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">timezone</span><span class="si">}</span><span class="s2"> is not a valid timezone string.&quot;</span>
             <span class="p">)</span>
 
-        <span class="n">input_timestamp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">input_datetime</span><span class="p">)</span>
+        <span class="n">input_timestamp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">input_datetime</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="n">input_timestamp</span><span class="o">.</span><span class="n">tz</span><span class="p">:</span>  <span class="c1"># timestamp already contains tz info</span>
-            <span class="k">return</span> <span class="n">input_timestamp</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="s2">&quot;CET&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="n">input_timestamp</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="n">timezone</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="s2">&quot;CET&quot;</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">input_timestamp</span><span class="o">.</span><span class="n">tz</span><span class="p">:</span>  <span class="c1"># timestamp does not contain tz info</span>
+            <span class="n">input_timestamp</span> <span class="o">=</span> <span class="n">input_timestamp</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="n">timezone</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">input_timestamp</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="s2">&quot;CET&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_parse_period</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;UTC&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check the from/to/period arguments when requesting</span>
