@@ -6,6 +6,7 @@ import logging
 import os
 import pandas as pd
 import pytz
+import sys
 from pandas.api import types
 from pandas.api.types import is_datetime64tz_dtype
 
@@ -288,6 +289,39 @@ class TestDatetimeHandling:
         pd.testing.assert_series_equal(df_utc_default["Timestamp"], df_utc["Timestamp"])
         pd.testing.assert_series_equal(
             df_cet["Timestamp"].dt.tz_convert("UTC"), df_utc["Timestamp"]
+        )
+
+    @pytest.mark.skipif(sys.version_info < (3, 9), reason="ZoneInfo is 3.9 feature")
+    def test_input_datetime_custom_timezone(self, vmm_connection):
+        """Custom timezone with datetime input support"""
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+
+        dt_b_start = datetime(2022, 1, 1, 13, 0, tzinfo=ZoneInfo("Europe/Brussels"))
+        dt_b_end = datetime(2022, 1, 1, 14, 0, tzinfo=ZoneInfo("Europe/Brussels"))
+        df_brussels = vmm_connection.get_timeseries_values(
+            "78073042", start=dt_b_start, end=dt_b_end, timezone="Europe/Brussels"
+        )
+        dt_b_naive_start = datetime(2022, 1, 1, 13, 0)
+        dt_b_naive_end = datetime(2022, 1, 1, 14, 0)
+        df_brussels_naive = vmm_connection.get_timeseries_values(
+            "78073042",
+            start=dt_b_naive_start,
+            end=dt_b_naive_end,
+            timezone="Europe/Brussels",
+        )
+        # Naive with a timezone parameter is converted to timezone
+        pd.testing.assert_series_equal(
+            df_brussels["Timestamp"], df_brussels_naive["Timestamp"]
+        )
+
+        dt_utc_start = datetime(2022, 1, 1, 12, 0)
+        dt_utc_end = datetime(2022, 1, 1, 13, 0)
+        df_utc = vmm_connection.get_timeseries_values(
+            "78073042", start=dt_utc_start, end=dt_utc_end, timezone="UTC"
+        )
+        pd.testing.assert_series_equal(
+            df_brussels["Timestamp"].dt.tz_convert("UTC"), df_utc["Timestamp"]
         )
 
     def test_overwrite_timezone(self, vmm_connection):
