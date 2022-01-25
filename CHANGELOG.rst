@@ -2,6 +2,12 @@
 Changelog
 =========
 
+Version 0.6.0
+=============
+
+- Add support for datetime with zoneinfo tzinfo in python 3.9 (#48, by dbkhout)
+- Add citation file using Citation File Format (CFF) (#43)
+
 Version 0.5.1
 =============
 
