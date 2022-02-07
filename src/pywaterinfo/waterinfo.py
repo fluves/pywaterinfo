@@ -77,7 +77,7 @@ class Waterinfo:
             backend="sqlite",
             expire_after=CACHE_RETENTION,
             stale_if_error=False,
-            use_temp=True,
+            use_cache_dir=True,
         )
 
         self.__default_args = {
