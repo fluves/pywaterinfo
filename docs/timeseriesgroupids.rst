@@ -33,6 +33,8 @@ For the VMM, the list of available group identifiers (date: 2017-10-01) are prov
       bodem_verzadiging, 15min, 192929, soil_saturation, 15min
       bodem_vocht, 15min, 192928, soil_moisture, 15min
       dauwpunt_temperatuur, 15min, 192923, dew_point_temperature, 15min
+      geleidbaarheid (permanent meetnet), 15min, 383065, conductivity (continuous network), 15min
+      geleidbaarheid (project), 15min, 381863, conductivity (project based), 15min
       grondtemperatuur, 15min, 192924, ground_temperature, 15min
       grondwarmte, 15min, 192916, ground_heat, 15min
       instraling, 15min, 192920, irradiance, 15min
