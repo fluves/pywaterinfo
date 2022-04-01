@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Caching &mdash; pywaterinfo 0.6.0.post1.dev4+g39ac22f documentation</title>
+  <title>Caching &mdash; pywaterinfo 0.6.0.post1.dev8+g475b3ec documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="index.html" class="icon icon-home"> pywaterinfo
           </a>
               <div class="version">
-                0.6.0.post1.dev4+g39ac22f
+                0.6.0.post1.dev8+g475b3ec
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -98,6 +98,16 @@ When you want to make sure to not use a cached requests, make sure to empty the 
 </pre></div>
 </div>
 <p>To see if the response is retrieved from cache or not, activate the loggin, see <a class="reference external" href="logging">page on logging</a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When downloading a lot of (small) data with many requests in a short amount of time the cache can grow quickly. This increases the computational time to check if a request already has been made and can be retrieved from the cache. Clearing the cache can overcome increasing initializaton time:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
+<span class="n">vmm</span><span class="o">.</span><span class="n">clear_cache</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>When the initialization time (Creating the <code class="docutils literal notranslate"><span class="pre">Waterinfo</span></code> class) goes up to more than a minute without a network timeout error, clearing the cache is worthwhile to test.</p>
+</div>
 </section>
 
 

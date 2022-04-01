@@ -17,3 +17,15 @@ When you want to make sure to not use a cached requests, make sure to empty the 
 
 
 To see if the response is retrieved from cache or not, activate the loggin, see `page on logging <logging>`_.
+
+.. warning::
+
+    When downloading a lot of (small) data with many requests in a short amount of time the cache can grow quickly. This increases the computational time to check if a request already has been made and can be retrieved from the cache. Clearing the cache can overcome increasing initializaton time:
+
+    ::
+
+        from pywaterinfo import Waterinfo
+        vmm = Waterinfo("vmm")
+        vmm.clear_cache()
+
+    When the initialization time (Creating the ``Waterinfo`` class) goes up to more than a minute without a network timeout error, clearing the cache is worthwhile to test.
