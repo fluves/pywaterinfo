@@ -27,5 +27,5 @@ To see if the response is retrieved from cache or not, activate the loggin, see 
         from pywaterinfo import Waterinfo
         vmm = Waterinfo("vmm")
         vmm.clear_cache()
-    
+
     When the initialization time (Creating the ``Waterinfo`` class) goes up to more than a minute without a network timeout error, clearing the cache is worthwhile to test.
