@@ -39,7 +39,7 @@ def test_clear_cache(vmm_connection):
 
 
 def test_cache_retention_between_sessions():
-    """Requests are chached in between two sessions."""
+    """Requests are cached in between two sessions."""
     vmm = Waterinfo("vmm")
     vmm.clear_cache()
     _, res = vmm.request_kiwis({"request": "getRequestInfo"})

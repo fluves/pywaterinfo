@@ -207,7 +207,7 @@ class Waterinfo:
 
         if res.status_code != requests.codes.ok:
             raise KiwisException(
-                f"Waterinfo call returned {res.status_code} error"
+                f"Waterinfo call returned {res.status_code} error "
                 f"with the message {res.content}"
             )
 

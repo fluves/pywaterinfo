@@ -94,8 +94,8 @@ know your way around *Sphinx*, you can `propose a file change`_ to improve
 documentation. If not, `report an issue`_ and we can point you in the right direction.
 
 .. _This website: https://fluves.github.io/pywaterinfo/
-.. _Sphinx: http://www.sphinx-doc.org/en/master/
-.. _reStructuredText: http://docutils.sourceforge.net/rst.html
+.. _Sphinx: https://www.sphinx-doc.org/en/master/
+.. _reStructuredText: https://docutils.sourceforge.net/rst.html
 .. _propose a file change: https://help.github.com/articles/editing-files-in-another-user-s-repository/
 .. _report an issue: https://github.com/fluves/pywaterinfo/issues/new
 
