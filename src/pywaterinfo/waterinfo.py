@@ -216,7 +216,7 @@ class Waterinfo:
         else:
             logging.info(f"Successful waterinfo API request with call {res.url}")
 
-        parsed = res.json()
+        parsed = res.json(strict=False)
         if (
             type(parsed) is dict
             and "type" in parsed.keys()
