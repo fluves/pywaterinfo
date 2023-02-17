@@ -245,7 +245,7 @@ class Waterinfo:
         else:
             optional_parameters = set()
 
-        for (parameter, _) in query.items():
+        for parameter, _ in query.items():
             if parameter not in (
                 supported_parameters | optional_parameters | set(self._default_params)
             ):
