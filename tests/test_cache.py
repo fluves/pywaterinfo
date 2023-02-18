@@ -70,8 +70,8 @@ def test_cache_retention(patch_retention):
     assert not res.from_cache
 
     time.sleep(1)
-    vmm = Waterinfo("vmm")
     _, res = vmm.request_kiwis({"request": "getRequestInfo"})
+    print(res.from_cache, res.created_at, res.expires, res.is_expired)
     assert res.is_expired
 
     vmm._request.remove_expired_responses()
