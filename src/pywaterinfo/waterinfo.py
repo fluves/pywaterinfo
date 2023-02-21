@@ -172,7 +172,7 @@ class Waterinfo:
         >>> # get the API info/documentation from kiwis
         >>> data, res = vmm.request_kiwis({"request": "getRequestInfo"})
         >>> data        #doctest: +ELLIPSIS
-        [{'Title': 'KISTERS QueryServices - Request Inform...file'}}}}}}]
+        [{'Title': 'KISTERS QueryServices - Request Inform...}}}}}]
         >>> res.status_code
         200
         >>> # get the timeseries data from last day from time series 78124042
@@ -252,7 +252,7 @@ class Waterinfo:
         else:
             optional_parameters = set()
 
-        for (parameter, _) in query.items():
+        for parameter, _ in query.items():
             if parameter not in (
                 supported_parameters | optional_parameters | set(self._default_params)
             ):
