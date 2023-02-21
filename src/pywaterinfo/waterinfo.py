@@ -59,7 +59,8 @@ class Waterinfo:
             Token as provided by VMM on project-level.
         proxies: dict
             Dictionary mapping protocol or protocol and host to the URL of the proxy
-            (e.g. {‘http’: ‘foo.bar:3128’, ‘http://host.name’: ‘foo.bar:4012’}) to be used on each Request
+            (e.g. {‘http’: ‘foo.bar:3128’, ‘http://host.name’: ‘foo.bar:4012’}) to be
+            used on each Request
         """
 
         # set the base string linked to the data provider
@@ -81,7 +82,7 @@ class Waterinfo:
             expire_after=CACHE_RETENTION,
             stale_if_error=False,
             use_cache_dir=True,
-            proxies=proxies
+            proxies=proxies,
         )
 
         self._proxies = proxies
@@ -106,7 +107,7 @@ class Waterinfo:
                     "charset": "UTF-8",
                 },
                 data={"grant_type": "client_credentials"},
-                proxies=proxies
+                proxies=proxies,
             )
             res.raise_for_status()
             res_parsed = res.json()
@@ -210,7 +211,9 @@ class Waterinfo:
             headers = dict()
         if self._token_header:
             headers.update(self._token_header)
-        res = self._request.get(self._base_url, params=query, headers=headers, proxies=self._proxies)
+        res = self._request.get(
+            self._base_url, params=query, headers=headers, proxies=self._proxies
+        )
 
         if res.status_code != requests.codes.ok:
             raise KiwisException(
