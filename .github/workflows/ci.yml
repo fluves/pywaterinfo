@@ -36,18 +36,18 @@ jobs:
         python -m pip install --upgrade pre-commit
         pre-commit run --all-files
     - name: Test with pytest when internal PR
-      if: github.repository == 'fluves/pywaterinfo'
+      if: ${{ github.event.pull_request.head.repo.full_name == 'fluves/pywaterinfo' }}
       env:
         HIC_TOKEN: ${{ secrets.HIC_TOKEN }}
         VMM_TOKEN: ${{ secrets.VMM_TOKEN }}
       run: |
         pytest
     - name: Test with pytest when fork PR
-      if: github.repository == 'fluves/pywaterinfo'
+      if: ${{ github.event.pull_request.head.repo.full_name != 'fluves/pywaterinfo' }}
       run: |
         pytest -m 'not notoken'
     - name: Test with tox when internal PR
-      if: github.repository == 'fluves/pywaterinfo'
+      if: ${{ github.event.pull_request.head.repo.full_name == 'fluves/pywaterinfo' }}
       env:
         HIC_TOKEN: ${{ secrets.HIC_TOKEN }}
         VMM_TOKEN: ${{ secrets.VMM_TOKEN }}
