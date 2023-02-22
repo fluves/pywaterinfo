@@ -31,17 +31,23 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e .[develop]
     - name: Run precommit hooks & linting
+      if: matrix.python-version == '3.9'
       run: |
         python -m pip install --upgrade pre-commit
         pre-commit run --all-files
-      if: matrix.python-version == '3.9'
-    - name: Test with pytest
+    - name: Test with pytest when internal PR
+      if: ${{ github.event.pull_request.head.repo.full_name == 'fluves/pywaterinfo' }}
       env:
         HIC_TOKEN: ${{ secrets.HIC_TOKEN }}
         VMM_TOKEN: ${{ secrets.VMM_TOKEN }}
       run: |
         pytest
-    - name: Test with tox
+    - name: Test with pytest when fork PR
+      if: ${{ github.event.pull_request.head.repo.full_name != 'fluves/pywaterinfo' }}
+      run: |
+        pytest -m 'not notoken'
+    - name: Test with tox when internal PR
+      if: ${{ github.event.pull_request.head.repo.full_name == 'fluves/pywaterinfo' }}
       env:
         HIC_TOKEN: ${{ secrets.HIC_TOKEN }}
         VMM_TOKEN: ${{ secrets.VMM_TOKEN }}
