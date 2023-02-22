@@ -192,16 +192,17 @@ Or using tox (i.e. in a separate environment)
 
 You will receive information on the test status and the test coverage of the unit tests.
 
-In order to run all the tests, you need a HIC token, defined as an environmental variable ``HIC_TOKEN``. When you do
-not have a HIC token, you can ignore the token tests for HIC webservice, be defining to not run the tests
-marked with the `nohictoken` label:
+In order to run all the tests, you need a HIC&VMM token, defined as an environmental variables ``HIC_TOKEN``
+and ``VMM_TOKEN` respectively. When you do not have a HIC token, you can ignore the token tests for HIC webservice,
+be defining to not run the tests marked with the `notoken` label:
 
 ::
 
-    pytest -m 'not nohictoken'
+    pytest -m 'not notoken'
 
 The Github actions CI does have the token stored as a *secret*, so you do not really need a token for local testing, as eventual failures
-will be noticed by the Github Actions CI.
+will be noticed by the Github Actions CI. Although, PRs from forks will not have access to these Github secrets, so these
+tests are ignored when running from fork.
 
 Documentation with sphinx
 --------------------------

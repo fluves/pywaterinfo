@@ -47,6 +47,7 @@ def test_ssl_handling():
     NotImplemented
 
 
+@pytest.mark.notoken
 def test_token_vmm():
     """Check if submitting of a token is tackled properly"""
     # no token, no token header, no authentication in request header
@@ -71,7 +72,7 @@ def test_token_vmm():
         Waterinfo("vmm", token=client)
 
 
-@pytest.mark.nohictoken
+@pytest.mark.notoken
 def test_token_hic():
     """Check if submitting of a token is tackled properly"""
     # no token, no token header, no authentication in request header
