@@ -47,7 +47,13 @@ class WaterinfoException(Exception):
 
 
 class Waterinfo:
-    def __init__(self, provider: str = "vmm", token: str = None, proxies: dict = None):
+    def __init__(
+        self,
+        provider: str = "vmm",
+        token: str = None,
+        proxies: dict = None,
+        cache: bool = False,
+    ):
         """Request data from waterinfo.be
 
         Parameters
@@ -76,14 +82,22 @@ class Waterinfo:
             raise WaterinfoException("Provider is either 'vmm' or 'hic'.")
 
         # Use requests-cache session
-        self._request = requests_cache.CachedSession(
-            cache_name="pywaterinfo_cache.sqlite",
-            backend="sqlite",
-            expire_after=CACHE_RETENTION,
-            stale_if_error=False,
-            use_cache_dir=True,
-            proxies=proxies,
-        )
+        if cache:
+            self._cache = True
+            self._request = requests_cache.CachedSession(
+                cache_name="pywaterinfo_cache.sqlite",
+                use_memory=False,
+                cache_control=False,
+                expire_after=CACHE_RETENTION,
+                stale_if_error=False,
+                use_cache_dir=True,
+                proxies=proxies,
+            )
+        else:
+            self._cache = False
+            self._request = requests.Session()
+            if proxies:
+                self._request.proxies.update(proxies)
 
         self._proxies = proxies
 
@@ -134,7 +148,8 @@ class Waterinfo:
 
         # clean up cache old entries (requests-cache only removes/updates
         # entries that are reused, so this remove piling too much cache.)
-        self._request.remove_expired_responses(CACHE_RETENTION)
+        if cache:
+            self._request.cache.delete(expired=True)
 
     def __repr__(self):
         return f"<{self.__class__.__name__} object, " f"Query from {self._base_url!r}>"
@@ -221,8 +236,9 @@ class Waterinfo:
                 f"with the message {res.content}"
             )
 
-        if res.from_cache:
-            logging.info(f"Request {res.url} reused from cache.")
+        if self._cache:
+            if res.from_cache:
+                logging.info(f"Request {res.url} reused from cache.")
         else:
             logging.info(f"Successful waterinfo API request with call {res.url}")
 

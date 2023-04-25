@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-
 import pytest
 
+import datetime
 import logging
 import os
 import pandas as pd
@@ -29,7 +29,6 @@ def test_valid_sources():
 
 def test_default_api_arguments(vmm_connection):
     """Check if default arguments end up in query"""
-    vmm_connection.clear_cache()
     _, res = vmm_connection.request_kiwis({"request": "getRequestInfo"})
     default_arg = {
         "service": "kisters",
@@ -52,7 +51,7 @@ def test_token_vmm():
     """Check if submitting of a token is tackled properly"""
     # no token, no token header, no authentication in request header
     vmm = Waterinfo("vmm")
-    vmm.clear_cache()
+    # vmm.clear_cache() # TODO - refactor
     assert vmm._token_header is None
     _, res = vmm.request_kiwis({"request": "getRequestInfo"})
     assert "Authorization" not in res.request.headers.keys()
@@ -61,7 +60,7 @@ def test_token_vmm():
     # this client code is received by VMM for unit testing purposes only
     client = os.environ.get("VMM_TOKEN")
     vmm = Waterinfo("vmm", token=client)
-    vmm.clear_cache()
+    # vmm.clear_cache() # TODO - refactor
     assert vmm._token_header is not None
     _, res = vmm.request_kiwis({"request": "getRequestInfo"})
     assert "Authorization" in res.request.headers.keys()
@@ -77,7 +76,7 @@ def test_token_hic():
     """Check if submitting of a token is tackled properly"""
     # no token, no token header, no authentication in request header
     hic = Waterinfo("hic")
-    hic.clear_cache()
+    # hic.clear_cache() # TODO - refactor
     assert hic._token_header is None
     _, res = hic.request_kiwis({"request": "getRequestInfo"})
     assert "Authorization" not in res.request.headers.keys()
@@ -86,7 +85,7 @@ def test_token_hic():
     # this client code is received by VMM for unit testing purposes only
     client = os.environ.get("HIC_TOKEN")
     hic = Waterinfo("hic", token=client)
-    hic.clear_cache()
+    # hic.clear_cache() # TODO - refactor
     assert hic._token_header is not None
     _, res = hic.request_kiwis({"request": "getRequestInfo"})
     assert "Authorization" in res.request.headers.keys()
@@ -218,7 +217,10 @@ class TestDatetimeHandling:
             "2019-05-01T00:00:00.000Z"
         )
         assert types.is_datetime64tz_dtype(pd.to_datetime(df_timeseries["Timestamp"]))
-        assert pd.to_datetime(df_timeseries.loc[0, "Timestamp"]).tz.zone == "UTC"
+        assert (
+            pd.to_datetime(df_timeseries.loc[0, "Timestamp"]).tz
+            == datetime.timezone.utc
+        )
 
     def test_kiwis_requires_cet(self, vmm_connection, caplog):
         """Check on the KIWIS behavior of CET date format as request parameter
@@ -330,7 +332,7 @@ class TestDatetimeHandling:
         df = vmm_connection.get_timeseries_values(
             ts_id="60992042", start="20190501 14:05", end="20190501 14:10"
         )
-        assert df["Timestamp"].dt.tz == pytz.UTC
+        assert df["Timestamp"].dt.tz == datetime.timezone.utc
 
         df = vmm_connection.get_timeseries_values(
             ts_id="60992042",
@@ -339,7 +341,9 @@ class TestDatetimeHandling:
             timezone="CET",
         )
         assert is_datetime64tz_dtype(df["Timestamp"])
-        assert df["Timestamp"].dt.tz == pytz.FixedOffset(120)
+        assert df["Timestamp"].dt.tz == datetime.timezone(
+            datetime.timedelta(seconds=7200)
+        )
 
     def test_start_end_timezone(self, vmm_connection):
         """pywaterinfo can handle start/end dates already containing tz info"""
@@ -404,7 +408,6 @@ class TestDatetimeHandling:
 class TestTimeseriesValues:
     def test_one_of_two_ids(self, vmm_connection):
         """either ts_id or timeseriesgroup_id should be used"""
-        vmm_connection.clear_cache()
         with pytest.raises(Exception):
             vmm_connection.get_timeseries_values(
                 ts_id="78124042", timeseriesgroup_id="192900", period="P1D"
@@ -414,7 +417,6 @@ class TestTimeseriesValues:
 
     def test_multiple_ids(self, vmm_connection):
         """Call worksxpected for multiple identifiers combined in single dataframe"""
-        vmm_connection.clear_cache()
         df = vmm_connection.get_timeseries_values(
             ts_id="60992042,60968042", start="20190501 14:05", end="20190501 14:10"
         )
@@ -422,13 +424,12 @@ class TestTimeseriesValues:
 
     def test_no_data(self, vmm_connection):
         """return empty dataframe when no data"""
-        vmm_connection.clear_cache()
         df = vmm_connection.get_timeseries_values(
             ts_id="60992042", start="21500501 14:05", end="21500501 14:10"
         )
         assert len(df) == 0
 
-        vmm_connection.clear_cache()
+        # vmm_connection.clear_cache() # TODO - refactor
         df = vmm_connection.get_timeseries_values(
             ts_id="60992042,60968042", start="21500501 14:05", end="21500501 14:10"
         )
@@ -436,7 +437,6 @@ class TestTimeseriesValues:
 
     def test_datetime_conversion(self, vmm_connection):
         """Datetime in the returned data sets are pd.Timestamps with timezone info"""
-        vmm_connection.clear_cache()
         df = vmm_connection.get_timeseries_values(
             ts_id="60992042,60968042", start="20190501 14:05", end="20190501 14:10"
         )
