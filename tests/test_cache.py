@@ -63,7 +63,7 @@ def test_cache_retention(patch_retention):
     remote content has changed. Hence, we check here for expiration first, remove the
     expired cache and check for `from_cache` in a new request.
     """
-    # TODO - asjudt to make sure this works with the cache-header logic
+    # TODO - adjust to make sure this works with the cache-header logic
     # it will now look at cache header first with cache_control=False active
     vmm = Waterinfo("vmm", cache=True)
     vmm.clear_cache()
@@ -75,6 +75,6 @@ def test_cache_retention(patch_retention):
     print(res.from_cache, res.created_at, res.expires, res.is_expired)
     assert res.is_expired
 
-    vmm._request.remove_expired_responses()
+    vmm._request.cache.delete(expired=True)
     _, res = vmm.request_kiwis({"request": "getRequestInfo"})
     assert not res.from_cache

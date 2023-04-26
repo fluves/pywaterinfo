@@ -27,14 +27,16 @@ def test_valid_sources():
         assert str(e.value) == "Provider is either 'vmm' or 'hic'."
 
 
-def test_default_api_arguments(vmm_connection):
+@pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
+def test_default_api_arguments(connection, request):
     """Check if default arguments end up in query"""
-    _, res = vmm_connection.request_kiwis({"request": "getRequestInfo"})
+    connection = request.getfixturevalue(connection)
+    _, res = connection.request_kiwis({"request": "getRequestInfo"})
     default_arg = {
         "service": "kisters",
         "type": "QueryServices",
         "format": "json",
-        "datasource": vmm_connection._datasource,
+        "datasource": connection._datasource,
         "timezone": "UTC",
     }
     assert all([key in res.url for key in default_arg.keys()])
@@ -47,11 +49,12 @@ def test_ssl_handling():
 
 
 @pytest.mark.notoken
-def test_token_vmm():
+@pytest.mark.parametrize("cache", [False, True])
+def test_token_vmm(cache):
     """Check if submitting of a token is tackled properly"""
     # no token, no token header, no authentication in request header
-    vmm = Waterinfo("vmm")
-    # vmm.clear_cache() # TODO - refactor
+    vmm = Waterinfo("vmm", cache=cache)
+    vmm.clear_cache()
     assert vmm._token_header is None
     _, res = vmm.request_kiwis({"request": "getRequestInfo"})
     assert "Authorization" not in res.request.headers.keys()
@@ -59,8 +62,8 @@ def test_token_vmm():
     # token, token header, authentication in request header
     # this client code is received by VMM for unit testing purposes only
     client = os.environ.get("VMM_TOKEN")
-    vmm = Waterinfo("vmm", token=client)
-    # vmm.clear_cache() # TODO - refactor
+    vmm = Waterinfo("vmm", token=client, cache=cache)
+    vmm.clear_cache()
     assert vmm._token_header is not None
     _, res = vmm.request_kiwis({"request": "getRequestInfo"})
     assert "Authorization" in res.request.headers.keys()
@@ -72,11 +75,12 @@ def test_token_vmm():
 
 
 @pytest.mark.notoken
-def test_token_hic():
+@pytest.mark.parametrize("cache", [False, True])
+def test_token_hic(cache):
     """Check if submitting of a token is tackled properly"""
     # no token, no token header, no authentication in request header
-    hic = Waterinfo("hic")
-    # hic.clear_cache() # TODO - refactor
+    hic = Waterinfo("hic", cache=cache)
+    hic.clear_cache()
     assert hic._token_header is None
     _, res = hic.request_kiwis({"request": "getRequestInfo"})
     assert "Authorization" not in res.request.headers.keys()
@@ -84,8 +88,8 @@ def test_token_hic():
     # token, token header, authentication in request header
     # this client code is received by VMM for unit testing purposes only
     client = os.environ.get("HIC_TOKEN")
-    hic = Waterinfo("hic", token=client)
-    # hic.clear_cache() # TODO - refactor
+    hic = Waterinfo("hic", token=client, cache=cache)
+    hic.clear_cache()
     assert hic._token_header is not None
     _, res = hic.request_kiwis({"request": "getRequestInfo"})
     assert "Authorization" in res.request.headers.keys()
@@ -93,98 +97,102 @@ def test_token_hic():
     # wrong token results in error
     with pytest.raises(Exception):
         client = "DUMMY"
-        Waterinfo("hic", token=client)
+        Waterinfo("hic", token=client, cache=cache)
 
 
+@pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
 class TestPeriodDates:
-    def test_example_period_strings(self, vmm_connection):
+    def test_example_period_strings(self, connection, request):
         """VMM tutorial valid examples"""
-        assert vmm_connection._check_period_format("P3D") == "P3D"
-        assert vmm_connection._check_period_format("P1Y") == "P1Y"
-        assert vmm_connection._check_period_format("P1DT12H") == "P1DT12H"
-        assert vmm_connection._check_period_format("PT6H") == "PT6H"
-        assert (
-            vmm_connection._check_period_format("P1Y6M3DT4H20M30S")
-            == "P1Y6M3DT4H20M30S"
-        )
+        connection = request.getfixturevalue(connection)
+        assert connection._check_period_format("P3D") == "P3D"
+        assert connection._check_period_format("P1Y") == "P1Y"
+        assert connection._check_period_format("P1DT12H") == "P1DT12H"
+        assert connection._check_period_format("PT6H") == "PT6H"
+        assert connection._check_period_format("P1Y6M3DT4H20M30S") == "P1Y6M3DT4H20M30S"
 
-    def test_day_week_combi(self, vmm_connection):
+    def test_day_week_combi(self, connection, request):
         """Days and week info can not be combined"""
+        connection = request.getfixturevalue(connection)
         with pytest.raises(Exception):
-            vmm_connection._check_period_format("P2W2D")
+            connection._check_period_format("P2W2D")
 
-    def test_p_symbol(self, vmm_connection):
+    def test_p_symbol(self, connection, request):
         """Periods are defined by P symbol"""
+        connection = request.getfixturevalue(connection)
         with pytest.raises(Exception):
-            vmm_connection._check_period_format("3D")
+            connection._check_period_format("3D")
 
-    def test_time_definition(self, vmm_connection):
+    def test_time_definition(self, connection, request):
         """Periods need at least a time definition"""
+        connection = request.getfixturevalue(connection)
         with pytest.raises(Exception):
-            vmm_connection._check_period_format("P")
+            connection._check_period_format("P")
 
-    def test_time_definition_number(self, vmm_connection):
+    def test_time_definition_number(self, connection, request):
         """Time definitions are preceded by number"""
+        connection = request.getfixturevalue(connection)
         with pytest.raises(Exception):
-            vmm_connection._check_period_format("PY")
+            connection._check_period_format("PY")
         with pytest.raises(Exception):
-            vmm_connection._check_period_format("P3YM")
+            connection._check_period_format("P3YM")
         with pytest.raises(Exception):
-            vmm_connection._check_period_format("P3Y4MD")
+            connection._check_period_format("P3Y4MD")
         with pytest.raises(Exception):
-            vmm_connection._check_period_format("P3Y4MD")
+            connection._check_period_format("P3Y4MD")
         with pytest.raises(Exception):
-            vmm_connection._check_period_format("P3Y4M5DTH")
+            connection._check_period_format("P3Y4M5DTH")
         with pytest.raises(Exception):
-            vmm_connection._check_period_format("P3Y4M5DT4HM")
+            connection._check_period_format("P3Y4M5DT4HM")
         with pytest.raises(Exception):
-            vmm_connection._check_period_format("P3Y4M5DT4H3MS")
+            connection._check_period_format("P3Y4M5DT4H3MS")
 
-    def test_time_subday_definition(self, vmm_connection):
+    def test_time_subday_definition(self, connection, request):
         """Subday information requires the T symbol are defined by P symbol
 
         Actually the example, P3H, will work in waterinfo API, but this is rather
         inconsistent from the API side and the docs of VMM says otherwise
         """
+        connection = request.getfixturevalue(connection)
         with pytest.raises(Exception):
-            vmm_connection._check_period_format("P3H")
+            connection._check_period_format("P3H")
 
-    def test_start_end_period(self, vmm_connection):
+    def test_start_end_period(self, connection, request):
         """Impossible date/period input combinations"""
+        connection = request.getfixturevalue(connection)
         # all three provided
         with pytest.raises(Exception):
-            vmm_connection._parse_period(
-                start="2012-11-01", end="2013-12-01", period="P3D"
-            )
+            connection._parse_period(start="2012-11-01", end="2013-12-01", period="P3D")
         # none of them provided
         with pytest.raises(Exception):
-            vmm_connection._parse_period()
+            connection._parse_period()
         # only end used
         with pytest.raises(Exception):
-            vmm_connection._parse_period(end="2013-12-01")
+            connection._parse_period(end="2013-12-01")
         # valid combinations
         assert isinstance(
-            vmm_connection._parse_period(start="2012-11-01", end="2013-12-01"), dict
+            connection._parse_period(start="2012-11-01", end="2013-12-01"), dict
         )
         assert set(
-            vmm_connection._parse_period(start="2012-11-01", end="2013-12-01").keys()
+            connection._parse_period(start="2012-11-01", end="2013-12-01").keys()
         ) == set(["from", "to"])
         assert isinstance(
-            vmm_connection._parse_period(start="2012-11-01", period="P3D"), dict
+            connection._parse_period(start="2012-11-01", period="P3D"), dict
         )
         assert set(
-            vmm_connection._parse_period(start="2012-11-01", period="P3D").keys()
+            connection._parse_period(start="2012-11-01", period="P3D").keys()
         ) == set(["from", "period"])
         assert isinstance(
-            vmm_connection._parse_period(end="2013-12-01", period="P3D"), dict
+            connection._parse_period(end="2013-12-01", period="P3D"), dict
         )
         assert set(
-            vmm_connection._parse_period(end="2013-12-01", period="P3D").keys()
+            connection._parse_period(end="2013-12-01", period="P3D").keys()
         ) == set(["to", "period"])
 
 
+@pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
 class TestDatetimeHandling:
-    def test_input_date_formats_utc_default(self, vmm_connection):
+    def test_input_date_formats_utc_default(self, connection, request):
         """Date formats accepted as UTC, but provided to API as CET in order to get
         the time series as UTC
 
@@ -193,19 +201,18 @@ class TestDatetimeHandling:
         input as UTC, provide the input to the API as CET and request the returned
         output data as UTC.
         """
-        assert vmm_connection._parse_date("2017-01-01") == "2017-01-01 01:00:00"
-        assert vmm_connection._parse_date("2017-08-01") == "2017-08-01 02:00:00"
-        assert vmm_connection._parse_date("2017/01/01") == "2017-01-01 01:00:00"
-        assert vmm_connection._parse_date("20170101") == "2017-01-01 01:00:00"
-        assert vmm_connection._parse_date("2017 01 01") == "2017-01-01 01:00:00"
-        assert vmm_connection._parse_date("2017-01") == "2017-01-01 01:00:00"
-        assert vmm_connection._parse_date("2017") == "2017-01-01 01:00:00"
-        assert (
-            vmm_connection._parse_date("2017-01-01 10:00:00") == "2017-01-01 11:00:00"
-        )
-        assert vmm_connection._parse_date("01-01-2017") == "2017-01-01 01:00:00"
+        connection = request.getfixturevalue(connection)
+        assert connection._parse_date("2017-01-01") == "2017-01-01 01:00:00"
+        assert connection._parse_date("2017-08-01") == "2017-08-01 02:00:00"
+        assert connection._parse_date("2017/01/01") == "2017-01-01 01:00:00"
+        assert connection._parse_date("20170101") == "2017-01-01 01:00:00"
+        assert connection._parse_date("2017 01 01") == "2017-01-01 01:00:00"
+        assert connection._parse_date("2017-01") == "2017-01-01 01:00:00"
+        assert connection._parse_date("2017") == "2017-01-01 01:00:00"
+        assert connection._parse_date("2017-01-01 10:00:00") == "2017-01-01 11:00:00"
+        assert connection._parse_date("01-01-2017") == "2017-01-01 01:00:00"
 
-    def test_utc_default_return(self, df_timeseries):
+    def test_utc_default_return(self, connection, df_timeseries):  # noqa
         """Check that the returned dates are UTC aware and according to the user
         input in UTC
         """
@@ -222,7 +229,7 @@ class TestDatetimeHandling:
             == datetime.timezone.utc
         )
 
-    def test_kiwis_requires_cet(self, vmm_connection, caplog):
+    def test_kiwis_requires_cet(self, connection, caplog, request):
         """Check on the KIWIS behavior of CET date format as request parameter
 
         When using the KIWIS API, the input date format is always CET, whereas the
@@ -230,9 +237,10 @@ class TestDatetimeHandling:
         so when requesting a timezone, the input date format is assumed in this format
         as well and the query will be adjusted as such.
         """
+        connection = request.getfixturevalue(connection)
         # Requesting data at CET 14h should equal requesting data at UTC 16h (+2h)
         with caplog.at_level(logging.INFO):
-            df_utc = vmm_connection.get_timeseries_values(
+            df_utc = connection.get_timeseries_values(
                 ts_id="60992042",
                 start="20190501 14:05:00",
                 end="20190501 14:10:00",
@@ -246,7 +254,7 @@ class TestDatetimeHandling:
         caplog.clear()
 
         with caplog.at_level(logging.INFO):
-            df_cet = vmm_connection.get_timeseries_values(
+            df_cet = connection.get_timeseries_values(
                 ts_id="60992042",
                 start="20190501 16:05:00",
                 end="20190501 16:10:00",
@@ -262,7 +270,7 @@ class TestDatetimeHandling:
         )
         pd.testing.assert_series_equal(df_utc["Value"], df_cet["Value"])
 
-    def test_input_date_formats_custom_timezone(self, vmm_connection):
+    def test_input_date_formats_custom_timezone(self, connection, request):
         """User provides custom timezone for date inputs and returned time series
 
         Input datetime of the KIWIS API is always CET (and is not tz-aware). When a user
@@ -273,17 +281,18 @@ class TestDatetimeHandling:
         Note, there is no query option to check the timezone string for the java
         app of kisters, so we only check if string is supported by pytz.
         """
-        df_utc_default = vmm_connection.get_timeseries_values(
+        connection = request.getfixturevalue(connection)
+        df_utc_default = connection.get_timeseries_values(
             ts_id="60992042", start="20190501 14:05", end="20190501 14:10"
         )
-        df_utc = vmm_connection.get_timeseries_values(
+        df_utc = connection.get_timeseries_values(
             ts_id="60992042",
             start="20190501 14:05",
             end="20190501 14:10",
             timezone="UTC",
         )
         # UTC data should be the same as CET, taken into account 2h difference
-        df_cet = vmm_connection.get_timeseries_values(
+        df_cet = connection.get_timeseries_values(
             ts_id="60992042",
             start="20190501 16:05",
             end="20190501 16:10",
@@ -295,19 +304,20 @@ class TestDatetimeHandling:
         )
 
     @pytest.mark.skipif(sys.version_info < (3, 9), reason="ZoneInfo is 3.9 feature")
-    def test_input_datetime_custom_timezone(self, vmm_connection):
+    def test_input_datetime_custom_timezone(self, connection, request):
         """Custom timezone with datetime input support"""
+        connection = request.getfixturevalue(connection)
         from datetime import datetime
         from zoneinfo import ZoneInfo
 
         dt_b_start = datetime(2022, 1, 1, 13, 0, tzinfo=ZoneInfo("Europe/Brussels"))
         dt_b_end = datetime(2022, 1, 1, 14, 0, tzinfo=ZoneInfo("Europe/Brussels"))
-        df_brussels = vmm_connection.get_timeseries_values(
+        df_brussels = connection.get_timeseries_values(
             "78073042", start=dt_b_start, end=dt_b_end, timezone="Europe/Brussels"
         )
         dt_b_naive_start = datetime(2022, 1, 1, 13, 0)
         dt_b_naive_end = datetime(2022, 1, 1, 14, 0)
-        df_brussels_naive = vmm_connection.get_timeseries_values(
+        df_brussels_naive = connection.get_timeseries_values(
             "78073042",
             start=dt_b_naive_start,
             end=dt_b_naive_end,
@@ -320,21 +330,22 @@ class TestDatetimeHandling:
 
         dt_utc_start = datetime(2022, 1, 1, 12, 0)
         dt_utc_end = datetime(2022, 1, 1, 13, 0)
-        df_utc = vmm_connection.get_timeseries_values(
+        df_utc = connection.get_timeseries_values(
             "78073042", start=dt_utc_start, end=dt_utc_end, timezone="UTC"
         )
         pd.testing.assert_series_equal(
             df_brussels["Timestamp"].dt.tz_convert("UTC"), df_utc["Timestamp"]
         )
 
-    def test_overwrite_timezone(self, vmm_connection):
+    def test_overwrite_timezone(self, connection, request):
         """Check if timezone is overwritten"""
-        df = vmm_connection.get_timeseries_values(
+        connection = request.getfixturevalue(connection)
+        df = connection.get_timeseries_values(
             ts_id="60992042", start="20190501 14:05", end="20190501 14:10"
         )
         assert df["Timestamp"].dt.tz == datetime.timezone.utc
 
-        df = vmm_connection.get_timeseries_values(
+        df = connection.get_timeseries_values(
             ts_id="60992042",
             start="20190501 14:05",
             end="20190501 14:10",
@@ -345,10 +356,11 @@ class TestDatetimeHandling:
             datetime.timedelta(seconds=7200)
         )
 
-    def test_start_end_timezone(self, vmm_connection):
+    def test_start_end_timezone(self, connection, request):
         """pywaterinfo can handle start/end dates already containing tz info"""
+        connection = request.getfixturevalue(connection)
         # string containing offset
-        df_utc_string = vmm_connection.get_timeseries_values(
+        df_utc_string = connection.get_timeseries_values(
             ts_id="60992042",
             start="20190501 14:05:00+00:00",
             end="20190501 14:05:00+00:00",
@@ -359,7 +371,7 @@ class TestDatetimeHandling:
         )
 
         # datetime objects containing timezone info
-        df_cet_zone = vmm_connection.get_timeseries_values(
+        df_cet_zone = connection.get_timeseries_values(
             ts_id="60992042",
             start=pd.to_datetime("20190501 14:05:00").tz_localize("CET"),
             end=pd.to_datetime("20190501 14:10:00").tz_localize("CET"),
@@ -372,7 +384,7 @@ class TestDatetimeHandling:
         # no assumptions are made on the tz of the input dates and the requested output,
         # CET input dates with UTC output will work and return the corresponding UTC
         # datetime of the input datetimes
-        df_mixed = vmm_connection.get_timeseries_values(
+        df_mixed = connection.get_timeseries_values(
             ts_id="60992042",
             start="20190501 14:05:00+02:00",
             end="20190501 14:10:00+02:00",
@@ -382,72 +394,83 @@ class TestDatetimeHandling:
             "2019-05-01 12:05:00+00:00"
         )
 
-    def test_invalid_timezone(self, vmm_connection):
+    def test_invalid_timezone(self, connection, request):
         """Unknown timezone should raise error"""
+        connection = request.getfixturevalue(connection)
         with pytest.raises(pytz.exceptions.UnknownTimeZoneError):
-            vmm_connection.get_timeseries_values(
+            connection.get_timeseries_values(
                 ts_id="60992042",
                 start="20190501 14:05:00+02:00",
                 end="20190501 14:10:00+02:00",
                 timezone="DUMMY",
             )
 
-    def test_return_date_format(self, vmm_connection):
+    def test_return_date_format(self, connection, request):
         """Input to requested return date format should be existing on KIWIS API"""
+        connection = request.getfixturevalue(connection)
         with pytest.raises(Exception):
-            vmm_connection._check_return_date_format("DUMMY")
+            connection._check_return_date_format("DUMMY")
 
-        assert vmm_connection._check_return_date_format("yyyy-MM-dd HH:mm:ss") is None
+        assert connection._check_return_date_format("yyyy-MM-dd HH:mm:ss") is None
 
-    def test_return_fields_format(self, vmm_connection):
+    def test_return_fields_format(self, connection, request):
         """Input to requested returnfields should be existing on KIWIS API"""
+        connection = request.getfixturevalue(connection)
         with pytest.raises(Exception):
-            vmm_connection._check_return_fields_format("DUMMY,DUMMY")
+            connection._check_return_fields_format("DUMMY,DUMMY")
 
 
+@pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
 class TestTimeseriesValues:
-    def test_one_of_two_ids(self, vmm_connection):
+    def test_one_of_two_ids(self, connection, request):
         """either ts_id or timeseriesgroup_id should be used"""
+        connection = request.getfixturevalue(connection)
         with pytest.raises(Exception):
-            vmm_connection.get_timeseries_values(
+            connection.get_timeseries_values(
                 ts_id="78124042", timeseriesgroup_id="192900", period="P1D"
             )
         with pytest.raises(Exception):
-            vmm_connection.get_timeseries_values(period="P1D")
+            connection.get_timeseries_values(period="P1D")
 
-    def test_multiple_ids(self, vmm_connection):
+    def test_multiple_ids(self, connection, request):
         """Call worksxpected for multiple identifiers combined in single dataframe"""
-        df = vmm_connection.get_timeseries_values(
+        """either ts_id or timeseriesgroup_id should be used"""
+        connection = request.getfixturevalue(connection)
+        df = connection.get_timeseries_values(
             ts_id="60992042,60968042", start="20190501 14:05", end="20190501 14:10"
         )
         assert set(df["ts_id"].unique()) == set(["60992042", "60968042"])
 
-    def test_no_data(self, vmm_connection):
+    def test_no_data(self, connection, request):
         """return empty dataframe when no data"""
-        df = vmm_connection.get_timeseries_values(
+        connection = request.getfixturevalue(connection)
+        df = connection.get_timeseries_values(
             ts_id="60992042", start="21500501 14:05", end="21500501 14:10"
         )
         assert len(df) == 0
 
         # vmm_connection.clear_cache() # TODO - refactor
-        df = vmm_connection.get_timeseries_values(
+        df = connection.get_timeseries_values(
             ts_id="60992042,60968042", start="21500501 14:05", end="21500501 14:10"
         )
         assert len(df) == 0
 
-    def test_datetime_conversion(self, vmm_connection):
+    def test_datetime_conversion(self, connection, request):
         """Datetime in the returned data sets are pd.Timestamps with timezone info"""
-        df = vmm_connection.get_timeseries_values(
+        connection = request.getfixturevalue(connection)
+        df = connection.get_timeseries_values(
             ts_id="60992042,60968042", start="20190501 14:05", end="20190501 14:10"
         )
         assert pd.core.dtypes.common.is_datetime64tz_dtype(df["Timestamp"])
 
 
+@pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
 class TestRequestKiwis:
-    def test_period_check_call(self, vmm_connection):
+    def test_period_check_call(self, connection, request):
         """period format checked when included"""
+        connection = request.getfixturevalue(connection)
         with pytest.raises(WaterinfoException):
-            vmm_connection.request_kiwis(
+            connection.request_kiwis(
                 {
                     "request": "getTimeseriesValues",
                     "ts_id": "78124042",
@@ -455,10 +478,11 @@ class TestRequestKiwis:
                 }
             )
 
-    def test_dateformat_check(self, vmm_connection):
+    def test_dateformat_check(self, connection, request):
         """dateformat checked when included"""
+        connection = request.getfixturevalue(connection)
         with pytest.raises(WaterinfoException) as e:
-            vmm_connection.request_kiwis(
+            connection.request_kiwis(
                 {
                     "request": "getTimeseriesValues",
                     "ts_id": "78124042",
@@ -468,15 +492,17 @@ class TestRequestKiwis:
             )
             assert str(e.value).contains("The requested returned datetime")
 
-    def test_queryparam_check(self, vmm_connection):
+    def test_queryparam_check(self, connection, request):
         """dateformat checked when included"""
+        connection = request.getfixturevalue(connection)
         with pytest.raises(WaterinfoException):
-            vmm_connection.request_kiwis(
+            connection.request_kiwis(
                 {"request": "getTimeseriesValues", "ts_id": "78124042", "DUMMY": ""}
             )
 
-    def test_query_optional_fields(self, vmm_connection):
+    def test_query_optional_fields(self, connection, request):
         """Query check on optional fields works for requests without optional fields"""
+        connection = request.getfixturevalue(connection)
 
         # Kiwis calls without optional fields
         no_optional_fields = [
@@ -486,47 +512,58 @@ class TestRequestKiwis:
         ]
         for kiwis_request in no_optional_fields:
             assert (
-                vmm_connection._check_query_parameters({"request": kiwis_request})
-                is None
+                connection._check_query_parameters({"request": kiwis_request}) is None
             )
 
 
 class TestTimeseriesValueLayer:
-    def test_one_of_three(self, vmm_connection):
+    @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
+    def test_one_of_three(self, connection, request):
         """Should be either ts_id, bbox or timeseriesgroup_id"""
+        connection = request.getfixturevalue(connection)
         with pytest.raises(Exception):
-            vmm_connection.get_timeseries_value_layer(
+            connection.get_timeseries_value_layer(
                 ts_id="78124042", timeseriesgroup_id="192900", bbox="DUMMY"
             )
 
-    def test_hic(self, hic_connection):
-        df = hic_connection.get_timeseries_value_layer(timeseriesgroup_id="156207")
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_hic(self, connection, request):
+        connection = request.getfixturevalue(connection)
+        df = connection.get_timeseries_value_layer(timeseriesgroup_id="156207")
         assert "ts_id" in df.columns
 
 
 class TestGroupList:
-    def test_group_type(self, vmm_connection):
+    @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
+    def test_group_type(self, connection, request):
         """Error from the KIWIS when nothing returned
 
         To be consistent with other sections, should be an empty dataframe.
         As this function is probably not used in returning tasks, keeping as such.
         """
+        connection = request.getfixturevalue(connection)
         with pytest.raises(Exception):
-            vmm_connection.get_group_list(group_type="DUMMY")
+            connection.get_group_list(group_type="DUMMY")
 
-    def test_hic(self, hic_connection):
-        df = hic_connection.get_group_list()
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_hic(self, connection, request):
+        connection = request.getfixturevalue(connection)
+        df = connection.get_group_list()
         assert "group_id" in df.columns
 
 
 class TestTimeseriesList:
-    def test_no_data(self, vmm_connection):
+    @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
+    def test_no_data(self, connection, request):
         """Empty dataframe when no data is returned"""
-        assert vmm_connection.get_timeseries_list(station_no="DUMMY").equals(
+        connection = request.getfixturevalue(connection)
+        assert connection.get_timeseries_list(station_no="DUMMY").equals(
             pd.DataFrame([])
         )
 
-    def test_hic(self, hic_connection):
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_hic(self, connection, request):
         """"""
-        df = hic_connection.get_timeseries_list(station_no="plu03a-1066")
+        connection = request.getfixturevalue(connection)
+        df = connection.get_timeseries_list(station_no="plu03a-1066")
         assert "station_no" in df.columns

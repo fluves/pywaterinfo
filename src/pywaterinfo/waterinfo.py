@@ -156,7 +156,8 @@ class Waterinfo:
 
     def clear_cache(self):
         """Clean up the cache."""
-        self._request.cache.clear()
+        if self._cache:
+            self._request.cache.clear()
 
     def request_kiwis(self, query: dict, headers: dict = None) -> dict:
         """http call to waterinfo.be KIWIS API
@@ -239,8 +240,16 @@ class Waterinfo:
         if self._cache:
             if res.from_cache:
                 logging.info(f"Request {res.url} reused from cache.")
+            else:
+                logging.info(
+                    f"Successful waterinfo API request with call {res.url} "
+                    f"(call to waterinfo.be with cache activated)."
+                )
         else:
-            logging.info(f"Successful waterinfo API request with call {res.url}")
+            logging.info(
+                f"Successful waterinfo API request with call {res.url} "
+                f"(call to waterinfo.be with without cache activated)."
+            )
 
         parsed = res.json()
         if (
