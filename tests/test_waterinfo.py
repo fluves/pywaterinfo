@@ -212,6 +212,7 @@ class TestDatetimeHandling:
         assert connection._parse_date("2017-01-01 10:00:00") == "2017-01-01 11:00:00"
         assert connection._parse_date("01-01-2017") == "2017-01-01 01:00:00"
 
+    @pytest.mark.skipif(sys.version_info < (3, 9), reason="ZoneInfo is 3.9 feature")
     def test_utc_default_return(self, connection, df_timeseries):  # noqa
         """Check that the returned dates are UTC aware and according to the user
         input in UTC
@@ -337,6 +338,7 @@ class TestDatetimeHandling:
             df_brussels["Timestamp"].dt.tz_convert("UTC"), df_utc["Timestamp"]
         )
 
+    @pytest.mark.skipif(sys.version_info < (3, 9), reason="ZoneInfo is 3.9 feature")
     def test_overwrite_timezone(self, connection, request):
         """Check if timezone is overwritten"""
         connection = request.getfixturevalue(connection)
