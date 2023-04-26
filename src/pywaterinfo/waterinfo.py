@@ -67,6 +67,9 @@ class Waterinfo:
             Dictionary mapping protocol or protocol and host to the URL of the proxy
             (e.g. {‘http’: ‘foo.bar:3128’, ‘http://host.name’: ‘foo.bar:4012’}) to be
             used on each Request
+        cache : bool, default False
+            If True, a cached session is used to make sure consecutive calls for the
+            same data are stored in a local cache.
         """
 
         # set the base string linked to the data provider

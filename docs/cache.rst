@@ -3,7 +3,13 @@
 Caching
 =======
 
-To overcome redundant requests of the same data to the waterinfo endpoints, the package relies on the `requests-cache <https://pypi.org/project/requests-cache/>`_ package to cache the :code:`GET` requests.
+To overcome redundant requests of the same data to the waterinfo endpoints, the package relies on the `requests-cache <https://pypi.org/project/requests-cache/>`_ package to cache the :code:`GET` requests. The
+cache feature is opt-in (not activated by default), but can be activated by the initialization of the ``Waterinfo`` class:
+
+::
+
+    from pywaterinfo import Waterinfo
+    vmm = Waterinfo("vmm", cache=True)
 
 The cache is stored in a sqlite database called :code:`pywaterinfo_cache.sqlite` and the default retention time of the cache is 7 days.
 When you want to make sure to not use a cached requests, make sure to empty the cache first using the :func:`~pywaterinfo.Waterinfo.clear_cache` method:
