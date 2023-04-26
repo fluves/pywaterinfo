@@ -1,10 +1,17 @@
 
+.. _cache:
 
 Caching
 =======
 
 To overcome redundant requests of the same data to the waterinfo endpoints, the package relies on the `requests-cache <https://pypi.org/project/requests-cache/>`_ package to cache the :code:`GET` requests. The
-cache feature is opt-in (not activated by default), but can be activated by the initialization of the ``Waterinfo`` class:
+cache feature is opt-in (not installed/activated by default), but can be used after installing the cache dependency packages:
+
+::
+
+    pip install pywaterinfo[cache]
+
+To use the cache, activate it on the initialization of the ``Waterinfo`` class:
 
 ::
 
