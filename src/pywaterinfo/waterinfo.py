@@ -6,7 +6,14 @@ import pandas as pd
 import pytz
 import re
 import requests
-import requests_cache
+
+try:
+    import requests_cache
+
+    request_cache_support = True
+except ImportError:
+    request_cache_support = False
+
 
 """
 INFO:
@@ -72,6 +79,8 @@ class Waterinfo:
             same data are stored in a local cache.
         """
 
+        # TODO - add info on missing installation of requests-cache
+
         # set the base string linked to the data provider
         if provider == "vmm":
             self._base_url = VMM_BASE
@@ -86,16 +95,23 @@ class Waterinfo:
 
         # Use requests-cache session
         if cache:
-            self._cache = True
-            self._request = requests_cache.CachedSession(
-                cache_name="pywaterinfo_cache.sqlite",
-                use_memory=False,
-                cache_control=True,
-                expire_after=CACHE_RETENTION,
-                stale_if_error=False,
-                use_cache_dir=True,
-                proxies=proxies,
-            )
+            if request_cache_support:
+                self._cache = True
+                self._request = requests_cache.CachedSession(
+                    cache_name="pywaterinfo_cache.sqlite",
+                    use_memory=False,
+                    cache_control=True,
+                    expire_after=CACHE_RETENTION,
+                    stale_if_error=False,
+                    use_cache_dir=True,
+                    proxies=proxies,
+                )
+            else:
+                raise Exception(
+                    "The required packages to support caching are not "
+                    "installed. Install them with "
+                    "`pip install pywaterinfo[cache]`."
+                )
         else:
             self._cache = False
             self._request = requests.Session()
