@@ -30,11 +30,30 @@ def vmm_connection():
 
 
 @pytest.fixture(scope="module")
+def vmm_cached_connection():
+    session = Waterinfo("vmm", token=vmm_client, cache=True)
+    session.clear_cache()
+    return session
+
+
+@pytest.fixture(scope="module")
 def hic_connection():
     if hic_client:
         return Waterinfo("hic", token=hic_client)
     else:
         return Waterinfo("hic")
+
+
+@pytest.fixture(scope="module")
+def hic_cached_connection():
+    if hic_client:
+        session = Waterinfo("hic", token=hic_client, cache=True)
+        session.clear_cache()
+        return session
+    else:
+        session = Waterinfo("hic", cache=True)
+        session.clear_cache()
+        return session
 
 
 @pytest.fixture(scope="module")

@@ -6,7 +6,14 @@ import pandas as pd
 import pytz
 import re
 import requests
-import requests_cache
+
+try:
+    import requests_cache
+
+    request_cache_support = True
+except ImportError:
+    request_cache_support = False
+
 
 """
 INFO:
@@ -47,7 +54,13 @@ class WaterinfoException(Exception):
 
 
 class Waterinfo:
-    def __init__(self, provider: str = "vmm", token: str = None, proxies: dict = None):
+    def __init__(
+        self,
+        provider: str = "vmm",
+        token: str = None,
+        proxies: dict = None,
+        cache: bool = False,
+    ):
         """Request data from waterinfo.be
 
         Parameters
@@ -61,7 +74,12 @@ class Waterinfo:
             Dictionary mapping protocol or protocol and host to the URL of the proxy
             (e.g. {‘http’: ‘foo.bar:3128’, ‘http://host.name’: ‘foo.bar:4012’}) to be
             used on each Request
+        cache : bool, default False
+            If True, a cached session is used to make sure consecutive calls for the
+            same data are stored in a local cache.
         """
+
+        # TODO - add info on missing installation of requests-cache
 
         # set the base string linked to the data provider
         if provider == "vmm":
@@ -76,14 +94,29 @@ class Waterinfo:
             raise WaterinfoException("Provider is either 'vmm' or 'hic'.")
 
         # Use requests-cache session
-        self._request = requests_cache.CachedSession(
-            cache_name="pywaterinfo_cache.sqlite",
-            backend="sqlite",
-            expire_after=CACHE_RETENTION,
-            stale_if_error=False,
-            use_cache_dir=True,
-            proxies=proxies,
-        )
+        if cache:
+            if request_cache_support:
+                self._cache = True
+                self._request = requests_cache.CachedSession(
+                    cache_name="pywaterinfo_cache.sqlite",
+                    use_memory=False,
+                    cache_control=True,
+                    expire_after=CACHE_RETENTION,
+                    stale_if_error=False,
+                    use_cache_dir=True,
+                    proxies=proxies,
+                )
+            else:
+                raise Exception(
+                    "The required packages to support caching are not "
+                    "installed. Install them with "
+                    "`pip install pywaterinfo[cache]`."
+                )
+        else:
+            self._cache = False
+            self._request = requests.Session()
+            if proxies:
+                self._request.proxies.update(proxies)
 
         self._proxies = proxies
 
@@ -134,14 +167,16 @@ class Waterinfo:
 
         # clean up cache old entries (requests-cache only removes/updates
         # entries that are reused, so this remove piling too much cache.)
-        self._request.remove_expired_responses(CACHE_RETENTION)
+        if cache:
+            self._request.cache.delete(expired=True)
 
     def __repr__(self):
         return f"<{self.__class__.__name__} object, " f"Query from {self._base_url!r}>"
 
     def clear_cache(self):
         """Clean up the cache."""
-        self._request.cache.clear()
+        if self._cache:
+            self._request.cache.clear()
 
     def request_kiwis(self, query: dict, headers: dict = None) -> dict:
         """http call to waterinfo.be KIWIS API
@@ -221,10 +256,19 @@ class Waterinfo:
                 f"with the message {res.content}"
             )
 
-        if res.from_cache:
-            logging.info(f"Request {res.url} reused from cache.")
+        if self._cache:
+            if res.from_cache:
+                logging.info(f"Request {res.url} reused from cache.")
+            else:
+                logging.info(
+                    f"Successful waterinfo API request with call {res.url} "
+                    f"(call to waterinfo.be with cache activated)."
+                )
         else:
-            logging.info(f"Successful waterinfo API request with call {res.url}")
+            logging.info(
+                f"Successful waterinfo API request with call {res.url} "
+                f"(call to waterinfo.be with without cache activated)."
+            )
 
         parsed = res.json()
         if (

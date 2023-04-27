@@ -13,6 +13,14 @@ The package releases are available on `Pypi <https://pypi.org/>`_. To install th
 
     pip install pywaterinfo
 
+To use caching to overcome redundant requests to the waterinfo APi, install the cache dependencies:
+
+::
+
+    pip install pywaterinfo[cache]
+
+See :ref:`cache` documentation for more information on the caching feature.
+
 
 Using setuptools
 ----------------

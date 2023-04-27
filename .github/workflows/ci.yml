@@ -29,7 +29,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -e .[develop]
+        pip install -e .[develop,cache]
     - name: Run precommit hooks & linting
       if: matrix.python-version == '3.9'
       run: |
