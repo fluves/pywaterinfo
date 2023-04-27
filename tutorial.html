@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial &mdash; pywaterinfo 0.6.0.post1.dev8+g475b3ec documentation</title>
+  <title>Tutorial &mdash; pywaterinfo 0.7.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,8 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -27,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> pywaterinfo
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pywaterinfo
           </a>
               <div class="version">
-                0.6.0.post1.dev8+g475b3ec
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -83,8 +86,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Tutorial</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tutorial</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/fluves/pywaterinfo/blob/master/docs/tutorial.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -95,7 +98,7 @@
            <div itemprop="articleBody">
              
   <section id="tutorial">
-<span id="waterinfo"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<span id="waterinfo"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading">¶</a></h1>
 <p>The Waterinfo module facilitates access to <a class="reference external" href="https://waterinfo.be">waterinfo.be</a>, a website managed by the Flanders
 Environment Agency (VMM) and Flanders Hydraulics Research (HIC). The website provides access to real-time water
 and weather related environmental variables for Flanders (Belgium), such as rainfall, air pressure,
@@ -106,7 +109,7 @@ would work on other deployments of this API as well. As VMM and HIC have each an
 the documentation could be slightly different for <a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">VMM</a>
 versus <a class="reference external" href="https://www.waterinfo.be/tsmhic/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">HIC</a>.</p>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h2>
 <p>The waterinfo.be API uses a system of identifiers, called <code class="code docutils literal notranslate"><span class="pre">ts_id</span></code> to define individual time series.
 For example, the identifier <code class="code docutils literal notranslate"><span class="pre">ts_id</span> <span class="pre">=</span> <span class="pre">78073042</span></code> corresponds to the time series of air pressure data
 for the measurement station in Liedekerke, with a 15 min time resolution. Hence, the <code class="code docutils literal notranslate"><span class="pre">ts_id</span></code> identifier
@@ -128,7 +131,7 @@ initiation to make sure all session requests are using the token:</p>
 </div>
 </section>
 <section id="download-with-known-ts-identifier">
-<h2>Download with known ts identifier<a class="headerlink" href="#download-with-known-ts-identifier" title="Permalink to this headline">¶</a></h2>
+<h2>Download with known ts identifier<a class="headerlink" href="#download-with-known-ts-identifier" title="Permalink to this heading">¶</a></h2>
 <p>In case you already know the <code class="code docutils literal notranslate"><span class="pre">ts_id</span></code> identifier that defines your time series, the class <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo" title="pywaterinfo.Waterinfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">Waterinfo</span></code></a> provides the method
 <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.get_timeseries_values" title="pywaterinfo.Waterinfo.get_timeseries_values"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_values()</span></code></a> to download a specific period of the time series. For example, to download the air pressure time series data of Liedekerke with a 15 min resolution
 (<code class="code docutils literal notranslate"><span class="pre">ts_id</span> <span class="pre">=</span> <span class="pre">78073042</span></code>) for the first of January 2016:</p>
@@ -177,7 +180,7 @@ function of Pandas, e.g. <code class="code docutils literal notranslate"><span c
 </div>
 </section>
 <section id="time-series-groups">
-<h2>Time series groups<a class="headerlink" href="#time-series-groups" title="Permalink to this headline">¶</a></h2>
+<h2>Time series groups<a class="headerlink" href="#time-series-groups" title="Permalink to this heading">¶</a></h2>
 <p>A lot of the time series and stations are bundled in so-called <code class="code docutils literal notranslate"><span class="pre">timeseriesgroup_id</span></code>’s. They represent for example all
 available station of rainfall at a given frequency (e.g. 15 Min). To get an overview of the available groups, use
 the method <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.get_group_list" title="pywaterinfo.Waterinfo.get_group_list"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_group_list()</span></code></a>, e.g. for the HIC stations:</p>
@@ -194,7 +197,7 @@ are the preferred option to query for the provided variables. For an overview, s
 </div>
 </section>
 <section id="time-series-group-data">
-<h2>Time series group data<a class="headerlink" href="#time-series-group-data" title="Permalink to this headline">¶</a></h2>
+<h2>Time series group data<a class="headerlink" href="#time-series-group-data" title="Permalink to this heading">¶</a></h2>
 <p>To get all the available time series identifiers (<code class="code docutils literal notranslate"><span class="pre">ts_id</span></code>) within a given group, use the <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.get_timeseries_value_layer" title="pywaterinfo.Waterinfo.get_timeseries_value_layer"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_value_layer()</span></code></a>
 method. It provides the metadata of these stations and (by default) the latest measured value. The group identifier for
 conductivity measured by HIC is <code class="code docutils literal notranslate"><span class="pre">156173</span></code>:</p>
@@ -223,7 +226,7 @@ use the <code class="code docutils literal notranslate"><span class="pre">metada
 </div>
 </section>
 <section id="search-identifier-based-on-parameter-or-station-name">
-<h2>Search identifier based on parameter or station name<a class="headerlink" href="#search-identifier-based-on-parameter-or-station-name" title="Permalink to this headline">¶</a></h2>
+<h2>Search identifier based on parameter or station name<a class="headerlink" href="#search-identifier-based-on-parameter-or-station-name" title="Permalink to this heading">¶</a></h2>
 <p>In the situation you are looking for the identifiers of all measured parameters at a station or all the
 stations measuring a given parameter, use the <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.get_timeseries_list" title="pywaterinfo.Waterinfo.get_timeseries_list"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_list()</span></code></a> method.
 It supports wildcards and supports looking based on station information, parameter information or a combination of both:</p>
@@ -244,7 +247,7 @@ It supports wildcards and supports looking based on station information, paramet
 </div>
 </section>
 <section id="custom-queries">
-<h2>Custom queries<a class="headerlink" href="#custom-queries" title="Permalink to this headline">¶</a></h2>
+<h2>Custom queries<a class="headerlink" href="#custom-queries" title="Permalink to this heading">¶</a></h2>
 <p>The <a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">VMM</a>
 and <a class="reference external" href="https://www.waterinfo.be/tsmhic/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">HIC</a> APIs
 provide more API paths. Whereas no specialized functions are available, use the <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.request_kiwis" title="pywaterinfo.Waterinfo.request_kiwis"><code class="xref py py-func docutils literal notranslate"><span class="pre">request_kiwis()</span></code></a> method

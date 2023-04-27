@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pywaterinfo.waterinfo &mdash; pywaterinfo 0.6.0.post1.dev8+g475b3ec documentation</title>
+  <title>pywaterinfo.waterinfo &mdash; pywaterinfo 0.7.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -11,9 +11,8 @@
   <![endif]-->
   
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -24,14 +23,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> pywaterinfo
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pywaterinfo
           </a>
               <div class="version">
-                0.6.0.post1.dev8+g475b3ec
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -72,9 +75,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>pywaterinfo.waterinfo</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pywaterinfo.waterinfo</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -92,7 +95,14 @@
 <span class="kn">import</span> <span class="nn">pytz</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">import</span> <span class="nn">requests_cache</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">requests_cache</span>
+
+    <span class="n">request_cache_support</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">request_cache_support</span> <span class="o">=</span> <span class="kc">False</span>
+
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">INFO:</span>
@@ -121,20 +131,26 @@
 
 
 <span class="k">class</span> <span class="nc">KiwisException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Raised when the KIWIS calls contain error&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the KIWIS calls contain error&quot;&quot;&quot;</span>
 
     <span class="k">pass</span>
 
 
 <span class="k">class</span> <span class="nc">WaterinfoException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Raised when the Waterinfo data request inputs are wrong&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the Waterinfo data request inputs are wrong&quot;&quot;&quot;</span>
 
     <span class="k">pass</span>
 
 
 <div class="viewcode-block" id="Waterinfo"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo">[docs]</a><span class="k">class</span> <span class="nc">Waterinfo</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;vmm&quot;</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Request data from waterinfo.be</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;vmm&quot;</span><span class="p">,</span>
+        <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">proxies</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Request data from waterinfo.be</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -143,7 +159,16 @@
 <span class="sd">            provided by VMM (vmm) or HIC (hic)</span>
 <span class="sd">        token : str</span>
 <span class="sd">            Token as provided by VMM on project-level.</span>
+<span class="sd">        proxies: dict</span>
+<span class="sd">            Dictionary mapping protocol or protocol and host to the URL of the proxy</span>
+<span class="sd">            (e.g. {‘http’: ‘foo.bar:3128’, ‘http://host.name’: ‘foo.bar:4012’}) to be</span>
+<span class="sd">            used on each Request</span>
+<span class="sd">        cache : bool, default False</span>
+<span class="sd">            If True, a cached session is used to make sure consecutive calls for the</span>
+<span class="sd">            same data are stored in a local cache.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># TODO - add info on missing installation of requests-cache</span>
 
         <span class="c1"># set the base string linked to the data provider</span>
         <span class="k">if</span> <span class="n">provider</span> <span class="o">==</span> <span class="s2">&quot;vmm&quot;</span><span class="p">:</span>
@@ -158,13 +183,31 @@
             <span class="k">raise</span> <span class="n">WaterinfoException</span><span class="p">(</span><span class="s2">&quot;Provider is either &#39;vmm&#39; or &#39;hic&#39;.&quot;</span><span class="p">)</span>
 
         <span class="c1"># Use requests-cache session</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="n">requests_cache</span><span class="o">.</span><span class="n">CachedSession</span><span class="p">(</span>
-            <span class="n">cache_name</span><span class="o">=</span><span class="s2">&quot;pywaterinfo_cache.sqlite&quot;</span><span class="p">,</span>
-            <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;sqlite&quot;</span><span class="p">,</span>
-            <span class="n">expire_after</span><span class="o">=</span><span class="n">CACHE_RETENTION</span><span class="p">,</span>
-            <span class="n">stale_if_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">use_cache_dir</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">cache</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">request_cache_support</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="n">requests_cache</span><span class="o">.</span><span class="n">CachedSession</span><span class="p">(</span>
+                    <span class="n">cache_name</span><span class="o">=</span><span class="s2">&quot;pywaterinfo_cache.sqlite&quot;</span><span class="p">,</span>
+                    <span class="n">use_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">cache_control</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">expire_after</span><span class="o">=</span><span class="n">CACHE_RETENTION</span><span class="p">,</span>
+                    <span class="n">stale_if_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">use_cache_dir</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">&quot;The required packages to support caching are not &quot;</span>
+                    <span class="s2">&quot;installed. Install them with &quot;</span>
+                    <span class="s2">&quot;`pip install pywaterinfo[cache]`.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">proxies</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="n">proxies</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">proxies</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proxies</span> <span class="o">=</span> <span class="n">proxies</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__default_args</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;service&quot;</span><span class="p">:</span> <span class="s2">&quot;kisters&quot;</span><span class="p">,</span>
@@ -186,6 +229,7 @@
                     <span class="s2">&quot;charset&quot;</span><span class="p">:</span> <span class="s2">&quot;UTF-8&quot;</span><span class="p">,</span>
                 <span class="p">},</span>
                 <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;grant_type&quot;</span><span class="p">:</span> <span class="s2">&quot;client_credentials&quot;</span><span class="p">},</span>
+                <span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">res</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
             <span class="n">res_parsed</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
@@ -212,17 +256,19 @@
 
         <span class="c1"># clean up cache old entries (requests-cache only removes/updates</span>
         <span class="c1"># entries that are reused, so this remove piling too much cache.)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="n">remove_expired_responses</span><span class="p">(</span><span class="n">CACHE_RETENTION</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">expired</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> object, &quot;</span> <span class="sa">f</span><span class="s2">&quot;Query from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="si">!r}</span><span class="s2">&gt;&quot;</span>
 
 <div class="viewcode-block" id="Waterinfo.clear_cache"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.clear_cache">[docs]</a>    <span class="k">def</span> <span class="nf">clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Clean up the cache.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean up the cache.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Waterinfo.request_kiwis"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.request_kiwis">[docs]</a>    <span class="k">def</span> <span class="nf">request_kiwis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;http call to waterinfo.be KIWIS API</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;http call to waterinfo.be KIWIS API</span>
 
 <span class="sd">        General call used to request information and data from waterinfo.be, providing</span>
 <span class="sd">        error handling and json parsing. The service, type, format (json),</span>
@@ -251,7 +297,7 @@
 <span class="sd">        &gt;&gt;&gt; # get the API info/documentation from kiwis</span>
 <span class="sd">        &gt;&gt;&gt; data, res = vmm.request_kiwis({&quot;request&quot;: &quot;getRequestInfo&quot;})</span>
 <span class="sd">        &gt;&gt;&gt; data        #doctest: +ELLIPSIS</span>
-<span class="sd">        [{&#39;Title&#39;: &#39;KISTERS QueryServices - Request Inform...file&#39;}}}}}}]</span>
+<span class="sd">        [{&#39;Title&#39;: &#39;KISTERS QueryServices - Request Inform...}}}}}]</span>
 <span class="sd">        &gt;&gt;&gt; res.status_code</span>
 <span class="sd">        200</span>
 <span class="sd">        &gt;&gt;&gt; # get the timeseries data from last day from time series 78124042</span>
@@ -289,18 +335,29 @@
             <span class="n">headers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token_header</span><span class="p">:</span>
             <span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_token_header</span><span class="p">)</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_proxies</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">KiwisException</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Waterinfo call returned </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> error&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Waterinfo call returned </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> error &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;with the message </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">from_cache</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> reused from cache.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">from_cache</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Request </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> reused from cache.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Successful waterinfo API request with call </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;(call to waterinfo.be with cache activated).&quot;</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successful waterinfo API request with call </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Successful waterinfo API request with call </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(call to waterinfo.be with without cache activated).&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">parsed</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="k">if</span> <span class="p">(</span>
@@ -316,7 +373,7 @@
         <span class="k">return</span> <span class="n">parsed</span><span class="p">,</span> <span class="n">res</span></div>
 
     <span class="k">def</span> <span class="nf">_check_query_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check if all given parameters in the query are known to</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if all given parameters in the query are known to</span>
 <span class="sd">        the KIWIS webservice&quot;&quot;&quot;</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="s2">&quot;request&quot;</span><span class="p">]</span>
@@ -331,7 +388,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">optional_parameters</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-        <span class="k">for</span> <span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">query</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">parameter</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
                 <span class="n">supported_parameters</span> <span class="o">|</span> <span class="n">optional_parameters</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_params</span><span class="p">)</span>
             <span class="p">):</span>
@@ -344,7 +401,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_check_period_format</span><span class="p">(</span><span class="n">period_string</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check period string format</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check period string format</span>
 
 <span class="sd">        Check if the format of the period is conform the specifications of</span>
 <span class="sd">        the KIWIS webservice definition.</span>
@@ -390,7 +447,7 @@
         <span class="k">return</span> <span class="n">period_string</span>
 
     <span class="k">def</span> <span class="nf">_check_return_date_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dateformat</span><span class="p">,</span> <span class="n">request</span><span class="o">=</span><span class="s2">&quot;getTimeseriesValues&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check if the requested output date format is known to the KIWIS webservice&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the requested output date format is known to the KIWIS webservice&quot;&quot;&quot;</span>
         <span class="n">supported_formats</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_kiwis_info</span><span class="p">[</span><span class="n">request</span><span class="p">][</span><span class="s2">&quot;Dateformats&quot;</span><span class="p">][</span><span class="s2">&quot;Content&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="p">)</span>
@@ -403,7 +460,7 @@
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_check_return_fields_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_fields</span><span class="p">,</span> <span class="n">request</span><span class="o">=</span><span class="s2">&quot;getTimeseriesValues&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check if the requested return_fields are known to the KIWIS webservice&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the requested return_fields are known to the KIWIS webservice&quot;&quot;&quot;</span>
         <span class="n">return_fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">return_fields</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span>  <span class="c1"># user requested</span>
         <span class="n">supported_fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_kiwis_info</span><span class="p">[</span><span class="n">request</span><span class="p">][</span><span class="s2">&quot;Returnfields&quot;</span><span class="p">][</span><span class="s2">&quot;Content&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
@@ -420,7 +477,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_parse_date</span><span class="p">(</span><span class="n">input_datetime</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;UTC&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Evaluate date and transform to format accepted by KIWIS API</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate date and transform to format accepted by KIWIS API</span>
 
 <span class="sd">        Dates can be specified on a courser-than-day basis, but will always be</span>
 <span class="sd">        transformed to start of... (year, month,...). For example, &#39;2007&#39; will be</span>
@@ -453,7 +510,7 @@
         <span class="k">return</span> <span class="n">input_timestamp</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="s2">&quot;CET&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_parse_period</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;UTC&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check the from/to/period arguments when requesting</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the from/to/period arguments when requesting</span>
 
 <span class="sd">        Valid for getTimeseriesValues and getGraph. Handle the information of</span>
 <span class="sd">        provided date information on the period and provide</span>
@@ -527,7 +584,7 @@
         <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get time series data from waterinfo.be</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get time series data from waterinfo.be</span>
 
 <span class="sd">        Using the ts_id codes or group identifiers and by providing a given date</span>
 <span class="sd">        period, download the corresponding time series from the waterinfo.be website.</span>
@@ -671,7 +728,7 @@
 <div class="viewcode-block" id="Waterinfo.get_timeseries_value_layer"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_timeseries_value_layer">[docs]</a>    <span class="k">def</span> <span class="nf">get_timeseries_value_layer</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ts_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get metadata and last measured value for group of stations</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get metadata and last measured value for group of stations</span>
 
 <span class="sd">        Either ts_id, timeseriesgroup_id or bbox can be used to request data. The</span>
 <span class="sd">        function provides metadata and the last measured value for the group of</span>
@@ -766,7 +823,7 @@
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Waterinfo.get_group_list"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_group_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_group_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a list of time series and station groups</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a list of time series and station groups</span>
 
 <span class="sd">        The function provides the existing group identifiers. These group_ids enable</span>
 <span class="sd">        the user to request all values of a given group at the same time (method</span>
@@ -826,7 +883,7 @@
 <div class="viewcode-block" id="Waterinfo.get_timeseries_list"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_timeseries_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_timeseries_list</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">station_no</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stationparameter_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get time series at given station an/or time series which provide</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get time series at given station an/or time series which provide</span>
 <span class="sd">        certain parameter</span>
 
 <span class="sd">        The station_no and stationparameter_name are provided as arguments, as these</span>

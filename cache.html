@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Caching &mdash; pywaterinfo 0.6.0.post1.dev8+g475b3ec documentation</title>
+  <title>Caching &mdash; pywaterinfo 0.7.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,8 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -27,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> pywaterinfo
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pywaterinfo
           </a>
               <div class="version">
-                0.6.0.post1.dev8+g475b3ec
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -75,8 +78,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Caching</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Caching</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/fluves/pywaterinfo/blob/master/docs/cache.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -87,8 +90,17 @@
            <div itemprop="articleBody">
              
   <section id="caching">
-<h1>Caching<a class="headerlink" href="#caching" title="Permalink to this headline">¶</a></h1>
-<p>To overcome redundant requests of the same data to the waterinfo endpoints, the package relies on the <a class="reference external" href="https://pypi.org/project/requests-cache/">requests-cache</a> package to cache the <code class="code docutils literal notranslate"><span class="pre">GET</span></code> requests.</p>
+<span id="cache"></span><h1>Caching<a class="headerlink" href="#caching" title="Permalink to this heading">¶</a></h1>
+<p>To overcome redundant requests of the same data to the waterinfo endpoints, the package relies on the <a class="reference external" href="https://pypi.org/project/requests-cache/">requests-cache</a> package to cache the <code class="code docutils literal notranslate"><span class="pre">GET</span></code> requests. The
+cache feature is opt-in (not installed/activated by default), but can be used after installing the cache dependency packages:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pywaterinfo</span><span class="p">[</span><span class="n">cache</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>To use the cache, activate it on the initialization of the <code class="docutils literal notranslate"><span class="pre">Waterinfo</span></code> class:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>The cache is stored in a sqlite database called <code class="code docutils literal notranslate"><span class="pre">pywaterinfo_cache.sqlite</span></code> and the default retention time of the cache is 7 days.
 When you want to make sure to not use a cached requests, make sure to empty the cache first using the <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.clear_cache" title="pywaterinfo.Waterinfo.clear_cache"><code class="xref py py-func docutils literal notranslate"><span class="pre">clear_cache()</span></code></a> method:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>

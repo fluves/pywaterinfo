@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pywaterinfo package &mdash; pywaterinfo 0.6.0.post1.dev8+g475b3ec documentation</title>
+  <title>pywaterinfo package &mdash; pywaterinfo 0.7.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,8 @@
   <![endif]-->
   
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -27,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> pywaterinfo
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pywaterinfo
           </a>
               <div class="version">
-                0.6.0.post1.dev8+g475b3ec
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -50,8 +53,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../cache.html">Caching</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseriesgroupids.html">Group identifiers</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-pywaterinfo">Waterinfo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pywaterinfo.utils">Utility functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pywaterinfo">Waterinfo</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pywaterinfo.Waterinfo"><code class="docutils literal notranslate"><span class="pre">Waterinfo</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pywaterinfo.Waterinfo.clear_cache"><code class="docutils literal notranslate"><span class="pre">Waterinfo.clear_cache()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pywaterinfo.Waterinfo.get_group_list"><code class="docutils literal notranslate"><span class="pre">Waterinfo.get_group_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pywaterinfo.Waterinfo.get_timeseries_list"><code class="docutils literal notranslate"><span class="pre">Waterinfo.get_timeseries_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pywaterinfo.Waterinfo.get_timeseries_value_layer"><code class="docutils literal notranslate"><span class="pre">Waterinfo.get_timeseries_value_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pywaterinfo.Waterinfo.get_timeseries_values"><code class="docutils literal notranslate"><span class="pre">Waterinfo.get_timeseries_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pywaterinfo.Waterinfo.request_kiwis"><code class="docutils literal notranslate"><span class="pre">Waterinfo.request_kiwis()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pywaterinfo.utils">Utility functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pywaterinfo.utils.SSLAdditionException"><code class="docutils literal notranslate"><span class="pre">SSLAdditionException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywaterinfo.utils.add_ssl_cert"><code class="docutils literal notranslate"><span class="pre">add_ssl_cert()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -79,8 +97,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>pywaterinfo package</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pywaterinfo package</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/fluves/pywaterinfo/blob/master/docs/api/reference.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -91,13 +109,13 @@
            <div itemprop="articleBody">
              
   <section id="pywaterinfo-package">
-<h1>pywaterinfo package<a class="headerlink" href="#pywaterinfo-package" title="Permalink to this headline">¶</a></h1>
+<h1>pywaterinfo package<a class="headerlink" href="#pywaterinfo-package" title="Permalink to this heading">¶</a></h1>
 <section id="module-pywaterinfo">
-<span id="waterinfo"></span><h2>Waterinfo<a class="headerlink" href="#module-pywaterinfo" title="Permalink to this headline">¶</a></h2>
+<span id="waterinfo"></span><h2>Waterinfo<a class="headerlink" href="#module-pywaterinfo" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="pywaterinfo.Waterinfo">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pywaterinfo.</span></span><span class="sig-name descname"><span class="pre">Waterinfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">provider</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'vmm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaterinfo.Waterinfo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pywaterinfo.</span></span><span class="sig-name descname"><span class="pre">Waterinfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">provider</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'vmm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#dict" title="(in Python v3.9)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaterinfo.Waterinfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.9/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pywaterinfo.Waterinfo.clear_cache">
 <span class="sig-name descname"><span class="pre">clear_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.clear_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.clear_cache" title="Permalink to this definition">¶</a></dt>
@@ -112,37 +130,37 @@
 the user to request all values of a given group at the same time (method
 <cite>get_timeseries_value_layer</cite> or <cite>get_timeseries_values</cite>).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>group_name</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Name of the time series group, can contain wildcards, e.g. ‘<em>Download</em>’</p></li>
+<li><p><strong>group_name</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Name of the time series group, can contain wildcards, e.g. ‘<em>Download</em>’</p></li>
 <li><p><strong>group_type</strong> (<em>'station'</em><em> | </em><em>'parameter'</em><em> | </em><em>'timeseries'</em>) – Specify the type station, parameter or timeseries</p></li>
 <li><p><strong>kwargs</strong> – Additional queryfields as accepted by the KIWIS call getGroupList, see
 <a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">API documentation</a></p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>DataFrame with an overview of the groups provided by the API</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># all available groupid&#39;s provided by VMM</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_group_list</span><span class="p">()</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># all available groupid&#39;s provided by VMM that represent a time series</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_group_list</span><span class="p">(</span><span class="n">group_type</span><span class="o">=</span><span class="s1">&#39;timeseries&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># all available groupid&#39;s  provided by VMM containing &#39;Download&#39; in</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># the group name</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_group_list</span><span class="p">(</span><span class="n">group_name</span><span class="o">=</span><span class="s1">&#39;*Download*&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># all available groupid&#39;s provided by HIC</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">hic</span><span class="o">.</span><span class="n">get_group_list</span><span class="p">()</span>
 </pre></div>
@@ -162,49 +180,49 @@ on the waterinfo.be download pages as respectively the ‘station_number’ and
 can be overridden by the user by providing the returnfields as an additional
 argument.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>station_no</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – single or multiple station_no values, comma-separated</p></li>
-<li><p><strong>stationparameter_name</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – single or multiple stationparameter_name values, comma-separated</p></li>
+<li><p><strong>station_no</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – single or multiple station_no values, comma-separated</p></li>
+<li><p><strong>stationparameter_name</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – single or multiple stationparameter_name values, comma-separated</p></li>
 <li><p><strong>kwargs</strong> – Additional queryfields as accepted by the KIWIS call getTimeseriesList, see
 <a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">API docoumentation</a></p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>DataFrame with each row the time series metadata</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># for given station ME09_012, which time series are available?</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">station_no</span><span class="o">=</span><span class="s2">&quot;ME09_012&quot;</span><span class="p">)</span> 
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># for a given parameter PET, which time series are available?</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">parametertype_name</span><span class="o">=</span><span class="s2">&quot;PET&quot;</span><span class="p">)</span> 
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># for a given parameter PET and station ME09_012, which time series</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># are available?</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">parametertype_name</span><span class="o">=</span><span class="s2">&quot;PET&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                             <span class="n">station_no</span><span class="o">=</span><span class="s2">&quot;ME09_012&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># for a given parametertype_id 11502, which time series are available?</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">parametertype_id</span><span class="o">=</span><span class="s2">&quot;11502&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># only interested in a subset of the returned columns: ts_id, station_name,</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># stationparameter_longname</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">parametertype_id</span><span class="o">=</span><span class="s2">&quot;11502&quot;</span><span class="p">,</span>
 <span class="gp">... </span>               <span class="n">returnfields</span><span class="o">=</span><span class="s2">&quot;ts_id,station_name,stationparameter_longname&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># for a given parameter EC, which time series are available?</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">hic</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">parametertype_name</span><span class="o">=</span><span class="s2">&quot;EC&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># for a given station plu03a-1066, which time series are available?</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">hic</span><span class="o">.</span><span class="n">get_timeseries_list</span><span class="p">(</span><span class="n">station_no</span><span class="o">=</span><span class="s2">&quot;plu03a-1066&quot;</span><span class="p">)</span>
 </pre></div>
@@ -221,10 +239,10 @@ ids/stations.</p>
 <p>Note, by using an additional ‘date’ argument, the data value of another moment
 can be requested as well.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ts_id</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – single or multiple ts_id values, comma-separated</p></li>
-<li><p><strong>timeseriesgroup_id</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – single or multiple group identifiers, comma-separated</p></li>
+<li><p><strong>ts_id</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – single or multiple ts_id values, comma-separated</p></li>
+<li><p><strong>timeseriesgroup_id</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – single or multiple group identifiers, comma-separated</p></li>
 <li><p><strong>bbox</strong> – Comma separated list with four values in order min_x, min_y, max_x, max_y;
 use ‘crs’ parameter to choose between local and global coordinates. fields
 stationparameter_no and ts_shortname are required for bbox; the function
@@ -234,36 +252,36 @@ will select 0 or 1 timeseries per station in the area according to filters</p></
 </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>DataFrame with for each time series in the group a row containing
 measurement and metadata</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get the metadata and last measured value on a single time series</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_value_layer</span><span class="p">(</span><span class="n">ts_id</span><span class="o">=</span><span class="mi">78124042</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get the metadata and last measured value of all members of a</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># time series group</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_value_layer</span><span class="p">(</span><span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="mi">192928</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get the measured value of all members of a time series group on</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># a given time stamp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_value_layer</span><span class="p">(</span><span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="mi">192928</span><span class="p">,</span>
 <span class="gp">... </span>                                    <span class="n">date</span><span class="o">=</span><span class="s2">&quot;20190501&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Limit the number of returned fields/columns in response</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_value_layer</span><span class="p">(</span><span class="s2">&quot;192780&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">returnfields</span><span class="o">=</span><span class="s2">&quot;timestamp,ts_value&quot;</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="s2">&quot;false&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get the metadata and last measured value of the oxygen concentration</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># (group id 156207) and conductivity (group id 156173) combined</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">hic</span><span class="o">.</span><span class="n">get_timeseries_value_layer</span><span class="p">(</span><span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="s2">&quot;156207,156173&quot;</span><span class="p">)</span>
@@ -284,70 +302,70 @@ too many/large requests.</p>
 <p>Note: The usage of ‘start’ and ‘end’ instead of the API default from/to is done
 to avoid the usage of from, which is a protected name in Python.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ts_id</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – single or multiple ts_id values, comma-separated</p></li>
-<li><p><strong>timeseriesgroup_id</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – single or multiple group identifiers, comma-separated</p></li>
-<li><p><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – input string according to format required by waterinfo: the period string
+<li><p><strong>ts_id</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – single or multiple ts_id values, comma-separated</p></li>
+<li><p><strong>timeseriesgroup_id</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – single or multiple group identifiers, comma-separated</p></li>
+<li><p><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – input string according to format required by waterinfo: the period string
 is provided as P#Y#M#DT#H#M#S, with P defines <cite>Period</cite>, each # is an
 integer value and the codes define the number of…
 Y - years M - months D - days T required if information about sub-day
 resolution is present H - hours D - days M - minutes S - seconds Instead
 of D (days), the usage of W - weeks is possible as well.
 Examples of valid period strings: P3D, P1Y, P1DT12H, PT6H, P1Y6M3DT4H20M30S.</p></li>
-<li><p><strong>start</strong> (<em>datetime</em><em> | </em><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Either Python datetime object or a string which can be interpreted
+<li><p><strong>start</strong> (<em>datetime</em><em> | </em><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Either Python datetime object or a string which can be interpreted
 as a valid Timestamp.</p></li>
-<li><p><strong>end</strong> (<em>datetime</em><em> | </em><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Either Python datetime object or a string which can be interpreted
+<li><p><strong>end</strong> (<em>datetime</em><em> | </em><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Either Python datetime object or a string which can be interpreted
 as a valid Timestamp.</p></li>
 <li><p><strong>kwargs</strong> – <p>Additional query parameter options as documented by KIWIS waterinfo API,
 see <a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">API documentation</a></p>
 </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>DataFrame with for time series data and datetime in UTC.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get last day of data for the time series with ID 78124042</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="mi">78124042</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s2">&quot;P1D&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get last day data of time series with ID 78124042 with subset of columns</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">my_columns</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Timestamp,Value,Interpolation Type,Quality Code,Quality&quot;</span>
 <span class="gp">... </span>              <span class="s2">&quot; Code Name,Quality Code Description&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="mi">78124042</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s2">&quot;P1D&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                               <span class="n">returnfields</span><span class="o">=</span><span class="n">my_columns</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get the data for ts_id 60992042 and 60968042 (Moerbeke_P and Waregem_P)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># for 20190502 till 20190503</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Note: UTC as time unit is used as input and asked as output by default</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="s2">&quot;60992042,60968042&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">start</span><span class="o">=</span><span class="s2">&quot;20190502&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;20190503&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># One can overwrite the timezone to request data in another time zone:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="s2">&quot;60992042,60968042&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">start</span><span class="o">=</span><span class="s2">&quot;20190502&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;20190503&quot;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;CET&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get the data for all stations from groups 192900 (yearly rain sum)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># and 192895 (yearly discharge average) for the last 2 years</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="s2">&quot;192900,192895&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                               <span class="n">period</span><span class="o">=</span><span class="s2">&quot;P2Y&quot;</span><span class="p">)</span>  
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get last day of data for the time series with ID 44223010</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">hic</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="n">ts_id</span><span class="o">=</span><span class="s2">&quot;44223010&quot;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s2">&quot;P1D&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get last day data of time series with ID 44223010 with subset of columns</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">hic</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="n">ts_id</span><span class="o">=</span><span class="s2">&quot;44223010&quot;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s2">&quot;P1D&quot;</span><span class="p">,</span>
 <span class="gp">... </span>         <span class="n">returnfields</span><span class="o">=</span><span class="s2">&quot;Timestamp,Value,Interpolation Type,Quality Code&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get last 10 hours data from Antwerpen tij/Zeeschelde (ts_id 53995010)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># containing &#39;Tide Number&#39; info. Tide number is useful when requesting</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># tidal extremes (high water/low water, &#39;ts_name&#39;=Pv.HWLW)</span>
@@ -359,7 +377,7 @@ see <a class="reference external" href="https://download.waterinfo.be/tsmdownloa
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pywaterinfo.Waterinfo.request_kiwis">
-<span class="sig-name descname"><span class="pre">request_kiwis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.request_kiwis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.request_kiwis" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">request_kiwis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#dict" title="(in Python v3.9)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#dict" title="(in Python v3.9)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#dict" title="(in Python v3.9)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../_modules/pywaterinfo/waterinfo.html#Waterinfo.request_kiwis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaterinfo.Waterinfo.request_kiwis" title="Permalink to this definition">¶</a></dt>
 <dd><p>http call to waterinfo.be KIWIS API</p>
 <p>General call used to request information and data from waterinfo.be, providing
 error handling and json parsing. The service, type, format (json),
@@ -369,17 +387,14 @@ by adding them to the query).</p>
 getTimeseriesValues, getTimeseriesValueLayer and getGroupList; this method
 can be used to use the other available queries as well.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>query</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – list of query options to be used together with the base string</p></li>
-<li><p><strong>headers</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – authentication header for the call</p></li>
+<li><p><strong>query</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – list of query options to be used together with the base string</p></li>
+<li><p><strong>headers</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – authentication header for the call</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>parsed json object, full HTTP response</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>parsed json object, full HTTP response</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -388,7 +403,7 @@ can be used to use the other available queries as well.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get the API info/documentation from kiwis</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">vmm</span><span class="o">.</span><span class="n">request_kiwis</span><span class="p">({</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="s2">&quot;getRequestInfo&quot;</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span>        
-<span class="go">[{&#39;Title&#39;: &#39;KISTERS QueryServices - Request Inform...file&#39;}}}}}}]</span>
+<span class="go">[{&#39;Title&#39;: &#39;KISTERS QueryServices - Request Inform...}}}}}]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span>
 <span class="go">200</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># get the timeseries data from last day from time series 78124042</span>
@@ -410,17 +425,17 @@ can be used to use the other available queries as well.</p>
 
 </section>
 <section id="module-pywaterinfo.utils">
-<span id="utility-functions"></span><h2>Utility functions<a class="headerlink" href="#module-pywaterinfo.utils" title="Permalink to this headline">¶</a></h2>
+<span id="utility-functions"></span><h2>Utility functions<a class="headerlink" href="#module-pywaterinfo.utils" title="Permalink to this heading">¶</a></h2>
 <dl class="py exception">
 <dt class="sig sig-object py" id="pywaterinfo.utils.SSLAdditionException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pywaterinfo.utils.</span></span><span class="sig-name descname"><span class="pre">SSLAdditionException</span></span><a class="reference internal" href="../_modules/pywaterinfo/utils.html#SSLAdditionException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaterinfo.utils.SSLAdditionException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#Exception" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 <p>Raised when the SSL custom CA addition fails</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pywaterinfo.utils.add_ssl_cert">
-<span class="sig-prename descclassname"><span class="pre">pywaterinfo.utils.</span></span><span class="sig-name descname"><span class="pre">add_ssl_cert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ssl_cert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/utils.html#add_ssl_cert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaterinfo.utils.add_ssl_cert" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pywaterinfo.utils.</span></span><span class="sig-name descname"><span class="pre">add_ssl_cert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ssl_cert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pywaterinfo/utils.html#add_ssl_cert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywaterinfo.utils.add_ssl_cert" title="Permalink to this definition">¶</a></dt>
 <dd><p>This routine is a pragmatic solution to add a custom SSL certificate to the
 certifi store, which urllib needs to connect over https. Use this routine when
 git you are experiencing an issue with an SSL: CERTIFICATE_VERIFY_FAILED
@@ -430,8 +445,8 @@ error. This should only be done once for your environment.</p>
 <p>The ssl certificate should usually be issued by your company, please contact your
 network administrator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ssl_cert</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The full path/filename to the SSL certificate file to add</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ssl_cert</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The full path/filename to the SSL certificate file to add</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>

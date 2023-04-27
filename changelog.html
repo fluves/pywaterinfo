@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changelog &mdash; pywaterinfo 0.6.0.post1.dev8+g475b3ec documentation</title>
+  <title>Changelog &mdash; pywaterinfo 0.7.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,8 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -27,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> pywaterinfo
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pywaterinfo
           </a>
               <div class="version">
-                0.6.0.post1.dev8+g475b3ec
+                0.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -57,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="contributing.html#development-guidelines">Development guidelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-7-0">Version 0.7.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-6-0">Version 0.6.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-5-1">Version 0.5.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-5-0">Version 0.5.0</a></li>
@@ -87,8 +91,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Changelog</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Changelog</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/fluves/pywaterinfo/blob/master/docs/changelog.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -99,22 +103,30 @@
            <div itemprop="articleBody">
              
   <section id="changelog">
-<span id="changes"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<span id="changes"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">¶</a></h1>
+<section id="version-0-7-0">
+<h2>Version 0.7.0<a class="headerlink" href="#version-0-7-0" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Make the caching logic opt-in and deactivated by default (#61).</p></li>
+<li><p>Update the CI setup to support Python 3.10 and 3.11 (#60)</p></li>
+<li><p>Add support for proxies when using pywaterinfo behind a company http proxy (#59, by &#64;stijnvanlooy)</p></li>
+</ul>
+</section>
 <section id="version-0-6-0">
-<h2>Version 0.6.0<a class="headerlink" href="#version-0-6-0" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.6.0<a class="headerlink" href="#version-0-6-0" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Add support for datetime with zoneinfo tzinfo in python 3.9 (#48, by dbkhout)</p></li>
 <li><p>Add citation file using Citation File Format (CFF) (#43)</p></li>
 </ul>
 </section>
 <section id="version-0-5-1">
-<h2>Version 0.5.1<a class="headerlink" href="#version-0-5-1" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.5.1<a class="headerlink" href="#version-0-5-1" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Fix wrong package metadata on supported Python versions.</p></li>
 </ul>
 </section>
 <section id="version-0-5-0">
-<h2>Version 0.5.0<a class="headerlink" href="#version-0-5-0" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.5.0<a class="headerlink" href="#version-0-5-0" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>The package now also supports requests without ‘optional fields’ (#42).</p></li>
 <li><p>Deprecate python 3.6 dus to incompatibility with requests-cache.</p></li>
@@ -125,7 +137,7 @@
 </ul>
 </section>
 <section id="version-0-4-0">
-<h2>Version 0.4.0<a class="headerlink" href="#version-0-4-0" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.4.0<a class="headerlink" href="#version-0-4-0" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Switch local caching (#32) to temporary os directoy instead of project directory</p></li>
 <li><dl class="simple">
@@ -138,7 +150,7 @@
 </ul>
 </section>
 <section id="version-0-3-1">
-<h2>Version 0.3.1<a class="headerlink" href="#version-0-3-1" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.3.1<a class="headerlink" href="#version-0-3-1" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><dl class="simple">
 <dt>Extend example/documentation:</dt><dd><ul>
@@ -150,7 +162,7 @@
 </ul>
 </section>
 <section id="version-0-3-0">
-<h2>Version 0.3.0<a class="headerlink" href="#version-0-3-0" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.3.0<a class="headerlink" href="#version-0-3-0" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Add local caching of API requests using the <cite>requests-cache</cite> package.</p></li>
 <li><p>Adjust root URL for HIC based API calls according to online documentation <a class="reference external" href="https://hicws.vlaanderen.be/">https://hicws.vlaanderen.be/</a>.</p></li>
@@ -166,19 +178,19 @@
 </ul>
 </section>
 <section id="version-0-2-2">
-<h2>Version 0.2.2<a class="headerlink" href="#version-0-2-2" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.2.2<a class="headerlink" href="#version-0-2-2" title="Permalink to this heading">¶</a></h2>
 <p>Fix token handling for HIC data requests.</p>
 </section>
 <section id="version-0-2-1">
-<h2>Version 0.2.1<a class="headerlink" href="#version-0-2-1" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.2.1<a class="headerlink" href="#version-0-2-1" title="Permalink to this heading">¶</a></h2>
 <p>Hot fix on token handling (Thanks to Erik Bollen for reporting).</p>
 </section>
 <section id="version-0-2-0">
-<h2>Version 0.2.0<a class="headerlink" href="#version-0-2-0" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.2.0<a class="headerlink" href="#version-0-2-0" title="Permalink to this heading">¶</a></h2>
 <p>Add support for SSL certificate handling.</p>
 </section>
 <section id="version-0-1-1">
-<h2>Version 0.1.1<a class="headerlink" href="#version-0-1-1" title="Permalink to this headline">¶</a></h2>
+<h2>Version 0.1.1<a class="headerlink" href="#version-0-1-1" title="Permalink to this heading">¶</a></h2>
 <p>This version provides a first implementation wrapping the API provided by <a class="reference external" href="https://www.waterinfo.be/">waterinfo.be</a>. The package provides a minimal
 wrapper with the aim to find and download time series data and returns it as Pandas DataFrame. The latter enables methods for plotting and analysis.</p>
 <ul class="simple">
