@@ -2,6 +2,13 @@
 Changelog
 =========
 
+Version 0.7.0
+=============
+
+- Make the caching logic opt-in and deactivated by default (#61).
+- Update the CI setup to support Python 3.10 and 3.11 (#60)
+- Add support for proxies when using pywaterinfo behind a company http proxy (#59, by @stijnvanlooy)
+
 Version 0.6.0
 =============
 
