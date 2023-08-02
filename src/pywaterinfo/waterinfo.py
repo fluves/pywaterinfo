@@ -6,6 +6,7 @@ import pandas as pd
 import pytz
 import re
 import requests
+import json
 
 try:
     import requests_cache
@@ -160,7 +161,13 @@ class Waterinfo:
         headers = dict()
         if self._token_header:
             headers.update(self._token_header)
-        info, _ = self.request_kiwis(query_param, headers=headers)
+        try:
+            info, _ = self.request_kiwis(query_param, headers=headers)
+        except:
+            requestinfo = open('docs/api/requestinfo_dummy.json')
+            info = json.load(requestinfo)
+            logging.info("Requestinfo reused from static file.")
+            
         self._kiwis_info = info[0]["Requests"]
 
         self._default_params = ["format", "returnfields", "request"]
