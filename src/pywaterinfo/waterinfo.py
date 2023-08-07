@@ -3,6 +3,7 @@ import pkg_resources
 import datetime
 import logging
 import pandas as pd
+from pathlib import Path
 import pytz
 import re
 import requests
@@ -31,7 +32,7 @@ VMM_BASE = "https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS"
 VMM_AUTH = "http://download.waterinfo.be/kiwis-auth/token"
 HIC_BASE = "https://hicws.vlaanderen.be/KiWIS/KiWIS"
 HIC_AUTH = "https://hicwsauth.vlaanderen.be/auth"
-DATA_PATH = pkg_resources.resource_filename(__name__, "./data")
+DATA_PATH = Path(pkg_resources.resource_filename('pywaterinfo', "./data"))
 
 # Custom hard-coded fix for the decoding issue #1 of given returnfields
 DECODE_ERRORS = ["AV Quality Code Color", "RV Quality Code Color"]
@@ -163,10 +164,12 @@ class Waterinfo:
             headers.update(self._token_header)
         try:
             info, _ = self.request_kiwis(query_param, headers=headers)
-        except:
-            requestinfo = open('docs/api/requestinfo_dummy.json')
-            info = json.load(requestinfo)
-            logging.info("Requestinfo reused from static file.")
+        except requests.JSONDecodeError:
+            # As a warkaround for the poorly encoded requestinfo (bug
+            # in kisters software) a cached previous version is used.
+            with open(DATA_PATH / 'requestinfo_dummy.json') as requestinfo:
+               info = json.load(requestinfo)
+            logging.warning("Requestinfo reused from static file.")
             
         self._kiwis_info = info[0]["Requests"]
 
