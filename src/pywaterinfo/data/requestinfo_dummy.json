@@ -2865,10 +2865,6 @@
                             "Name": "Stagesource Value",
                             "Description": "Stagesource value column if present in the timeseries"
                         },
-                        "ReturnPeriod": {
-                            "Name": "ReturnPeriod",
-                            "Description": ""
-                        },
                         "Occurrance Timestamp": {
                             "Name": "Occurrance Timestamp",
                             "Description": "Time of occurrance for statistical values (e.g. time of the monthly max)"
