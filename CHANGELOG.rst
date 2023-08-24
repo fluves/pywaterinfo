@@ -34,7 +34,7 @@ Version 0.5.0
 Version 0.4.0
 =============
 
-- Switch local caching (#32) to temporary os directoy instead of project directory
+- Switch local caching (#32) to temporary os directory instead of project directory
 - Extend example/documentation:
     - Add example on how to request start/end date of a time series metadata (#33)
 
