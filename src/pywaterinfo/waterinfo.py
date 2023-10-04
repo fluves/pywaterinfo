@@ -267,7 +267,7 @@ class Waterinfo:
         else:
             logging.info(
                 f"Successful waterinfo API request with call {res.url} "
-                f"(call to waterinfo.be with without cache activated)."
+                f"(call to waterinfo.be without cache activated)."
             )
 
         parsed = res.json()
