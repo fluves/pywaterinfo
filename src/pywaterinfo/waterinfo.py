@@ -270,7 +270,7 @@ class Waterinfo:
                 f"(call to waterinfo.be without cache activated)."
             )
 
-        parsed = res.json()
+        parsed = res.json(strict=False)
         if (
             type(parsed) is dict
             and "type" in parsed.keys()
