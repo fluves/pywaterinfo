@@ -633,7 +633,8 @@ class Waterinfo:
             if "Timestamp" in df.columns:
                 # round trip via UTC to handle mixed time series
                 df["Timestamp"] = pd.to_datetime(
-                    df["Timestamp"], utc=True).dt.tz_convert(timezone)
+                    df["Timestamp"], utc=True
+                ).dt.tz_convert(timezone)
             time_series.append(df)
 
         return pd.concat(time_series)
