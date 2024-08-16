@@ -631,7 +631,9 @@ class Waterinfo:
                     df[key_name] = section[key_name]
             # convert datetime objects to Pandas timestamp
             if "Timestamp" in df.columns:
-                df["Timestamp"] = pd.to_datetime(df["Timestamp"])
+                # round trip via UTC to handle mixed time series
+                df["Timestamp"] = pd.to_datetime(
+                    df["Timestamp"], utc=True).dt.tz_convert(timezone)
             time_series.append(df)
 
         return pd.concat(time_series)
