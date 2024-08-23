@@ -100,7 +100,7 @@ class Waterinfo:
                 self._request = requests_cache.CachedSession(
                     cache_name="pywaterinfo_cache.sqlite",
                     use_memory=False,
-                    cache_control=True,
+                    cache_control=False,
                     expire_after=CACHE_RETENTION,
                     stale_if_error=False,
                     use_cache_dir=True,

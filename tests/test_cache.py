@@ -27,9 +27,6 @@ def test_cache_hic(hic_cached_connection):
     assert res.from_cache
 
 
-{"request": "getTimeseriesValueLayer", "timeseriesgroup_id": "156207"}
-
-
 def test_clear_cache(vmm_cached_connection):
     """Cache is cleared."""
     data, res = vmm_cached_connection.request_kiwis({"request": "getRequestInfo"})
@@ -66,15 +63,18 @@ def test_cache_retention(patch_retention):
     expired cache and check for `from_cache` in a new request.
     """
     vmm = Waterinfo("vmm", cache=True)
-    # patch/exclude cache control to use retention time only
-    vmm._request.settings.cache_control = False
     vmm.clear_cache()
     _, res = vmm.request_kiwis({"request": "getRequestInfo"})
     assert not res.from_cache
 
     time.sleep(1)
-    vmm._request.cache
     _, res = vmm.request_kiwis({"request": "getRequestInfo"})
+    assert vmm._request.cache.contains(  # noqa
+        url="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?"
+        "request=getRequestInfo&service=kisters&type=QueryServices&"
+        "format=json&datasource=1&timezone=UTC"
+    )
+    time.sleep(1)
     assert res.is_expired
 
     vmm._request.cache.delete(expired=True)
