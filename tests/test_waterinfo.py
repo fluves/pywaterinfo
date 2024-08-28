@@ -7,8 +7,6 @@ import os
 import pandas as pd
 import pytz
 import sys
-from pandas.api import types
-from pandas.api.types import is_datetime64tz_dtype
 
 from pywaterinfo import HIC_BASE, VMM_BASE, Waterinfo
 from pywaterinfo.waterinfo import WaterinfoException
@@ -217,14 +215,14 @@ class TestDatetimeHandling:
         """Check that the returned dates are UTC aware and according to the user
         input in UTC
         """
-        assert is_datetime64tz_dtype(df_timeseries["Timestamp"])
+        assert isinstance(df_timeseries["Timestamp"].dtype, pd.DatetimeTZDtype)
         assert df_timeseries.loc[0, "Timestamp"] == pd.to_datetime(
             "2019-05-01T00:00:00.000Z"
         )
         assert df_timeseries["Timestamp"].min() == pd.to_datetime(
             "2019-05-01T00:00:00.000Z"
         )
-        assert types.is_datetime64tz_dtype(pd.to_datetime(df_timeseries["Timestamp"]))
+        assert isinstance(df_timeseries["Timestamp"].dtype, pd.DatetimeTZDtype)
         assert (
             pd.to_datetime(df_timeseries.loc[0, "Timestamp"]).tz
             == datetime.timezone.utc
@@ -477,7 +475,7 @@ class TestTimeseriesValues:
         df = connection.get_timeseries_values(
             ts_id="60992042,60968042", start="20190501 14:05", end="20190501 14:10"
         )
-        assert pd.core.dtypes.common.is_datetime64tz_dtype(df["Timestamp"])
+        assert isinstance(df["Timestamp"].dtype, pd.DatetimeTZDtype)
 
 
 @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])

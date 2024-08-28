@@ -1,5 +1,3 @@
-import pkg_resources
-
 import datetime
 import logging
 import pandas as pd
@@ -30,7 +28,6 @@ VMM_BASE = "https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS"
 VMM_AUTH = "http://download.waterinfo.be/kiwis-auth/token"
 HIC_BASE = "https://hicws.vlaanderen.be/KiWIS/KiWIS"
 HIC_AUTH = "https://hicwsauth.vlaanderen.be/auth"
-DATA_PATH = pkg_resources.resource_filename(__name__, "./data")
 
 # Custom hard-coded fix for the decoding issue #1 of given returnfields
 DECODE_ERRORS = ["AV Quality Code Color", "RV Quality Code Color"]
