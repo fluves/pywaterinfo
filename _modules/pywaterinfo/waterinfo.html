@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pywaterinfo.waterinfo &mdash; pywaterinfo 0.7.0 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <title>pywaterinfo.waterinfo &mdash; pywaterinfo 0.8.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/documentation_options.js?v=486e5634"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -30,7 +32,7 @@
             pywaterinfo
           </a>
               <div class="version">
-                0.7.0
+                0.8.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -87,9 +89,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pywaterinfo.waterinfo</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pkg_resources</span>
-
-<span class="kn">import</span> <span class="nn">datetime</span>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">pytz</span>
@@ -119,7 +119,6 @@
 <span class="n">VMM_AUTH</span> <span class="o">=</span> <span class="s2">&quot;http://download.waterinfo.be/kiwis-auth/token&quot;</span>
 <span class="n">HIC_BASE</span> <span class="o">=</span> <span class="s2">&quot;https://hicws.vlaanderen.be/KiWIS/KiWIS&quot;</span>
 <span class="n">HIC_AUTH</span> <span class="o">=</span> <span class="s2">&quot;https://hicwsauth.vlaanderen.be/auth&quot;</span>
-<span class="n">DATA_PATH</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;./data&quot;</span><span class="p">)</span>
 
 <span class="c1"># Custom hard-coded fix for the decoding issue #1 of given returnfields</span>
 <span class="n">DECODE_ERRORS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AV Quality Code Color&quot;</span><span class="p">,</span> <span class="s2">&quot;RV Quality Code Color&quot;</span><span class="p">]</span>
@@ -142,7 +141,9 @@
     <span class="k">pass</span>
 
 
-<div class="viewcode-block" id="Waterinfo"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo">[docs]</a><span class="k">class</span> <span class="nc">Waterinfo</span><span class="p">:</span>
+<div class="viewcode-block" id="Waterinfo">
+<a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo">[docs]</a>
+<span class="k">class</span> <span class="nc">Waterinfo</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;vmm&quot;</span><span class="p">,</span>
@@ -189,7 +190,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="n">requests_cache</span><span class="o">.</span><span class="n">CachedSession</span><span class="p">(</span>
                     <span class="n">cache_name</span><span class="o">=</span><span class="s2">&quot;pywaterinfo_cache.sqlite&quot;</span><span class="p">,</span>
                     <span class="n">use_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">cache_control</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">cache_control</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">expire_after</span><span class="o">=</span><span class="n">CACHE_RETENTION</span><span class="p">,</span>
                     <span class="n">stale_if_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">use_cache_dir</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -262,12 +263,17 @@
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> object, &quot;</span> <span class="sa">f</span><span class="s2">&quot;Query from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_url</span><span class="si">!r}</span><span class="s2">&gt;&quot;</span>
 
-<div class="viewcode-block" id="Waterinfo.clear_cache"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.clear_cache">[docs]</a>    <span class="k">def</span> <span class="nf">clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Waterinfo.clear_cache">
+<a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.clear_cache">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean up the cache.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Waterinfo.request_kiwis"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.request_kiwis">[docs]</a>    <span class="k">def</span> <span class="nf">request_kiwis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Waterinfo.request_kiwis">
+<a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.request_kiwis">[docs]</a>
+    <span class="k">def</span> <span class="nf">request_kiwis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;http call to waterinfo.be KIWIS API</span>
 
 <span class="sd">        General call used to request information and data from waterinfo.be, providing</span>
@@ -356,7 +362,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Successful waterinfo API request with call </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;(call to waterinfo.be with without cache activated).&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(call to waterinfo.be without cache activated).&quot;</span>
             <span class="p">)</span>
 
         <span class="n">parsed</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
@@ -371,6 +377,7 @@
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">parsed</span><span class="p">,</span> <span class="n">res</span></div>
+
 
     <span class="k">def</span> <span class="nf">_check_query_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if all given parameters in the query are known to</span>
@@ -575,7 +582,9 @@
 
         <span class="k">return</span> <span class="n">period_info</span>
 
-<div class="viewcode-block" id="Waterinfo.get_timeseries_values"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_timeseries_values">[docs]</a>    <span class="k">def</span> <span class="nf">get_timeseries_values</span><span class="p">(</span>
+<div class="viewcode-block" id="Waterinfo.get_timeseries_values">
+<a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_timeseries_values">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_timeseries_values</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">ts_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -720,12 +729,18 @@
                     <span class="n">df</span><span class="p">[</span><span class="n">key_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">section</span><span class="p">[</span><span class="n">key_name</span><span class="p">]</span>
             <span class="c1"># convert datetime objects to Pandas timestamp</span>
             <span class="k">if</span> <span class="s2">&quot;Timestamp&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Timestamp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Timestamp&quot;</span><span class="p">])</span>
+                <span class="c1"># round trip via UTC to handle mixed time series</span>
+                <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Timestamp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
+                    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Timestamp&quot;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">timezone</span><span class="p">)</span>
             <span class="n">time_series</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">time_series</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Waterinfo.get_timeseries_value_layer"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_timeseries_value_layer">[docs]</a>    <span class="k">def</span> <span class="nf">get_timeseries_value_layer</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Waterinfo.get_timeseries_value_layer">
+<a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_timeseries_value_layer">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_timeseries_value_layer</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ts_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get metadata and last measured value for group of stations</span>
@@ -822,7 +837,10 @@
 
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Waterinfo.get_group_list"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_group_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_group_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Waterinfo.get_group_list">
+<a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_group_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_group_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a list of time series and station groups</span>
 
 <span class="sd">        The function provides the existing group identifiers. These group_ids enable</span>
@@ -880,7 +898,10 @@
 
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="Waterinfo.get_timeseries_list"><a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_timeseries_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_timeseries_list</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Waterinfo.get_timeseries_list">
+<a class="viewcode-back" href="../../api/reference.html#pywaterinfo.Waterinfo.get_timeseries_list">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_timeseries_list</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">station_no</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stationparameter_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get time series at given station an/or time series which provide</span>
@@ -968,7 +989,9 @@
         <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;No matches.&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div></div>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+</div>
+
 </pre></div>
 
            </div>

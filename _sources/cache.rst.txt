@@ -29,11 +29,11 @@ When you want to make sure to not use a cached requests, make sure to empty the 
     vmm.get_timeseries_list(station_no="ME09_012")
 
 
-To see if the response is retrieved from cache or not, activate the loggin, see `page on logging <logging>`_.
+To see if the response is retrieved from cache or not, activate the logging, see `page on logging <logging>`_.
 
 .. warning::
 
-    When downloading a lot of (small) data with many requests in a short amount of time the cache can grow quickly. This increases the computational time to check if a request already has been made and can be retrieved from the cache. Clearing the cache can overcome increasing initializaton time:
+    When downloading a lot of (small) data with many requests in a short amount of time the cache can grow quickly. This increases the computational time to check if a request already has been made and can be retrieved from the cache. Clearing the cache can overcome increasing initialization time:
 
     ::
 
