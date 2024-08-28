@@ -353,10 +353,24 @@ class TestDatetimeHandling:
             end="20190501 14:10",
             timezone="CET",
         )
-        assert is_datetime64tz_dtype(df["Timestamp"])
-        assert df["Timestamp"].dt.tz == datetime.timezone(
-            datetime.timedelta(seconds=7200)
+        assert isinstance(df["Timestamp"].dtype, pd.DatetimeTZDtype)
+        assert df["Timestamp"].dt.tz == pytz.timezone("CET")
+
+    def test_timezone_mixed_timezone(self, connection, request):
+        """Queries resulting in mixed timezone offsets are handled without warning
+
+        See also https://github.com/fluves/pywaterinfo/issues/67
+        """
+        connection = request.getfixturevalue(connection)
+        df = connection.get_timeseries_values(
+            "69928042",
+            start="2013-03-21 00:00:00",
+            end="2013-04-01 23:00:00",
+            timezone="CET",
+            returnfields="Timestamp,Value",
         )
+        assert isinstance(df["Timestamp"].dtype, pd.DatetimeTZDtype)
+        assert df["Timestamp"].dt.tz == pytz.timezone("CET")
 
     def test_start_end_timezone(self, connection, request):
         """pywaterinfo can handle start/end dates already containing tz info"""

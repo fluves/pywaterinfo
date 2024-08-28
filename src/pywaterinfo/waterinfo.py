@@ -100,7 +100,7 @@ class Waterinfo:
                 self._request = requests_cache.CachedSession(
                     cache_name="pywaterinfo_cache.sqlite",
                     use_memory=False,
-                    cache_control=True,
+                    cache_control=False,
                     expire_after=CACHE_RETENTION,
                     stale_if_error=False,
                     use_cache_dir=True,
@@ -631,7 +631,10 @@ class Waterinfo:
                     df[key_name] = section[key_name]
             # convert datetime objects to Pandas timestamp
             if "Timestamp" in df.columns:
-                df["Timestamp"] = pd.to_datetime(df["Timestamp"])
+                # round trip via UTC to handle mixed time series
+                df["Timestamp"] = pd.to_datetime(
+                    df["Timestamp"], utc=True
+                ).dt.tz_convert(timezone)
             time_series.append(df)
 
         return pd.concat(time_series)
