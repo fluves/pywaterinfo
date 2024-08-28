@@ -2,7 +2,7 @@
 
 Python package to download time series data from waterinfo.be
 
-![Python package](https://github.com/fluves/pywaterinfo/workflows/Python%20package/badge.svg?branch=master)
+![Python package](https://github.com/fluves/pywaterinfo/actions/workflows/ci.yml/badge.svg?branch=master)
 
 ## Description
 
