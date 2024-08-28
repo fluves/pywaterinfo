@@ -2,6 +2,13 @@
 Changelog
 =========
 
+Version 0.8.0
+=============
+
+- Switch the supported Python versions by removing Python 3.7 and including Python 3.12 (#69)
+- Fix handling of time series with mixed timezone offsets (#68)
+- Documentation update with fix on the with/without (#65)
+
 Version 0.7.0
 =============
 
