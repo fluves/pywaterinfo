@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 0.8.1
+=============
+
+- Fix URL of the statud badge in the README.md
+
 Version 0.8.0
 =============
 
