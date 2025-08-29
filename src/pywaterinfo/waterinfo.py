@@ -28,6 +28,7 @@ VMM_BASE = "https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS"
 VMM_AUTH = "http://download.waterinfo.be/kiwis-auth/token"
 HIC_BASE = "https://hicws.vlaanderen.be/KiWIS/KiWIS"
 HIC_AUTH = "https://hicwsauth.vlaanderen.be/auth"
+SPW_BASE = "https://hydrometrie.wallonie.be/services/KiWIS/KiWIS"
 
 # Custom hard-coded fix for the decoding issue #1 of given returnfields
 DECODE_ERRORS = ["AV Quality Code Color", "RV Quality Code Color"]
@@ -87,8 +88,12 @@ class Waterinfo:
             self._base_url = HIC_BASE
             self._auth_url = HIC_AUTH
             self._datasource = "4"
+        elif provider == "SPW":
+            self._base_url = SPW_BASE
+            self._auth_url = None
+            self._datasource = "0"
         else:
-            raise WaterinfoException("Provider is either 'vmm' or 'hic'.")
+            raise WaterinfoException("Provider is either 'vmm', 'hic' or 'SPW'.")
 
         # Use requests-cache session
         if cache:
@@ -127,6 +132,8 @@ class Waterinfo:
 
         self._token_header = None
         if token:
+            if not self._auth_url:
+                raise WaterinfoException("SPW has no token system in place yet")
             # Token request outside cached session
             res = requests.post(
                 self._auth_url,
