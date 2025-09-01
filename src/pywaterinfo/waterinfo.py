@@ -88,12 +88,12 @@ class Waterinfo:
             self._base_url = HIC_BASE
             self._auth_url = HIC_AUTH
             self._datasource = "4"
-        elif provider == "SPW":
+        elif provider == "spw":
             self._base_url = SPW_BASE
             self._auth_url = None
             self._datasource = "0"
         else:
-            raise WaterinfoException("Provider is either 'vmm', 'hic' or 'SPW'.")
+            raise WaterinfoException("Provider is either 'vmm', 'hic' or 'spw'.")
 
         # Use requests-cache session
         if cache:
