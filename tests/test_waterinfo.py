@@ -8,24 +8,33 @@ import pandas as pd
 import pytz
 import sys
 
-from pywaterinfo import HIC_BASE, VMM_BASE, VMM_GRID_BASE, Waterinfo
+import pywaterinfo
+from pywaterinfo import Waterinfo
 from pywaterinfo.waterinfo import WaterinfoException
 
 
-def test_waterinfo_repr(vmm_connection, hic_connection, vmm_grid_connection):
-    """Check repr/print message is correct to source"""
-    assert repr(vmm_connection) == f"<Waterinfo object, Query from '{VMM_BASE}'>"
-    assert repr(hic_connection) == f"<Waterinfo object, Query from '{HIC_BASE}'>"
-    assert repr(vmm_grid_connection) == (
-        f"<Waterinfo object, Query from '{VMM_GRID_BASE}'>"
-    )
-
-
-def test_valid_sources():
+def test_invalid_providers():
     """Check error handling on improper data provider"""
-    with pytest.raises(Exception) as e:
-        assert Waterinfo("JAN")
-        assert str(e.value) == "Provider is either 'vmm' or 'hic'."
+
+    invalid_provider = "JAN"
+    available_providers = pywaterinfo.waterinfo.PROVIDERS
+
+    with pytest.raises(WaterinfoException) as e:
+        Waterinfo(invalid_provider)
+        assert str(e.value) == (
+            f"Available providers: {', '.join(available_providers)}."
+        )
+
+
+@pytest.mark.parametrize("cache", [False, True])
+@pytest.mark.parametrize("provider", ["hic", "vmm", "vmm_grid"])
+def test_valid_providers(cache, provider):
+    """Verify all available sources can be used to create a Waterinfo object"""
+    conn = Waterinfo(provider, cache=cache)
+    assert repr(conn) == (
+        f"<Waterinfo object, Query "
+        f"from '{pywaterinfo.waterinfo.PROVIDERS[provider]['base_url']}'>"
+    )
 
 
 @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])

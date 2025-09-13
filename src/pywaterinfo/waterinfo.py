@@ -34,6 +34,25 @@ HIC_AUTH = "https://hicwsauth.vlaanderen.be/auth"
 VMM_GRID_BASE = "https://hydro.vmm.be/grid/kiwis/KiWIS"
 VMM_GRID_AUTH = "https://hydro.vmm.be/kiwis-auth/token"
 
+# Provider registry for easier maintenance
+PROVIDERS = {
+    "vmm": {
+        "base_url": VMM_BASE,
+        "auth_url": VMM_AUTH,
+        "datasource": "1",
+    },
+    "hic": {
+        "base_url": HIC_BASE,
+        "auth_url": HIC_AUTH,
+        "datasource": "4",
+    },
+    "vmm_grid": {
+        "base_url": VMM_GRID_BASE,
+        "auth_url": VMM_GRID_AUTH,
+        "datasource": "10",
+    },
+}
+
 # Custom hard-coded fix for the decoding issue #1 of given returnfields
 DECODE_ERRORS = ["AV Quality Code Color", "RV Quality Code Color"]
 
@@ -83,21 +102,15 @@ class Waterinfo:
 
         # TODO - add info on missing installation of requests-cache
 
-        # set the base string linked to the data provider
-        if provider == "vmm":
-            self._base_url = VMM_BASE
-            self._auth_url = VMM_AUTH
-            self._datasource = "1"
-        elif provider == "hic":
-            self._base_url = HIC_BASE
-            self._auth_url = HIC_AUTH
-            self._datasource = "4"
-        elif provider == "vmm_grid":
-            self._base_url = VMM_GRID_BASE
-            self._auth_url = VMM_GRID_AUTH
-            self._datasource = "10"
-        else:
-            raise WaterinfoException("Provider is either 'vmm', 'hic' or 'vmm_grid'.")
+        # Only defined providers are allowed
+        if provider not in PROVIDERS:
+            raise WaterinfoException(
+                f"Available providers: {', '.join(PROVIDERS.keys())}."
+            )
+
+        self._base_url = PROVIDERS[provider]["base_url"]
+        self._auth_url = PROVIDERS[provider]["auth_url"]
+        self._datasource = PROVIDERS[provider]["datasource"]
 
         # Use requests-cache session
         if cache:
@@ -273,11 +286,6 @@ class Waterinfo:
             if self._datasource != "10":
                 raise WaterinfoException(
                     "Grid data is only available from the VMM grid datasource."
-                )
-
-            if query["format"] != "geotiff":
-                raise WaterinfoException(
-                    "When requesting grid data, the format should be 'geotiff'."
                 )
 
         # User can overwrite the default arguments
@@ -1166,15 +1174,21 @@ class Waterinfo:
         Parameters
         ----------
         ts_id : str or int
-            The time series ID.
+            The time series id.
         date : datetime or str
-            The date for which to retrieve the raster data.
+            Either Python datetime object or a string which can be interpreted
+            as a valid Timestamp.
 
         Returns
         -------
         xarray.Dataset
             The raster dataset.
         """
+
+        if self._datasource != "10":
+            raise WaterinfoException(
+                "Raster data is only available from the VMM grid datasource."
+            )
 
         query_param = dict(
             request="getRasterFile",
@@ -1187,3 +1201,8 @@ class Waterinfo:
 
         with xr.open_dataset(temp_file, engine="rasterio") as ds:
             return ds, res
+
+
+def available_datasources():
+    """Return available data providers"""
+    return PROVIDERS.keys()

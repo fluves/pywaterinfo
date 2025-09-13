@@ -10,13 +10,15 @@ import os
 from pywaterinfo.waterinfo import Waterinfo
 
 # use a session for VMM that can be used among tests
-vmm_client = (
-    "MzJkY2VlY2UtODI2Yy00Yjk4LTljMmQtYjE2OTc4ZjBjYTZhOj"
-    "RhZGE4NzFhLTk1MjgtNGI0ZC1iZmQ1LWI1NzBjZThmNGQyZA=="
-)
-
-hic_client = os.environ.get("HIC_TOKEN")
-vmm_grid_client = os.environ.get("VMM_GRID_TOKEN")
+# Tokens (None if not available)
+TOKENS = {
+    "vmm": (
+        "MzJkY2VlY2UtODI2Yy00Yjk4LTljMmQtYjE2OTc4ZjBjYTZhOj"
+        "RhZGE4NzFhLTk1MjgtNGI0ZC1iZmQ1LWI1NzBjZThmNGQyZA=="
+    ),
+    "hic": os.environ.get("HIC_TOKEN"),
+    "vmm_grid": os.environ.get("VMM_GRID_TOKEN"),
+}
 
 
 @pytest.fixture
@@ -26,59 +28,48 @@ def patch_retention(monkeypatch):
 
 
 @pytest.fixture(scope="module")
-def vmm_connection():
-    return Waterinfo("vmm", token=vmm_client)
+def waterinfo_factory():
+    """Factory fixture to create Waterinfo connections with optional cache."""
 
-
-@pytest.fixture(scope="module")
-def vmm_cached_connection():
-    session = Waterinfo("vmm", token=vmm_client, cache=True)
-    session.clear_cache()
-    return session
-
-
-@pytest.fixture(scope="module")
-def hic_connection():
-    if hic_client:
-        return Waterinfo("hic", token=hic_client)
-    else:
-        return Waterinfo("hic")
-
-
-@pytest.fixture(scope="module")
-def hic_cached_connection():
-    if hic_client:
-        session = Waterinfo("hic", token=hic_client, cache=True)
-        session.clear_cache()
-        return session
-    else:
-        session = Waterinfo("hic", cache=True)
-        session.clear_cache()
+    def _make(provider: str, cache: bool = False):
+        token = TOKENS.get(provider)
+        session = Waterinfo(provider, token=token, cache=cache)
+        if cache:
+            session.clear_cache()
         return session
 
+    return _make
 
+
+# Specific connections using the factory
 @pytest.fixture(scope="module")
-def vmm_grid_connection():
-    if vmm_grid_client:
-        session = Waterinfo("vmm_grid", token=vmm_grid_client, cache=True)
-        session.clear_cache()
-    else:
-        session = Waterinfo("vmm_grid", cache=True)
-        session.clear_cache()
-
-    return session
+def vmm_connection(waterinfo_factory):
+    return waterinfo_factory("vmm")
 
 
 @pytest.fixture(scope="module")
-def vmm_grid_cached_connection():
-    if vmm_grid_client:
-        session = Waterinfo("vmm_grid", token=vmm_grid_client)
-        session.clear_cache()
-    else:
-        session = Waterinfo("vmm_grid")
-        session.clear_cache()
+def vmm_cached_connection(waterinfo_factory):
+    return waterinfo_factory("vmm", cache=True)
 
-    return session
+
+@pytest.fixture(scope="module")
+def hic_connection(waterinfo_factory):
+    return waterinfo_factory("hic")
+
+
+@pytest.fixture(scope="module")
+def hic_cached_connection(waterinfo_factory):
+    return waterinfo_factory("hic", cache=True)
+
+
+@pytest.fixture(scope="module")
+def vmm_grid_connection(waterinfo_factory):
+    return waterinfo_factory("vmm_grid")
+
+
+@pytest.fixture(scope="module")
+def vmm_grid_cached_connection(waterinfo_factory):
+    return waterinfo_factory("vmm_grid", cache=True)
 
 
 @pytest.fixture(scope="module")
