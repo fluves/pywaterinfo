@@ -4,6 +4,7 @@ import pandas as pd
 import pytz
 import re
 import requests
+import tempfile
 from pathlib import Path
 
 try:
@@ -206,7 +207,9 @@ class Waterinfo:
         if self._cache:
             self._request.cache.clear()
 
-    def request_kiwis(self, query: dict, headers: dict = None) -> dict:
+    def request_kiwis(
+        self, query: dict, headers: dict = None, grid: bool = False
+    ) -> dict:
         """http call to waterinfo.be KIWIS API
 
         General call used to request information and data from waterinfo.be, providing
@@ -224,6 +227,8 @@ class Waterinfo:
             list of query options to be used together with the base string
         headers : dict
             authentication header for the call
+        grid : bool, optional
+            If request is for grid data, return response as temp file.
 
         Returns
         -------
@@ -263,6 +268,12 @@ class Waterinfo:
         if "returnfields" in query.keys():
             self._check_return_fields_format(query["returnfields"], query["request"])
 
+        if grid:
+            if query["format"] != "geotiff":
+                raise WaterinfoException(
+                    "When requesting grid data, the format should be 'geotiff'."
+                )
+
         # User can overwrite the default arguments
         defaults = {
             key: value
@@ -297,6 +308,13 @@ class Waterinfo:
                 f"Successful waterinfo API request with call {res.url} "
                 f"(call to waterinfo.be without cache activated)."
             )
+
+        if grid:
+            tmp_dir = tempfile.gettempdir()
+            # Save the response content to a temporary file
+            with open(Path(tmp_dir) / "returned.tiff", "wb") as f:
+                f.write(res.content)
+            return Path(tmp_dir) / "returned.tiff", res
 
         parsed = res.json()
         if (
