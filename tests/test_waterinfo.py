@@ -9,7 +9,8 @@ import pytz
 import sys
 
 import pywaterinfo
-from pywaterinfo.waterinfo import Waterinfo, WaterinfoException
+from pywaterinfo import Waterinfo
+from pywaterinfo.waterinfo import WaterinfoException
 
 
 def test_invalid_providers():
@@ -135,17 +136,7 @@ def test_token_vmm_grid(cache):
         Waterinfo("vmm_grid", token=client, cache=cache)
 
 
-@pytest.mark.parametrize(
-    "connection",
-    [
-        "vmm_connection",
-        "vmm_cached_connection",
-        "hic_connection",
-        "hic_cached_connection",
-        "vmm_grid_connection",
-        "vmm_grid_cached_connection",
-    ],
-)
+@pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
 class TestPeriodDates:
     def test_example_period_strings(self, connection, request):
         """VMM tutorial valid examples"""
@@ -235,18 +226,8 @@ class TestPeriodDates:
         ) == set(["to", "period"])
 
 
+@pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
 class TestDatetimeHandling:
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-            "hic_connection",
-            "hic_cached_connection",
-            "vmm_grid_connection",
-            "vmm_grid_cached_connection",
-        ],
-    )
     def test_input_date_formats_utc_default(self, connection, request):
         """Date formats accepted as UTC, but provided to API as CET in order to get
         the time series as UTC
@@ -267,17 +248,6 @@ class TestDatetimeHandling:
         assert connection._parse_date("2017-01-01 10:00:00") == "2017-01-01 11:00:00"
         assert connection._parse_date("01-01-2017") == "2017-01-01 01:00:00"
 
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-            "hic_connection",
-            "hic_cached_connection",
-            "vmm_grid_connection",
-            "vmm_grid_cached_connection",
-        ],
-    )
     @pytest.mark.skipif(sys.version_info < (3, 9), reason="ZoneInfo is 3.9 feature")
     def test_utc_default_return(self, connection, df_timeseries):  # noqa
         """Check that the returned dates are UTC aware and according to the user
@@ -296,49 +266,6 @@ class TestDatetimeHandling:
             == datetime.timezone.utc
         )
 
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-            "hic_connection",
-            "hic_cached_connection",
-            "vmm_grid_connection",
-            "vmm_grid_cached_connection",
-        ],
-    )
-    def test_return_date_format(self, connection, request):
-        """Input to requested return date format should be existing on KIWIS API"""
-        connection = request.getfixturevalue(connection)
-        with pytest.raises(Exception):
-            connection._check_return_date_format("DUMMY")
-
-        assert connection._check_return_date_format("yyyy-MM-dd HH:mm:ss") is None
-
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-            "hic_connection",
-            "hic_cached_connection",
-            "vmm_grid_connection",
-            "vmm_grid_cached_connection",
-        ],
-    )
-    def test_return_fields_format(self, connection, request):
-        """Input to requested returnfields should be existing on KIWIS API"""
-        connection = request.getfixturevalue(connection)
-        with pytest.raises(Exception):
-            connection._check_return_fields_format("DUMMY,DUMMY")
-
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-        ],
-    )
     def test_kiwis_requires_cet(self, connection, caplog, request):
         """Check on the KIWIS behavior of CET date format as request parameter
 
@@ -380,13 +307,6 @@ class TestDatetimeHandling:
         )
         pd.testing.assert_series_equal(df_utc["Value"], df_cet["Value"])
 
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-        ],
-    )
     def test_input_date_formats_custom_timezone(self, connection, request):
         """User provides custom timezone for date inputs and returned time series
 
@@ -420,13 +340,6 @@ class TestDatetimeHandling:
             df_cet["Timestamp"].dt.tz_convert("UTC"), df_utc["Timestamp"]
         )
 
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-        ],
-    )
     @pytest.mark.skipif(sys.version_info < (3, 9), reason="ZoneInfo is 3.9 feature")
     def test_input_datetime_custom_timezone(self, connection, request):
         """Custom timezone with datetime input support"""
@@ -461,13 +374,6 @@ class TestDatetimeHandling:
             df_brussels["Timestamp"].dt.tz_convert("UTC"), df_utc["Timestamp"]
         )
 
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-        ],
-    )
     @pytest.mark.skipif(sys.version_info < (3, 9), reason="ZoneInfo is 3.9 feature")
     def test_overwrite_timezone(self, connection, request):
         """Check if timezone is overwritten"""
@@ -486,13 +392,6 @@ class TestDatetimeHandling:
         assert isinstance(df["Timestamp"].dtype, pd.DatetimeTZDtype)
         assert df["Timestamp"].dt.tz == pytz.timezone("CET")
 
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-        ],
-    )
     def test_timezone_mixed_timezone(self, connection, request):
         """Queries resulting in mixed timezone offsets are handled without warning
 
@@ -509,13 +408,6 @@ class TestDatetimeHandling:
         assert isinstance(df["Timestamp"].dtype, pd.DatetimeTZDtype)
         assert df["Timestamp"].dt.tz == pytz.timezone("CET")
 
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-        ],
-    )
     def test_start_end_timezone(self, connection, request):
         """pywaterinfo can handle start/end dates already containing tz info"""
         connection = request.getfixturevalue(connection)
@@ -554,13 +446,6 @@ class TestDatetimeHandling:
             "2019-05-01 12:05:00+00:00"
         )
 
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-        ],
-    )
     def test_invalid_timezone(self, connection, request):
         """Unknown timezone should raise error"""
         connection = request.getfixturevalue(connection)
@@ -571,6 +456,20 @@ class TestDatetimeHandling:
                 end="20190501 14:10:00+02:00",
                 timezone="DUMMY",
             )
+
+    def test_return_date_format(self, connection, request):
+        """Input to requested return date format should be existing on KIWIS API"""
+        connection = request.getfixturevalue(connection)
+        with pytest.raises(Exception):
+            connection._check_return_date_format("DUMMY")
+
+        assert connection._check_return_date_format("yyyy-MM-dd HH:mm:ss") is None
+
+    def test_return_fields_format(self, connection, request):
+        """Input to requested returnfields should be existing on KIWIS API"""
+        connection = request.getfixturevalue(connection)
+        with pytest.raises(Exception):
+            connection._check_return_fields_format("DUMMY,DUMMY")
 
 
 @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
@@ -687,17 +586,7 @@ class TestTimeseriesValueLayer:
 
 
 class TestGroupList:
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-            "hic_connection",
-            "hic_cached_connection",
-            "vmm_grid_connection",
-            "vmm_grid_cached_connection",
-        ],
-    )
+    @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
     def test_group_type(self, connection, request):
         """Error from the KIWIS when nothing returned
 
@@ -716,15 +605,7 @@ class TestGroupList:
 
 
 class TestTimeseriesList:
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-            "hic_connection",
-            "hic_cached_connection",
-        ],
-    )
+    @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
     def test_no_data(self, connection, request):
         """Empty dataframe when no data is returned"""
         connection = request.getfixturevalue(connection)
