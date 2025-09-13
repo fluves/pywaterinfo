@@ -5,6 +5,7 @@ import pytz
 import re
 import requests
 import tempfile
+import xarray as xr
 from pathlib import Path
 
 try:
@@ -1153,3 +1154,36 @@ class Waterinfo:
                 df = self._convert_timestamp_column(df, timezone)
                 all_series.append(df)
         return pd.concat(all_series)
+
+    def get_raster_file(
+        self,
+        ts_id,
+        date,
+    ) -> xr.Dataset:
+        """
+        Get the raster file for a given time series.
+
+        Parameters
+        ----------
+        ts_id : str or int
+            The time series ID.
+        date : datetime or str
+            The date for which to retrieve the raster data.
+
+        Returns
+        -------
+        xarray.Dataset
+            The raster dataset.
+        """
+
+        query_param = dict(
+            request="getRasterFile",
+            ts_id=ts_id,
+            format="geotiff",
+            date=date,
+        )
+
+        temp_file, res = self.request_kiwis(query_param, grid=True)
+
+        with xr.open_dataset(temp_file, engine="rasterio") as ds:
+            return ds, res
