@@ -4,6 +4,7 @@ import pandas as pd
 import pytz
 import re
 import requests
+from pathlib import Path
 
 try:
     import requests_cache
@@ -309,6 +310,93 @@ class Waterinfo:
             )
 
         return parsed, res
+
+    def request_kiwis_grid(
+        self, query: dict, filename: Path, headers: dict = None
+    ) -> dict:
+        """http call to waterinfo.be KIWIS API
+
+        General call used to request information and data from waterinfo.be, providing
+        error handling and json parsing. The service, type, format (json),
+        datasource and timezone (UTC) are provided by default (but can be overridden
+        by adding them to the query).
+
+        Whereas specific methods are provided to support the queries getTimeseriesList,
+        getTimeseriesValues, getTimeseriesValueLayer and getGroupList; this method
+        can be used to use the other available queries as well.
+
+        Parameters
+        ----------
+        query : dict
+            list of query options to be used together with the base string
+        headers : dict
+            authentication header for the call
+        filename: pathlib.Path
+            pathname file will be written
+
+        Returns
+        -------
+        parsed json object, full HTTP response
+
+        """
+        # query input checks: valid parameters and formatting of the parameters period,
+        # dateformat, returnfields
+        query = {key.lower(): value for (key, value) in query.items()}
+        if query["request"] != "getRequestInfo":
+            self._check_query_parameters(query)
+        if "period" in query.keys():
+            self._check_period_format(query["period"])
+        if "dateformat" in query.keys():
+            self._check_return_date_format(query["dateformat"], query["request"])
+        if "returnfields" in query.keys():
+            self._check_return_fields_format(query["returnfields"], query["request"])
+
+        # User can overwrite the default arguments
+        defaults = {
+            key: value
+            for (key, value) in self.__default_args.items()
+            if key not in query.keys()
+        }
+        query.update(defaults)
+        if not headers:
+            headers = dict()
+        if self._token_header:
+            headers.update(self._token_header)
+        res = self._request.get(
+            self._base_url, params=query, headers=headers, proxies=self._proxies
+        )
+
+        if res.status_code != requests.codes.ok:
+            raise KiwisException(
+                f"Waterinfo call returned {res.status_code} error "
+                f"with the message {res.content}"
+            )
+
+        if self._cache:
+            if res.from_cache:
+                logging.info(f"Request {res.url} reused from cache.")
+            else:
+                logging.info(
+                    f"Successful waterinfo API request with call {res.url} "
+                    f"(call to waterinfo.be with cache activated)."
+                )
+        else:
+            logging.info(
+                f"Successful waterinfo API request with call {res.url} "
+                f"(call to waterinfo.be without cache activated)."
+            )
+
+        from pathlib import Path
+
+        # Pick a filename
+
+        outfile = Path(f"{filename}.tiff")
+
+        # Write the binary content
+        with open(outfile, "wb") as f:
+            f.write(res._content)
+
+        return res
 
     def _check_query_parameters(self, query):
         """Check if all given parameters in the query are known to
@@ -802,6 +890,23 @@ class Waterinfo:
         >>>
         >>> # all available groupid's provided by HIC
         >>> df = hic.get_group_list()
+
+        >>> vmm_grid = Waterinfo("vmm_grid")
+        >>>
+        >>> # all available groupid's provided by HIC
+        >>> df = vmm_grid.get_group_list()
+        >>>
+        >>> # all available groupid's  provided by VMM containing 'Radar' in
+        >>> # the group name
+        >>> df = vmm_grid.get_group_list(group_name='*Radar*')
+        >>>
+        >>> # all available groupid's  provided by VMM containing 'Pluvio' in
+        >>> # the group name
+        >>> df = vmm_grid.get_group_list(group_name='*Pluvio*')
+
+
+
+
         """
         if group_type and group_type not in ["station", "parameter", "timeseries"]:
             raise WaterinfoException(
