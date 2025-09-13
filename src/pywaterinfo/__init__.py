@@ -1,6 +1,6 @@
 import sys
 
-from .waterinfo import HIC_BASE, VMM_BASE, Waterinfo
+from .waterinfo import HIC_BASE, VMM_BASE, VMM_GRID_BASE, Waterinfo
 
 if sys.version_info[:2] >= (3, 8):
     # TODO: Import directly (no need for conditional) when `python_requires = >= 3.8`
@@ -17,4 +17,4 @@ except PackageNotFoundError:  # pragma: no cover
 finally:
     del version, PackageNotFoundError
 
-__all__ = ["HIC_BASE", "VMM_BASE", "Waterinfo"]
+__all__ = ["HIC_BASE", "VMM_BASE", "VMM_GRID_BASE", "Waterinfo"]
