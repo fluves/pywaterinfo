@@ -269,6 +269,11 @@ class Waterinfo:
             self._check_return_fields_format(query["returnfields"], query["request"])
 
         if grid:
+            if self._datasource != "10":
+                raise WaterinfoException(
+                    "Grid data is only available from the VMM grid datasource."
+                )
+
             if query["format"] != "geotiff":
                 raise WaterinfoException(
                     "When requesting grid data, the format should be 'geotiff'."
