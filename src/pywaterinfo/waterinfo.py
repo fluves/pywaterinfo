@@ -28,6 +28,8 @@ VMM_BASE = "https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS"
 VMM_AUTH = "http://download.waterinfo.be/kiwis-auth/token"
 HIC_BASE = "https://hicws.vlaanderen.be/KiWIS/KiWIS"
 HIC_AUTH = "https://hicwsauth.vlaanderen.be/auth"
+VMM_GRID_BASE = "https://hydro.vmm.be/grid/kiwis/KiWIS"
+VMM_GRID_AUTH = "https://hydro.vmm.be/kiwis-auth/token"
 
 # Custom hard-coded fix for the decoding issue #1 of given returnfields
 DECODE_ERRORS = ["AV Quality Code Color", "RV Quality Code Color"]
@@ -87,8 +89,12 @@ class Waterinfo:
             self._base_url = HIC_BASE
             self._auth_url = HIC_AUTH
             self._datasource = "4"
+        elif provider == "vmm_grid":
+            self._base_url = VMM_GRID_BASE
+            self._auth_url = VMM_GRID_AUTH
+            self._datasource = "10"
         else:
-            raise WaterinfoException("Provider is either 'vmm' or 'hic'.")
+            raise WaterinfoException("Provider is either 'vmm', 'hic' or 'vmm_grid'.")
 
         # Use requests-cache session
         if cache:
