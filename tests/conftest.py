@@ -16,6 +16,7 @@ vmm_client = (
 )
 
 hic_client = os.environ.get("HIC_TOKEN")
+vmm_grid_client = os.environ.get("VMM_GRID_TOKEN")
 
 
 @pytest.fixture
@@ -54,6 +55,30 @@ def hic_cached_connection():
         session = Waterinfo("hic", cache=True)
         session.clear_cache()
         return session
+
+
+@pytest.fixture(scope="module")
+def vmm_grid_connection():
+    if vmm_grid_client:
+        session = Waterinfo("vmm_grid", token=vmm_grid_client, cache=True)
+        session.clear_cache()
+    else:
+        session = Waterinfo("vmm_grid", cache=True)
+        session.clear_cache()
+
+    return session
+
+
+@pytest.fixture(scope="module")
+def vmm_grid_cached_connection():
+    if vmm_grid_client:
+        session = Waterinfo("vmm_grid", token=vmm_grid_client)
+        session.clear_cache()
+    else:
+        session = Waterinfo("vmm_grid")
+        session.clear_cache()
+
+    return session
 
 
 @pytest.fixture(scope="module")

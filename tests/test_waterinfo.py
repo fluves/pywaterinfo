@@ -8,14 +8,17 @@ import pandas as pd
 import pytz
 import sys
 
-from pywaterinfo import HIC_BASE, VMM_BASE, Waterinfo
+from pywaterinfo import HIC_BASE, VMM_BASE, VMM_GRID_BASE, Waterinfo
 from pywaterinfo.waterinfo import WaterinfoException
 
 
-def test_waterinfo_repr(vmm_connection, hic_connection):
+def test_waterinfo_repr(vmm_connection, hic_connection, vmm_grid_connection):
     """Check repr/print message is correct to source"""
     assert repr(vmm_connection) == f"<Waterinfo object, Query from '{VMM_BASE}'>"
     assert repr(hic_connection) == f"<Waterinfo object, Query from '{HIC_BASE}'>"
+    assert repr(vmm_grid_connection) == (
+        f"<Waterinfo object, Query from '{VMM_GRID_BASE}'>"
+    )
 
 
 def test_valid_sources():
@@ -96,6 +99,32 @@ def test_token_hic(cache):
     with pytest.raises(Exception):
         client = "DUMMY"
         Waterinfo("hic", token=client, cache=cache)
+
+
+@pytest.mark.notoken
+@pytest.mark.parametrize("cache", [False, True])
+def test_token_vmm_grid(cache):
+    """Check if submitting of a token is tackled properly"""
+    # no token, no token header, no authentication in request header
+    vmm_grid = Waterinfo("vmm_grid", cache=cache)
+    vmm_grid.clear_cache()
+    assert vmm_grid._token_header is None
+    _, res = vmm_grid.request_kiwis({"request": "getRequestInfo"})
+    assert "Authorization" not in res.request.headers.keys()
+
+    # token, token header, authentication in request header
+    # this client code is received by VMM for unit testing purposes only
+    client = os.environ.get("VMM_GRID_TOKEN")
+    vmm_grid = Waterinfo("vmm_grid", token=client, cache=cache)
+    vmm_grid.clear_cache()
+    assert vmm_grid._token_header is not None
+    _, res = vmm_grid.request_kiwis({"request": "getRequestInfo"})
+    assert "Authorization" in res.request.headers.keys()
+
+    # wrong token results in error
+    with pytest.raises(Exception):
+        client = "DUMMY"
+        Waterinfo("vmm_grid", token=client, cache=cache)
 
 
 @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
