@@ -1,6 +1,9 @@
+import logging
 import numpy as np
 import pandas as pd
 import xarray as xr
+
+logger = logging.getLogger(__name__)
 
 
 def parse_waterinfo_hdf5(h5f):
@@ -67,10 +70,10 @@ def parse_waterinfo_hdf5(h5f):
     # Parse base datetime
     base_dt = pd.to_datetime(f"{base_date} {base_time}", format="%Y%m%d %H%M%S")
 
-    # Create timesteps (assuming 10-minute intervals for radar data)
-    timesteps = [
-        base_dt + pd.Timedelta(minutes=10 * i) for i in range(len(data_groups))
-    ]
+    # Create timesteps (assuming 5-minute intervals for radar data)
+
+    logger.info("Assuming 5-minute intervals between radar scans.")
+    timesteps = [base_dt + pd.Timedelta(minutes=5 * i) for i in range(len(data_groups))]
 
     # Read all data arrays and replace -2 with np.nan
     data_arrays = []
