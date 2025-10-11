@@ -40,7 +40,7 @@ def parse_waterinfo_hdf5(h5f):
     )
 
     # Create coordinate arrays in projected coordinates
-    # The origin seems to be at (LL_lon, LL_lat) in projected coordinates
+    # The origin is at (LL_lon, LL_lat) in projected coordinates
     x_coords = np.arange(0, xsize) * xscale + where_attrs["LL_lon"]
     y_coords = np.arange(0, ysize) * yscale + where_attrs["LL_lat"]
 
@@ -50,8 +50,6 @@ def parse_waterinfo_hdf5(h5f):
         [key for key in dataset1.keys() if key.startswith("data")],
         key=lambda x: int(x[4:]),
     )  # Sort by number after 'data'
-
-    print(f"Found {len(data_groups)} timesteps")
 
     # Extract timestamps from 'what' group
     what_attrs = h5f["what"].attrs
@@ -65,8 +63,6 @@ def parse_waterinfo_hdf5(h5f):
         if isinstance(what_attrs["time"], bytes)
         else what_attrs["time"]
     )
-
-    print(f"Base date/time: {base_date} {base_time}")
 
     # Parse base datetime
     base_dt = pd.to_datetime(f"{base_date} {base_time}", format="%Y%m%d %H%M%S")
@@ -83,7 +79,7 @@ def parse_waterinfo_hdf5(h5f):
         data_array = data_group["data"][:]
 
         # Replace -2 (no_data) with np.nan
-        data_array = data_array.astype(np.float64)  # Convert to float to support NaN
+        data_array = data_array.astype(np.float32)
         data_array[data_array == -2] = np.nan
 
         data_arrays.append(data_array)

@@ -634,6 +634,25 @@ class TestRequestKiwisGrid:
             connection = request.getfixturevalue(connection)
             assert "requires extra dependencies." in caplog.text
 
+    @pytest.mark.parametrize(
+        "connection",
+        [
+            "vmm_connection",
+            "vmm_cached_connection",
+            "hic_connection",
+            "hic_cached_connection",
+        ],
+    )
+    def test_grid_info_no_extra_deps(self, caplog, connection, request):
+        """Test KIWIS grid request returns temp file and response"""
+
+        # check if the logs say the The provider {provider} requires extra
+        # dependencies
+
+        with caplog.at_level(logging.INFO):
+            connection = request.getfixturevalue(connection)
+            assert "requires extra dependencies." not in caplog.text
+
 
 class TestTimeseriesValueLayer:
     @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
