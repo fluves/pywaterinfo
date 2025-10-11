@@ -1121,7 +1121,6 @@ class Waterinfo:
         self.request_kiwis(query_param, grid=True)
 
 
-
 def available_datasources():
     """Return available data providers"""
     return list(PROVIDERS.keys())
