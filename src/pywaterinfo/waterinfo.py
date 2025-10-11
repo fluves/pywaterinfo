@@ -1,10 +1,14 @@
 import datetime
+import h5py
+import io
 import logging
 import pandas as pd
 import pytz
 import re
 import requests
 import xarray as xr
+
+from pywaterinfo.parser import parse_waterinfo_hdf5
 
 try:
     import requests_cache
@@ -322,18 +326,28 @@ class Waterinfo:
             )
 
         if grid:
-            raise NotImplementedError("Binary io needs to be implemented.")
+            io_content = io.BytesIO(res.content)
 
-        parsed = res.json()
-        if (
-            type(parsed) is dict
-            and "type" in parsed.keys()
-            and parsed["type"] == "error"
-        ):
-            raise KiwisException(
-                f"Waterinfo API returned an error:\n\tCode: "
-                f"{parsed['code']}\n\tMessage: {parsed['message']}"
-            )
+            io_content.seek(0)
+            try:
+                with h5py.File(io_content, "r") as h5f:
+                    parsed = parse_waterinfo_hdf5(h5f)
+
+            except Exception as e:
+                raise KiwisException(f"Failed to parse HDF5 data: {e}")
+
+            io_content.close()
+        else:
+            parsed = res.json()
+            if (
+                type(parsed) is dict
+                and "type" in parsed.keys()
+                and parsed["type"] == "error"
+            ):
+                raise KiwisException(
+                    f"Waterinfo API returned an error:\n\tCode: "
+                    f"{parsed['code']}\n\tMessage: {parsed['message']}"
+                )
 
         return parsed, res
 
@@ -1085,7 +1099,18 @@ class Waterinfo:
         ----------
         ts_id : str or int
             The time series id.
-        date : datetime or str
+        period : str
+            input string according to format required by waterinfo: the period string
+            is provided as P#Y#M#DT#H#M#S, with P defines `Period`, each # is an
+            integer value and the codes define the number of...
+            Y - years M - months D - days T required if information about sub-day
+            resolution is present H - hours D - days M - minutes S - seconds Instead
+            of D (days), the usage of W - weeks is possible as well.
+            Examples of valid period strings: P3D, P1Y, P1DT12H, PT6H, P1Y6M3DT4H20M30S.
+        start : datetime | str
+            Either Python datetime object or a string which can be interpreted
+            as a valid Timestamp.
+        end : datetime | str
             Either Python datetime object or a string which can be interpreted
             as a valid Timestamp.
 
@@ -1118,7 +1143,9 @@ class Waterinfo:
         query_param.update(period_info)
         query_param.update(kwargs)
 
-        self.request_kiwis(query_param, grid=True)
+        ds, res = self.request_kiwis(query_param, grid=True)
+
+        return ds
 
 
 def available_datasources():
