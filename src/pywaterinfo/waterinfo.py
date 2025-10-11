@@ -52,6 +52,7 @@ PROVIDERS = {
         "base_url": VMM_GRID_BASE,
         "auth_url": VMM_GRID_AUTH,
         "datasource": "10",
+        "extra_deps": 1,
     },
 }
 
@@ -113,6 +114,13 @@ class Waterinfo:
         self._base_url = PROVIDERS[provider]["base_url"]
         self._auth_url = PROVIDERS[provider]["auth_url"]
         self._datasource = PROVIDERS[provider]["datasource"]
+        extra_deps_required = PROVIDERS[provider].get("extra_deps", 0)
+        if extra_deps_required:
+            logger.info(
+                f"The provider {provider} requires extra dependencies."
+                "Make sure you installed them with "
+                f"`pip install pywaterinfo[{provider}]`."
+            )
 
         # Use requests-cache session
         if cache:
@@ -275,7 +283,8 @@ class Waterinfo:
         if grid:
             if self._datasource != "10":
                 raise WaterinfoException(
-                    "Grid data is only available from the VMM grid datasource."
+                    "Grid type kiwis request is only available from the"
+                    " VMM grid datasource."
                 )
 
         # query input checks: valid parameters and formatting of the parameters period,
@@ -1121,8 +1130,8 @@ class Waterinfo:
         """
         if not self._datasource == "10":
             raise WaterinfoException(
-                "Raster time series data is only available from the VMM "
-                "grid datasource."
+                "get_raster_timeseries_values is only available for"
+                " VMM grid datasource."
             )
 
         if "timezone" in kwargs.keys():
