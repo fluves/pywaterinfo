@@ -6,7 +6,6 @@ import pandas as pd
 import pytz
 import re
 import requests
-import xarray as xr
 
 from pywaterinfo.parser import parse_waterinfo_hdf5
 
@@ -1100,7 +1099,7 @@ class Waterinfo:
         start=None,
         end=None,
         **kwargs,
-    ) -> xr.Dataset:
+    ):
         """
         Get the hdf5 in xarray.Dataset format for a raster time series.
 
