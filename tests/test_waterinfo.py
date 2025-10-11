@@ -568,6 +568,50 @@ class TestRequestKiwis:
             )
 
 
+class TestRequestKiwisGrid:
+    @pytest.mark.parametrize(
+        "connection",
+        [
+            "vmm_connection",
+            "vmm_cached_connection",
+            "hic_connection",
+            "hic_cached_connection",
+        ],
+    )
+    def test_grid_request_invalid_provider(self, connection, request):
+        """Handles if any other provider than vmm_grid is used for grid request"""
+
+        query_param = dict()
+        connection = request.getfixturevalue(connection)
+        with pytest.raises(WaterinfoException) as e:
+            connection.request_kiwis(query=query_param, grid=True)
+            assert str(e.value).contains(
+                "Grid data is only available from the VMM grid datasource."
+            )
+
+    @pytest.mark.parametrize(
+        "connection",
+        [
+            "vmm_grid_connection",
+            "vmm_grid_cached_connection",
+        ],
+    )
+    def test_grid_request_valid_provider(self, connection, request):
+        """Test KIWIS grid request returns temp file and response"""
+
+        query_param = dict(
+            request="getRasterFile",
+            ts_id="911010",
+            date="2025-09-12T00:00:00Z",
+            format="geotiff",
+        )
+        connection = request.getfixturevalue(connection)
+        temp_file, res = connection.request_kiwis(query=query_param, grid=True)
+
+        assert os.path.isfile(temp_file)
+        assert res.status_code == 200
+
+
 class TestTimeseriesValueLayer:
     @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
     def test_one_of_three(self, connection, request):
@@ -766,4 +810,46 @@ class TestEnsembleTimeSeries:
             assert str(excinfo.value) == (
                 "Currently, pywaterinfo doesn't support calling "
                 "`get_ensemble_timeseries_values` without any time information."
+            )
+
+
+class TestGridRasterFile:
+
+    @pytest.mark.parametrize(
+        "connection",
+        [
+            "vmm_grid_connection",
+            "vmm_grid_cached_connection",
+        ],
+    )
+    def test_grid_raster_file_valid_provider(self, connection, request):
+        """Test KIWIS grid raster file request"""
+        connection = request.getfixturevalue(connection)
+        with pytest.raises(
+            NotImplementedError, match="Binary io needs to be implemented."
+        ):
+            connection.get_raster_timeseries_values(
+                ts_id="911010",
+                period="PT1H",
+            )
+
+    @pytest.mark.parametrize(
+        "connection",
+        [
+            "vmm_connection",
+            "vmm_cached_connection",
+            "hic_connection",
+            "hic_cached_connection",
+        ],
+    )
+    def test_grid_raster_file_invalid_provider(self, connection, request):
+        """Test KIWIS grid raster file request"""
+        connection = request.getfixturevalue(connection)
+
+        with pytest.raises(
+            WaterinfoException, match="only available from the VMM grid datasource."
+        ):
+            connection.get_raster_timeseries_values(
+                ts_id="911010",
+                period="PT1H",
             )

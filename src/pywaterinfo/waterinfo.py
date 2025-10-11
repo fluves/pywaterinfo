@@ -4,9 +4,7 @@ import pandas as pd
 import pytz
 import re
 import requests
-import tempfile
 import xarray as xr
-from pathlib import Path
 
 try:
     import requests_cache
@@ -270,6 +268,12 @@ class Waterinfo:
         >>> data        #doctest: +ELLIPSIS
         [['station_name'...]]
         """
+        if grid:
+            if self._datasource != "10":
+                raise WaterinfoException(
+                    "Grid data is only available from the VMM grid datasource."
+                )
+
         # query input checks: valid parameters and formatting of the parameters period,
         # dateformat, returnfields
         query = {key.lower(): value for (key, value) in query.items()}
@@ -281,12 +285,6 @@ class Waterinfo:
             self._check_return_date_format(query["dateformat"], query["request"])
         if "returnfields" in query.keys():
             self._check_return_fields_format(query["returnfields"], query["request"])
-
-        if grid:
-            if self._datasource != "10":
-                raise WaterinfoException(
-                    "Grid data is only available from the VMM grid datasource."
-                )
 
         # User can overwrite the default arguments
         defaults = {
@@ -324,11 +322,7 @@ class Waterinfo:
             )
 
         if grid:
-            tmp_dir = tempfile.gettempdir()
-            # Save the response content to a temporary file
-            with open(Path(tmp_dir) / "returned.tiff", "wb") as f:
-                f.write(res.content)
-            return Path(tmp_dir) / "returned.tiff", res
+            raise NotImplementedError("Binary io needs to be implemented.")
 
         parsed = res.json()
         if (
@@ -1076,13 +1070,16 @@ class Waterinfo:
                 all_series.append(df)
         return pd.concat(all_series)
 
-    def get_raster_file(
+    def get_raster_timeseries_values(
         self,
         ts_id,
-        date,
+        period=None,
+        start=None,
+        end=None,
+        **kwargs,
     ) -> xr.Dataset:
         """
-        Get the raster file for a given time series.
+        Get the hdf5 in xarray.Dataset format for a raster time series.
 
         Parameters
         ----------
@@ -1097,23 +1094,32 @@ class Waterinfo:
         xarray.Dataset
             The raster dataset.
         """
-
-        if self._datasource != "10":
+        if not self._datasource == "10":
             raise WaterinfoException(
-                "Raster data is only available from the VMM grid datasource."
+                "Raster time series data is only available from the VMM "
+                "grid datasource."
             )
 
-        query_param = dict(
-            request="getRasterFile",
-            ts_id=ts_id,
-            format="geotiff",
-            date=date,
+        if "timezone" in kwargs.keys():
+            timezone = kwargs["timezone"]
+        else:
+            timezone = "UTC"
+
+        # check the period information
+        period_info = self._parse_period(
+            start=start, end=end, period=period, timezone=timezone
         )
 
-        temp_file, res = self.request_kiwis(query_param, grid=True)
+        query_param = dict(
+            request="getRasterTimeseriesValues",
+            ts_id=ts_id,
+            format="hdf5",
+        )
+        query_param.update(period_info)
+        query_param.update(kwargs)
 
-        with xr.open_dataset(temp_file, engine="rasterio") as ds:
-            return ds, res
+        self.request_kiwis(query_param, grid=True)
+
 
 
 def available_datasources():
