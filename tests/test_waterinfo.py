@@ -568,29 +568,7 @@ class TestRequestKiwis:
             )
 
 
-class TestRequestKiwisGrid:
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-            "hic_connection",
-            "hic_cached_connection",
-        ],
-    )
-    def test_grid_request_invalid_provider(self, connection, request):
-        """Handles if any other provider than vmm_grid is used for grid request"""
-
-        query_param = dict()
-        connection = request.getfixturevalue(connection)
-        with pytest.raises(
-            WaterinfoException,
-            match=(
-                "Grid type kiwis request is only available from the"
-                " VMM grid datasource."
-            ),
-        ):
-            connection.request_kiwis(query=query_param, grid=True)
+class TestRasterTimeseriesValues:
 
     @pytest.mark.parametrize(
         "connection",
