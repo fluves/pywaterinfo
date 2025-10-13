@@ -6,7 +6,7 @@ import xarray as xr
 logger = logging.getLogger(__name__)
 
 
-def parse_waterinfo_hdf5(h5f):
+def parse_waterinfo_hdf5(h5f, nan_value=-2):
     """Parse Waterinfo HDF5 radar data structure into an xarray Dataset.
 
     This function extracts precipitation radar data from Waterinfo.be HDF5
@@ -30,17 +30,13 @@ def parse_waterinfo_hdf5(h5f):
     where_attrs = h5f["where"].attrs
 
     # Grid parameters
-    xsize = where_attrs["xsize"]  # 900
-    ysize = where_attrs["ysize"]  # 780
-    xscale = where_attrs["xscale"]  # 500.0 (meter grid resolution)
-    yscale = where_attrs["yscale"]  # 500.0 (meter grid resolution)
+    xsize = where_attrs["xsize"]
+    ysize = where_attrs["ysize"]
+    xscale = where_attrs["xscale"]
+    yscale = where_attrs["yscale"]
 
     # Projection definition
-    projdef = (
-        where_attrs["projdef"].decode("utf-8")
-        if isinstance(where_attrs["projdef"], bytes)
-        else where_attrs["projdef"]
-    )
+    projdef = where_attrs["projdef"]
 
     # Create coordinate arrays in projected coordinates
     # The origin is at (LL_lon, LL_lat) in projected coordinates
@@ -51,28 +47,18 @@ def parse_waterinfo_hdf5(h5f):
     dataset1 = h5f["dataset1"]
     data_groups = sorted(
         [key for key in dataset1.keys() if key.startswith("data")],
-        key=lambda x: int(x[4:]),
-    )  # Sort by number after 'data'
+        key=lambda x: int(x[4:]),  # Sort by number after 'data'
+    )
 
     # Extract timestamps from 'what' group
     what_attrs = h5f["what"].attrs
-    base_date = (
-        what_attrs["date"].decode("utf-8")
-        if isinstance(what_attrs["date"], bytes)
-        else what_attrs["date"]
-    )
-    base_time = (
-        what_attrs["time"].decode("utf-8")
-        if isinstance(what_attrs["time"], bytes)
-        else what_attrs["time"]
-    )
+    base_date = what_attrs["date"]
+    base_time = what_attrs["time"]
 
     # Parse base datetime
-    base_dt = pd.to_datetime(f"{base_date} {base_time}", format="%Y%m%d %H%M%S")
+    base_dt = pd.to_datetime(f"{base_date}{base_time}", format="%Y%m%d%H%M%S")
 
-    # Create timesteps (assuming 5-minute intervals for radar data)
-
-    logger.info("Assuming 5-minute intervals between radar scans.")
+    # Create timesteps
     timesteps = [base_dt + pd.Timedelta(minutes=5 * i) for i in range(len(data_groups))]
 
     # Read all data arrays and replace -2 with np.nan
@@ -81,9 +67,8 @@ def parse_waterinfo_hdf5(h5f):
         data_group = dataset1[data_group_name]
         data_array = data_group["data"][:]
 
-        # Replace -2 (no_data) with np.nan
         data_array = data_array.astype(np.float32)
-        data_array[data_array == -2] = np.nan
+        data_array[data_array == nan_value] = np.nan
 
         data_arrays.append(data_array)
 
@@ -92,18 +77,16 @@ def parse_waterinfo_hdf5(h5f):
 
     # Create xarray Dataset
     ds = xr.Dataset(
-        {"precipitation": (["time", "y", "x"], data_3d)},
+        {"value": (["time", "y", "x"], data_3d)},
         coords={"time": timesteps, "x": x_coords, "y": y_coords},
-        attrs={
-            "crs": projdef,
-            "projection": projdef,
-            "description": "Precipitation radar data from Waterinfo.be",
-            "grid_resolution_x": xscale,
-            "grid_resolution_y": yscale,
-            "xsize": xsize,
-            "ysize": ysize,
-            "nodata_value": np.nan,  # Mark that we've handled no_data values
-        },
     )
 
-    return ds
+    raster_attributes = {
+        "projdef": projdef,
+        "xscale": xscale,
+        "yscale": yscale,
+        "xsize": xsize,
+        "ysize": ysize,
+    }
+
+    return ds, raster_attributes

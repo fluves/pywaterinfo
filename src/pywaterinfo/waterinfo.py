@@ -1,11 +1,11 @@
 import datetime
 import h5py
-from io import BytesIO
 import logging
 import pandas as pd
 import pytz
 import re
 import requests
+from io import BytesIO
 
 from pywaterinfo.parser import parse_waterinfo_hdf5
 
@@ -1142,7 +1142,25 @@ class Waterinfo:
         query_param.update(period_info)
         query_param.update(kwargs)
 
-        ds, res = self.request_kiwis(query_param, grid=True)
+        io_content, res = self.request_kiwis(query_param, return_bytesio=True)
+
+        with h5py.File(io_content, "r") as h5f:
+            ds, raster_attributes = parse_waterinfo_hdf5(h5f, nan_value=-2)
+
+        # add attributes to dataset
+        # fetch metadata of the ts_id
+        df_metadata = self.get_timeseries_value_layer(ts_id=ts_id)
+
+        ts_id_metadata = {
+            "ts_name": df_metadata["ts_name"].item(),
+            "station_no": df_metadata["station_no"].item(),
+            "station_id": df_metadata["station_id"].item(),
+            "station_parameter_name": (df_metadata["stationparameter_longname"].item()),
+            "ts_unitsymbol": df_metadata["ts_unitsymbol"].item(),
+        }
+
+        ds.attrs.update(raster_attributes)
+        ds.attrs.update(ts_id_metadata)
 
         return ds
 
