@@ -1,6 +1,6 @@
 import datetime
 import h5py
-import io
+from io import BytesIO
 import logging
 import pandas as pd
 import pytz
@@ -231,7 +231,7 @@ class Waterinfo:
             self._request.cache.clear()
 
     def request_kiwis(
-        self, query: dict, headers: dict = None, grid: bool = False
+        self, query: dict, headers: dict = None, return_bytesio: bool = False
     ) -> dict:
         """http call to waterinfo.be KIWIS API
 
@@ -250,12 +250,16 @@ class Waterinfo:
             list of query options to be used together with the base string
         headers : dict
             authentication header for the call
-        grid : bool, optional
-            If request is for grid data, return response as temp file.
+        return_bytesio : bool, optional
+            Content of the response is returned as BytesIO object
 
         Returns
         -------
-        parsed json object, full HTTP response
+        parsed: json or BytesIO
+            returned parsed json object or if return_bytesio is True, return
+            BytesIO object
+        res: str
+            full HTTP response
 
         Examples
         --------
@@ -279,12 +283,6 @@ class Waterinfo:
         >>> data        #doctest: +ELLIPSIS
         [['station_name'...]]
         """
-        if grid:
-            if self._datasource != "10":
-                raise WaterinfoException(
-                    "Grid type kiwis request is only available from the"
-                    " VMM grid datasource."
-                )
 
         # query input checks: valid parameters and formatting of the parameters period,
         # dateformat, returnfields
@@ -333,18 +331,11 @@ class Waterinfo:
                 f"(call to waterinfo.be without cache activated)."
             )
 
-        if grid:
-            io_content = io.BytesIO(res.content)
+        if return_bytesio:
+            io_content = BytesIO(res.content)
 
-            io_content.seek(0)
-            try:
-                with h5py.File(io_content, "r") as h5f:
-                    parsed = parse_waterinfo_hdf5(h5f)
+            parsed = io_content
 
-            except Exception as e:
-                raise KiwisException(f"Failed to parse HDF5 data: {e}")
-
-            io_content.close()
         else:
             parsed = res.json()
             if (
