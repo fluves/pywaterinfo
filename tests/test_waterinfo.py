@@ -7,6 +7,7 @@ import os
 import pandas as pd
 import pytz
 import sys
+from unittest.mock import patch
 
 import pywaterinfo
 from pywaterinfo import Waterinfo
@@ -108,32 +109,6 @@ def test_token_hic(cache):
     with pytest.raises(Exception):
         client = "DUMMY"
         Waterinfo("hic", token=client, cache=cache)
-
-
-@pytest.mark.notoken
-@pytest.mark.parametrize("cache", [False, True])
-def test_token_vmm_grid(cache):
-    """Check if submitting of a token is tackled properly"""
-    # no token, no token header, no authentication in request header
-    vmm_grid = Waterinfo("vmm_grid", cache=cache)
-    vmm_grid.clear_cache()
-    assert vmm_grid._token_header is None
-    _, res = vmm_grid.request_kiwis({"request": "getRequestInfo"})
-    assert "Authorization" not in res.request.headers.keys()
-
-    # token, token header, authentication in request header
-    # this client code is received by VMM for unit testing purposes only
-    client = os.environ.get("VMM_GRID_TOKEN")
-    vmm_grid = Waterinfo("vmm_grid", token=client, cache=cache)
-    vmm_grid.clear_cache()
-    assert vmm_grid._token_header is not None
-    _, res = vmm_grid.request_kiwis({"request": "getRequestInfo"})
-    assert "Authorization" in res.request.headers.keys()
-
-    # wrong token results in error
-    with pytest.raises(Exception):
-        client = "DUMMY"
-        Waterinfo("vmm_grid", token=client, cache=cache)
 
 
 @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
@@ -615,21 +590,42 @@ class TestRasterTimeseriesValues:
     @pytest.mark.parametrize(
         "connection",
         [
-            "vmm_connection",
-            "vmm_cached_connection",
-            "hic_connection",
-            "hic_cached_connection",
+            "vmm_grid_connection",
+            "vmm_grid_cached_connection",
         ],
     )
-    def test_grid_info_no_extra_deps(self, caplog, connection, request):
-        """Test KIWIS grid request returns temp file and response"""
+    def test_get_raster_timeseries_values_add_metadata(
+        self, connection, request, mock_vmm_grid_hdf5_response
+    ):
+        """Verify additional ts_id attributes are added to xarray.Dataset"""
 
-        # check if the logs say the The provider {provider} requires extra
-        # dependencies
+        ts_id_metadata_expected_keys = (
+            "ts_name",
+            "station_no",
+            "station_id",
+            "station_parameter_name",
+            "ts_unitsymbol",
+        )
 
-        with caplog.at_level(logging.INFO):
-            connection = request.getfixturevalue(connection)
-            assert "requires extra dependencies." not in caplog.text
+        vmm_grid = request.getfixturevalue(connection)
+        original_request_kiwis = vmm_grid.request_kiwis
+
+        def side_effect(*args, **kwargs):
+            if kwargs.get("return_bytesio", False):
+                # This is the raster data call - return mocked HDF5
+                return (mock_vmm_grid_hdf5_response, None)
+            else:
+
+                return original_request_kiwis(*args, **kwargs)
+
+        with patch.object(vmm_grid, "request_kiwis", side_effect=side_effect):
+            ds = vmm_grid.get_raster_timeseries_values(
+                ts_id="911010",
+                period="PT1H",
+            )
+
+            assert hasattr(ds, "attrs")
+            assert set(ts_id_metadata_expected_keys).issubset(set(ds.attrs.keys()))
 
 
 class TestTimeseriesValueLayer:

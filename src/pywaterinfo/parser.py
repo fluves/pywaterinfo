@@ -89,4 +89,6 @@ def parse_waterinfo_hdf5(h5f, nan_value=-2):
         "ysize": ysize,
     }
 
-    return ds, raster_attributes
+    ds.attrs.update(raster_attributes)
+
+    return ds

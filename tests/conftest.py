@@ -6,6 +6,8 @@ import pytest
 
 import datetime
 import os
+from io import BytesIO
+from pathlib import Path
 
 from pywaterinfo.waterinfo import Waterinfo
 
@@ -19,6 +21,8 @@ TOKENS = {
     "hic": os.environ.get("HIC_TOKEN"),
     "vmm_grid": os.environ.get("VMM_GRID_TOKEN"),
 }
+
+CURRENT_DIR = Path(__file__).resolve().parent
 
 
 @pytest.fixture
@@ -77,3 +81,11 @@ def df_timeseries(vmm_connection):
     return vmm_connection.get_timeseries_values(
         78124042, start="20190501", end="20190502"
     )
+
+
+@pytest.fixture(scope="module")
+def mock_vmm_grid_hdf5_response():
+    """Mock VMM grid HDF5 format response"""
+    with open(CURRENT_DIR / "data" / "ts_id_911010_hdf5_response.hdf5", "rb") as f:
+        io_content = f.read()
+    return BytesIO(io_content)
