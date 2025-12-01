@@ -6,7 +6,8 @@ Python package to download time series data from waterinfo.be
 
 ## Description
 
-pywaterinfo facilitates access to [waterinfo.be](https://www.waterinfo.be/), a website managed by the [Flanders Environment Agency (VMM)](https://en.vmm.be/) and [Flanders Hydraulics Research](https://www.waterbouwkundiglaboratorium.be/). The website provides access to real-time water and weather related environmental variables for Flanders (Belgium), such as rainfall, air pressure, discharge, and water level. The package provides functions to search for stations and variables, and download time series.
+pywaterinfo facilitates access to [waterinfo.be](https://www.waterinfo.be/), a website managed by the [Flanders Environment Agency (VMM)](https://en.vmm.be/) and [Flanders Hydraulics Research](https://www.waterbouwkundiglaboratorium.be/). The website provides access to real-time water and weather related environmental variables for Flanders (Belgium), such as rainfall, air pressure, discharge, and water level. The package provides functions to search for stations and variables, and
+to download time series and raster data.
 
 Check out the [documentation website](https://fluves.github.io/pywaterinfo/) for more information.
 
@@ -15,6 +16,23 @@ Check out the [documentation website](https://fluves.github.io/pywaterinfo/) for
 ```
 pip install pywaterinfo
 ```
+
+### Extra dependencies
+
+- A cached connection can also be made to make sure consecutive calls for the
+same data are stored in a local cache. Install the extra dependencies using;
+
+  ```
+  pip install pywaterinfo[cache]
+  ```
+
+- For downloading raster data from [VMM grid API](https://waterinfo.vlaanderen.be/download/9f5ee0c9-dafa-46de-958b-7cac46eb8c23?dl=0), install the extra dependencies using;
+
+  ```
+  pip install pywaterinfo[vmm_grid]
+  ```
+
+
 
 ## Example
 
