@@ -933,15 +933,6 @@ class Waterinfo:
         ...     period="P1D")
 
         """
-        if isinstance(ts_id, int):
-            ts_id = str(ts_id)
-
-        # if ts_id is comma seperated str, raise not implemented error
-        if ts_id and ("," in ts_id) or ts_path and ("," in ts_path):
-            raise NotImplementedError(
-                "Multiple identifier values not yet implemented, use one "
-                "identifier at a time"
-            )
         if self._datasource != "4":
             raise WaterinfoException("Ensemble data only available for HIC.")
 
@@ -986,35 +977,28 @@ class Waterinfo:
 
         data, response = self.request_kiwis(query_param)
 
-        ts_id = list(pd.DataFrame(data).keys())[0]
-        df_ensembles = pd.DataFrame(data[str(ts_id)])
-        ts_path = df_ensembles["timeseries"][0]["ts_path"]
-
-        # if ts_path includes Perc.Abs.O str in it, raise notimplemented as
-        # returned data is in a slightly different format
-        if "Perc.Abs.O" in ts_path:
-            raise NotImplementedError(
-                f"Current ts_id={ts_id} has a ts_path of {ts_path}.\n"
-                "Currently, timeseries only ends with Det.Abs.O are allowed."
-                "Consider changing `Perc.Abs.O` to `Det.Abs.O`."
-            )
-
         all_series = []
-        for _, row in df_ensembles.iterrows():
-            ts_dict = row["timeseries"]
-            df = pd.DataFrame(ts_dict["data"], columns=ts_dict["columns"].split(","))
-            # Add timeseries metadata
-            for key in ts_dict:
-                if key not in ("data", "columns", "rows"):
-                    df[key] = ts_dict[key]
-            # Add ensemble-level metadata
-            df["ensembledate"] = row["ensembledate"]
-            df["ensembledispatchinfo"] = row["ensembledispatchinfo"]
-            # Convert timestamp
-            if "Timestamp" in df.columns:
-                df["Timestamp"] = pd.to_datetime(
-                    df["Timestamp"], utc=True
-                ).dt.tz_convert(timezone)
-            all_series.append(df)
+        for _, section in data.items():
+            for item in section:
+                ts_dict = item["timeseries"]
+                timestamp = ts_dict["data"][0][0]
+                values = [item[::-2] for item in ts_dict["data"]]
 
+                data_with_timestamps = [[timestamp, *vals] for vals in values]
+                df = pd.DataFrame(
+                    data_with_timestamps, columns=ts_dict["columns"].split(",")
+                )
+                # Add timeseries metadata
+                for key in ts_dict:
+                    if key not in ("data", "columns", "rows"):
+                        df[key] = ts_dict[key]
+                # Add ensemble-level metadata
+                df["ensembledate"] = item["ensembledate"]
+                df["ensembledispatchinfo"] = item["ensembledispatchinfo"]
+                # Convert timestamp
+                if "Timestamp" in df.columns:
+                    df["Timestamp"] = pd.to_datetime(
+                        df["Timestamp"], utc=True
+                    ).dt.tz_convert(timezone)
+                all_series.append(df)
         return pd.concat(all_series)
