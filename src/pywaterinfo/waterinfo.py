@@ -984,9 +984,9 @@ class Waterinfo:
                 timestamp = ts_dict["data"][0][0]
                 values = [item[::-2] for item in ts_dict["data"]]
 
-                data_with_timestamps = [[timestamp, *vals] for vals in values]
+                timestamp_with_values = [[timestamp, *vals] for vals in values]
                 df = pd.DataFrame(
-                    data_with_timestamps, columns=ts_dict["columns"].split(",")
+                    timestamp_with_values, columns=ts_dict["columns"].split(",")
                 )
                 # Add timeseries metadata
                 for key in ts_dict:
