@@ -611,20 +611,7 @@ class TestEnsembleTimeSeries:
         conn = request.getfixturevalue(connection)
 
         data = conn.get_ensemble_timeseries_values(
-            start="2025-06-01T00:00:00Z", end="2025-06-01T12:00:00Z", ts_id="84021010"
-        )
-        assert isinstance(data, pd.DataFrame)
-        assert "ensembledate" in data.columns
-        assert "ensembledispatchinfo" in data.columns
-        assert not data.empty
-
-    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
-    def test_valid_request_ts_id_str(self, connection, request):
-        """For valid cases, a pd.dataframe with ensemble members should be returned"""
-        conn = request.getfixturevalue(connection)
-
-        data = conn.get_ensemble_timeseries_values(
-            start="2025-06-01T00:00:00Z", end="2025-06-01T12:00:00Z", ts_id="84021010"
+            start="2025-06-01T00:00:00Z", end="2025-06-01T12:00:00Z", **kwargs
         )
         assert isinstance(data, pd.DataFrame)
         assert "ensembledate" in data.columns
@@ -665,7 +652,7 @@ class TestEnsembleTimeSeries:
         data = conn.get_ensemble_timeseries_values(
             start="2025-06-01T00:00:00Z",
             end="2025-06-01T12:00:00Z",
-            ts_path="Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble.Binary.KT-det.O",
+            ts_path=ts_path,
         )
         assert isinstance(data, pd.DataFrame)
 
