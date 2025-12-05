@@ -699,6 +699,9 @@ class TestEnsembleTimeSeries:
             start="2025-06-01T00:00:00Z", end="2025-06-01T12:00:00Z", ts_id="84021010"
         )
         assert isinstance(data, pd.DataFrame)
+        assert "ensembledate" in data.columns
+        assert "ensembledispatchinfo" in data.columns
+        assert not data.empty
 
     @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
     def test_valid_request_ts_id_int(self, connection, request):
@@ -711,6 +714,9 @@ class TestEnsembleTimeSeries:
             ts_id=84021010,
         )
         assert isinstance(data, pd.DataFrame)
+        assert "ensembledate" in data.columns
+        assert "ensembledispatchinfo" in data.columns
+        assert not data.empty
 
     @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
     def test_valid_request_ts_path(self, connection, request):
