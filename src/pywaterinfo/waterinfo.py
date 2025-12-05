@@ -971,14 +971,6 @@ class Waterinfo:
         )
 
         if ts_id is None:
-            # if ts_path includes Perc.Abs.O str in it, raise notimplemented as returned
-            # data slightly different format
-            if "Perc.Abs.O" in ts_path:
-                raise NotImplementedError(
-                    "Currently, timeseries only ends with Det.Abs.O are allowed."
-                    "Consider changing `Perc.Abs.O` to `Det.Abs.O`"
-                )
-
             query_param = dict(
                 request="getTimeseriesEnsembleValues",
                 ts_path=ts_path,
@@ -998,8 +990,8 @@ class Waterinfo:
         df_ensembles = pd.DataFrame(data[str(ts_id)])
         ts_path = df_ensembles["timeseries"][0]["ts_path"]
 
-        # if ts_path includes Perc.Abs.O str in it, raise notimplemented as returned
-        # data slightly different format
+        # if ts_path includes Perc.Abs.O str in it, raise notimplemented as
+        # returned data is in a slightly different format
         if "Perc.Abs.O" in ts_path:
             raise NotImplementedError(
                 f"Current ts_id={ts_id} has a ts_path of {ts_path}.\n"
