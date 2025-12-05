@@ -32,7 +32,7 @@ def patch_retention(monkeypatch):
 
 
 @pytest.fixture(scope="module")
-def waterinfo_factory():
+def connection_factory():
     """Factory fixture to create Waterinfo connections with optional cache."""
 
     def _make(provider: str, cache: bool = False):
@@ -47,33 +47,33 @@ def waterinfo_factory():
 
 # Specific connections using the factory
 @pytest.fixture(scope="module")
-def vmm_connection(waterinfo_factory):
-    return waterinfo_factory("vmm")
+def vmm_connection(connection_factory):
+    return connection_factory("vmm")
 
 
 @pytest.fixture(scope="module")
-def vmm_cached_connection(waterinfo_factory):
-    return waterinfo_factory("vmm", cache=True)
+def vmm_cached_connection(connection_factory):
+    return connection_factory("vmm", cache=True)
 
 
 @pytest.fixture(scope="module")
-def hic_connection(waterinfo_factory):
-    return waterinfo_factory("hic")
+def hic_connection(connection_factory):
+    return connection_factory("hic")
 
 
 @pytest.fixture(scope="module")
-def hic_cached_connection(waterinfo_factory):
-    return waterinfo_factory("hic", cache=True)
+def hic_cached_connection(connection_factory):
+    return connection_factory("hic", cache=True)
 
 
 @pytest.fixture(scope="module")
-def vmm_grid_connection(waterinfo_factory):
-    return waterinfo_factory("vmm_grid")
+def vmm_grid_connection(connection_factory):
+    return connection_factory("vmm_grid")
 
 
 @pytest.fixture(scope="module")
-def vmm_grid_cached_connection(waterinfo_factory):
-    return waterinfo_factory("vmm_grid", cache=True)
+def vmm_grid_cached_connection(connection_factory):
+    return connection_factory("vmm_grid", cache=True)
 
 
 @pytest.fixture(scope="module")

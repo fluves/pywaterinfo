@@ -1091,8 +1091,7 @@ class Waterinfo:
         end=None,
         **kwargs,
     ):
-        """
-        Get the hdf5 in xarray.Dataset format for a raster time series.
+        """Get the hdf5 in xarray.Dataset format for a raster time series.
 
         Parameters
         ----------
