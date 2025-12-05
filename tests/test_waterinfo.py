@@ -590,7 +590,7 @@ class TestEnsembleTimeSeries:
         connection = request.getfixturevalue(connection)
         with pytest.raises(WaterinfoException) as excinfo:
             connection.get_ensemble_timeseries_values()
-            assert str(excinfo.value) == "Ensemble data not available apart from HIC."
+            assert str(excinfo.value) == "Ensemble data only available for HIC."
 
     @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
     @pytest.mark.parametrize(

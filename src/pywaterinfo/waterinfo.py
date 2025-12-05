@@ -943,7 +943,7 @@ class Waterinfo:
                 "identifier at a time"
             )
         if self._datasource != "4":
-            raise WaterinfoException("Ensemble data not available apart from HIC.")
+            raise WaterinfoException("Ensemble data only available for HIC.")
 
         if "timezone" in kwargs.keys():
             timezone = kwargs["timezone"]
