@@ -103,8 +103,8 @@ Ensemble time series - only available for HIC
 ---------------------------------------------
 
 Ensemble data, in contrast to CMD time series values, contains different Time of
-Forecast (TOF) data for a given period followed by the all forecasted timestamps with
-their value. For instance, for :code:`ts_id= 84021010`, following TOFs
+Forecast (TOF) data for a given period followed by all the forecasted timestamps with
+their values. For instance, for :code:`ts_id= 84021010`, the following TOFs
 can be retrieved between :code:`start=2021-01-28` and :code:`end=2021-01-29`.
 
 .. code:: python
