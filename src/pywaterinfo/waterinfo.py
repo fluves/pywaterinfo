@@ -1117,7 +1117,7 @@ class Waterinfo:
         xarray.Dataset
             The raster dataset.
         """
-        if not self._datasource == "10":
+        if self._datasource != "10":
             raise WaterinfoException(
                 "get_raster_timeseries_values is only available for"
                 " VMM grid datasource."
