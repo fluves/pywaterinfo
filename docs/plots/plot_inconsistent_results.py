@@ -45,7 +45,7 @@ ax.plot(
     df_inconsistent_ensemble_data["Timestamp"],
     df_inconsistent_ensemble_data["0"],
     label=(
-        "Nonconsistent result returned for a given period\n"
+        "Inconsistent result returned for a given period\n"
         "when retrieved with `get_timeseries_values`"
     ),
     color="k",
@@ -54,8 +54,7 @@ ax.plot(
 _ = ax.legend(title="Request type")
 _ = ax.set_xlabel("Timestamp")
 _ = ax.set_ylabel("Value")
-_ = ax.set_title("Non-consistent result (black) for 28/01/2021")
+_ = ax.set_title("Inconsistent result (black) for 28/01/2021")
 _ = ax.grid(True)
 
 plt.tight_layout()
-plt.show()
