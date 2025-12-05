@@ -51,7 +51,9 @@ PROVIDERS = {
         "base_url": VMM_GRID_BASE,
         "auth_url": VMM_GRID_AUTH,
         "datasource": "10",
-        "extra_deps": 1,
+        # True if extra dependencies are required for this provider.
+        # Add the dependencies to the setup.cfg under '[options.extras_require]'
+        "extra_deps": True,
     },
 }
 
