@@ -170,6 +170,28 @@ class Waterinfo:
     def __repr__(self):
         return f"<{self.__class__.__name__} object, " f"Query from {self._base_url!r}>"
 
+    @staticmethod
+    def _convert_timestamp_column(df, timezone):
+        """Convert Timestamp column to datetime with timezone conversion.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame containing a Timestamp column
+        timezone : str
+            Target timezone for conversion
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with converted Timestamp column
+        """
+        if "Timestamp" in df.columns:
+            df["Timestamp"] = pd.to_datetime(df["Timestamp"], utc=True).dt.tz_convert(
+                timezone
+            )
+        return df
+
     def clear_cache(self):
         """Clean up the cache."""
         if self._cache:
@@ -626,12 +648,8 @@ class Waterinfo:
             for key_name in section.keys():
                 if key_name not in ("columns", "data", "rows"):
                     df[key_name] = section[key_name]
-            # convert datetime objects to Pandas timestamp
-            if "Timestamp" in df.columns:
-                # round trip via UTC to handle mixed time series
-                df["Timestamp"] = pd.to_datetime(
-                    df["Timestamp"], utc=True
-                ).dt.tz_convert(timezone)
+            # Convert timestamp
+            df = self._convert_timestamp_column(df, timezone)
             time_series.append(df)
 
         return pd.concat(time_series)
@@ -996,9 +1014,6 @@ class Waterinfo:
                 df["ensembledate"] = item["ensembledate"]
                 df["ensembledispatchinfo"] = item["ensembledispatchinfo"]
                 # Convert timestamp
-                if "Timestamp" in df.columns:
-                    df["Timestamp"] = pd.to_datetime(
-                        df["Timestamp"], utc=True
-                    ).dt.tz_convert(timezone)
+                df = self._convert_timestamp_column(df, timezone)
                 all_series.append(df)
         return pd.concat(all_series)
