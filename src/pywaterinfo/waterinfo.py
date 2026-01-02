@@ -174,6 +174,9 @@ class Waterinfo:
     def _convert_timestamp_column(df, timezone):
         """Convert Timestamp column to datetime with timezone conversion.
 
+        Since the returned dataframes contain UTC timestamps, they need
+        round trip via UTC to handle mixed time series is required.
+
         Parameters
         ----------
         df : pd.DataFrame
@@ -186,10 +189,9 @@ class Waterinfo:
         pd.DataFrame
             DataFrame with converted Timestamp column
         """
-        if "Timestamp" in df.columns:
-            df["Timestamp"] = pd.to_datetime(df["Timestamp"], utc=True).dt.tz_convert(
-                timezone
-            )
+        df["Timestamp"] = pd.to_datetime(df["Timestamp"], utc=True).dt.tz_convert(
+            timezone
+        )
         return df
 
     def clear_cache(self):
