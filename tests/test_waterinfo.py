@@ -655,6 +655,9 @@ class TestEnsembleTimeSeries:
             ts_path=ts_path,
         )
         assert isinstance(data, pd.DataFrame)
+        assert "ensembledate" in data.columns
+        assert "ensembledispatchinfo" in data.columns
+        assert not data.empty
 
     @pytest.mark.parametrize(
         "tz",
@@ -672,8 +675,8 @@ class TestEnsembleTimeSeries:
         )
 
         assert isinstance(data, pd.DataFrame)
-        timezone_retrieved = data["Timestamp"].dt.tz.zone
-        assert timezone_retrieved == tz
+        assert data["Timestamp"].dt.tz.zone == tz
+        assert not data.empty
 
     @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
     def test_timezone_not_provided(self, connection, request):
@@ -686,7 +689,7 @@ class TestEnsembleTimeSeries:
         )
 
         assert isinstance(data, pd.DataFrame)
-        assert type(data["Timestamp"].dt.tz) is type(datetime.timezone.utc)
+        assert data["Timestamp"].dt.tz == datetime.timezone.utc
 
     @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
     def test_cannot_have_two_identifiers(self, connection, request):
