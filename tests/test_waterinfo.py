@@ -581,3 +581,151 @@ class TestTimeseriesList:
         connection = request.getfixturevalue(connection)
         df = connection.get_timeseries_list(station_no="plu03a-1066")
         assert "station_no" in df.columns
+
+
+class TestEnsembleTimeSeries:
+    @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
+    def test_not_available_apart_from_hic(self, connection, request):
+        """If provider is not HIC, WaterinfoException should be raised"""
+        connection = request.getfixturevalue(connection)
+        with pytest.raises(WaterinfoException) as excinfo:
+            connection.get_ensemble_timeseries_values()
+            assert str(excinfo.value) == "Ensemble data only available for HIC."
+
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    @pytest.mark.parametrize(
+        "kwargs",
+        [
+            {"ts_id": "84017010,84327010,84150010"},
+            {
+                "ts_path": "Maastricht/SINT-WL1-1060/Ncatch"
+                "_voorspeld/Cmd.Ensemble.Binary.KT-det.O"
+                ","
+                "Helkijn/bos05m-1066/Ncatch"
+                "_voorspeld/Cmd.Ensemble.Binary.KT-det.O"
+            },
+        ],
+    )
+    def test_commaseperated_ids_or_paths(self, connection, kwargs, request):
+        """Allow commaseperated identifiers until implemented"""
+        conn = request.getfixturevalue(connection)
+
+        data = conn.get_ensemble_timeseries_values(
+            start="2025-06-01T00:00:00Z", end="2025-06-01T12:00:00Z", **kwargs
+        )
+        assert isinstance(data, pd.DataFrame)
+        assert "ensembledate" in data.columns
+        assert "ensembledispatchinfo" in data.columns
+        assert not data.empty
+
+    @pytest.mark.parametrize(
+        "ts_id",
+        [84021010, 84019010],
+    )
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_valid_request_ts_id_int(self, ts_id, connection, request):
+        """For valid cases, a pd.dataframe with ensemble members should be returned"""
+        conn = request.getfixturevalue(connection)
+
+        data = conn.get_ensemble_timeseries_values(
+            start="2025-06-01T00:00:00Z",
+            end="2025-06-01T12:00:00Z",
+            ts_id=ts_id,
+        )
+        assert isinstance(data, pd.DataFrame)
+        assert "ensembledate" in data.columns
+        assert "ensembledispatchinfo" in data.columns
+        assert not data.empty
+
+    @pytest.mark.parametrize(
+        "ts_path",
+        [
+            "Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble.Binary.KT-det.O",
+            "Aarschot/dem02a-1066/H_voorspeld/Cmd.Ensemble.Binary.KT-Perc.Abs.O",
+        ],
+    )
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_valid_request_ts_path(self, ts_path, connection, request):
+        """For valid cases, a pd.dataframe with ensemble members should be returned"""
+        conn = request.getfixturevalue(connection)
+
+        data = conn.get_ensemble_timeseries_values(
+            start="2025-06-01T00:00:00Z",
+            end="2025-06-01T12:00:00Z",
+            ts_path=ts_path,
+        )
+        assert isinstance(data, pd.DataFrame)
+        assert "ensembledate" in data.columns
+        assert "ensembledispatchinfo" in data.columns
+        assert not data.empty
+
+    @pytest.mark.parametrize(
+        "tz",
+        ["Europe/Brussels", "CET", "EST", "Greenwich"],
+    )
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_timezone_provided(self, tz, connection, request):
+        """If timezone is overwritten, data should have timezone information"""
+        conn = request.getfixturevalue(connection)
+        data = conn.get_ensemble_timeseries_values(
+            start="2025-06-01T00:00:00",
+            end="2025-06-01T12:00:00",
+            ts_id="84021010",
+            timezone=tz,
+        )
+
+        assert isinstance(data, pd.DataFrame)
+        assert data["Timestamp"].dt.tz.zone == tz
+        assert not data.empty
+
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_timezone_not_provided(self, connection, request):
+        """If timezone is not provided, data should timezone of UTC."""
+        conn = request.getfixturevalue(connection)
+        data = conn.get_ensemble_timeseries_values(
+            start="2025-06-01T00:00:00",
+            end="2025-06-01T12:00:00",
+            ts_id="84021010",
+        )
+
+        assert isinstance(data, pd.DataFrame)
+        assert data["Timestamp"].dt.tz == datetime.timezone.utc
+
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_cannot_have_two_identifiers(self, connection, request):
+        """Do not allow multiple identifiers"""
+        conn = request.getfixturevalue(connection)
+        with pytest.raises(WaterinfoException) as excinfo:
+            conn.get_ensemble_timeseries_values(
+                ts_id="tsid1",
+                ts_path="data/path",
+                start="2025-06-01T00:00:00Z",
+                end="2025-06-01T12:00:00Z",
+            )
+        assert str(excinfo.value) == (
+            "A combination of ts_id and ts_path is not possible, use one"
+        )
+
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_no_identifier(self, connection, request):
+        """If no identifier is provided, WaterinfoException should be raised"""
+        conn = request.getfixturevalue(connection)
+        with pytest.raises(WaterinfoException) as excinfo:
+            conn.get_ensemble_timeseries_values(
+                start="2025-06-01T00:00:00Z",
+                end="2025-06-01T12:00:00Z",
+            )
+            assert str(excinfo.value) == ("Either ts_id or ts_path is required.")
+
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_no_date_or_period(self, connection, request):
+        """If no date or period is provided, NotImplementedError should be raised"""
+        conn = request.getfixturevalue(connection)
+        with pytest.raises(NotImplementedError) as excinfo:
+            conn.get_ensemble_timeseries_values(
+                ts_id="84021010",
+            )
+            assert str(excinfo.value) == (
+                "Currently, pywaterinfo doesn't support calling "
+                "`get_ensemble_timeseries_values` without any time information."
+            )

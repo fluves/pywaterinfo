@@ -149,7 +149,7 @@ class Waterinfo:
             expires_on = datetime.datetime.now() + datetime.timedelta(
                 seconds=expires_in
             )
-            logging.info(f"Current token expires on {expires_on}")
+            logger.info(f"Current token expires on {expires_on}")
 
         # request the API info from the waterinfo KIWIS service itself
         query_param = {"request": "getRequestInfo"}
@@ -169,6 +169,30 @@ class Waterinfo:
 
     def __repr__(self):
         return f"<{self.__class__.__name__} object, " f"Query from {self._base_url!r}>"
+
+    @staticmethod
+    def _convert_timestamp_column(df, timezone):
+        """Convert Timestamp column to datetime with timezone conversion.
+
+        Since the returned dataframes contain UTC timestamps, they need
+        round trip via UTC to handle mixed time series is required.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame containing a Timestamp column
+        timezone : str
+            Target timezone for conversion
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with converted Timestamp column
+        """
+        df["Timestamp"] = pd.to_datetime(df["Timestamp"], utc=True).dt.tz_convert(
+            timezone
+        )
+        return df
 
     def clear_cache(self):
         """Clean up the cache."""
@@ -255,14 +279,14 @@ class Waterinfo:
 
         if self._cache:
             if res.from_cache:
-                logging.info(f"Request {res.url} reused from cache.")
+                logger.info(f"Request {res.url} reused from cache.")
             else:
-                logging.info(
+                logger.info(
                     f"Successful waterinfo API request with call {res.url} "
                     f"(call to waterinfo.be with cache activated)."
                 )
         else:
-            logging.info(
+            logger.info(
                 f"Successful waterinfo API request with call {res.url} "
                 f"(call to waterinfo.be without cache activated)."
             )
@@ -626,12 +650,8 @@ class Waterinfo:
             for key_name in section.keys():
                 if key_name not in ("columns", "data", "rows"):
                     df[key_name] = section[key_name]
-            # convert datetime objects to Pandas timestamp
-            if "Timestamp" in df.columns:
-                # round trip via UTC to handle mixed time series
-                df["Timestamp"] = pd.to_datetime(
-                    df["Timestamp"], utc=True
-                ).dt.tz_convert(timezone)
+            # Convert timestamp
+            df = self._convert_timestamp_column(df, timezone)
             time_series.append(df)
 
         return pd.concat(time_series)
@@ -880,3 +900,122 @@ class Waterinfo:
             return pd.DataFrame([])
         else:
             return pd.DataFrame(data[1:], columns=data[0])
+
+    def get_ensemble_timeseries_values(
+        self,
+        ts_id=None,
+        ts_path=None,
+        period=None,
+        start=None,
+        end=None,
+        **kwargs,
+    ):
+        """Get ensemble time series data from HIC service.
+
+        Parameters
+        ----------
+        ts_id : str or int
+            single ts_id values
+        ts_path : str or int
+            single ts_path values
+        period : str
+            input string according to format required by waterinfo: the period string
+            is provided as P#Y#M#DT#H#M#S, with P defines `Period`, each # is an
+            integer value and the codes define the number of...
+            Y - years M - months D - days T required if information about sub-day
+            resolution is present H - hours D - days M - minutes S - seconds Instead
+            of D (days), the usage of W - weeks is possible as well.
+            Examples of valid period strings: P3D, P1Y, P1DT12H, PT6H, P1Y6M3DT4H20M30S.
+        start : datetime | str
+            Either Python datetime object or a string which can be interpreted
+            as a valid Timestamp.
+        end : datetime | str
+            Either Python datetime object or a string which can be interpreted
+            as a valid Timestamp.
+
+        Returns
+        -------
+        pandas.DataFrame
+            DataFrame with for time series data and datetime in UTC.
+
+
+        Examples
+        --------
+        >>> from pywaterinfo import Waterinfo
+        >>> hic = Waterinfo("hic")
+        >>>
+        >>> # get last day of data for the time series with ID 84021010
+        >>> df = hic.get_ensemble_timeseries_values(ts_id="84021010", period="P1D")
+        >>>
+        >>> # get last day of data for the time series with ts path
+        >>> df = hic.get_ensemble_timeseries_values(
+        ...     ts_path="Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble.Binary.KT-det.O",
+        ...     period="P1D")
+
+        """
+        if self._datasource != "4":
+            raise WaterinfoException("Ensemble data only available for HIC.")
+
+        if "timezone" in kwargs.keys():
+            timezone = kwargs["timezone"]
+        else:
+            timezone = "UTC"
+
+        # either ts_id or ts_path
+        if ts_id and ts_path:
+            raise WaterinfoException(
+                "A combination of ts_id and ts_path is not possible, use one"
+            )
+        if not ts_id and not ts_path:
+            raise WaterinfoException("Either ts_id or ts_path is required.")
+
+        # if none of 3 provided, error
+        if (not start) and (not end) and (not period):
+            raise NotImplementedError(
+                "Currently, pywaterinfo doesn't support calling "
+                "`get_ensemble_timeseries_values` without any time information."
+            )
+
+        # check the period information
+        period_info = self._parse_period(
+            start=start, end=end, period=period, timezone=timezone
+        )
+
+        if ts_id is None:
+            query_param = dict(
+                request="getTimeseriesEnsembleValues",
+                ts_path=ts_path,
+            )
+        elif ts_path is None:
+            query_param = dict(
+                request="getTimeseriesEnsembleValues",
+                ts_id=ts_id,
+            )
+
+        query_param.update(period_info)
+        query_param.update(kwargs)
+
+        data, response = self.request_kiwis(query_param)
+
+        all_series = []
+        for _, section in data.items():
+            for item in section:
+                ts_dict = item["timeseries"]
+                timestamp = ts_dict["data"][0][0]
+                values = [item[::-2] for item in ts_dict["data"]]
+
+                timestamp_with_values = [[timestamp, *vals] for vals in values]
+                df = pd.DataFrame(
+                    timestamp_with_values, columns=ts_dict["columns"].split(",")
+                )
+                # Add timeseries metadata
+                for key in ts_dict:
+                    if key not in ("data", "columns", "rows"):
+                        df[key] = ts_dict[key]
+                # Add ensemble-level metadata
+                df["ensembledate"] = item["ensembledate"]
+                df["ensembledispatchinfo"] = item["ensembledispatchinfo"]
+                # Convert timestamp
+                df = self._convert_timestamp_column(df, timezone)
+                all_series.append(df)
+        return pd.concat(all_series)
