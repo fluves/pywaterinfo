@@ -26,12 +26,6 @@ same data are stored in a local cache. Install the extra dependencies using;
   pip install pywaterinfo[cache]
   ```
 
-- For downloading raster data from [VMM grid API](https://waterinfo.vlaanderen.be/download/9f5ee0c9-dafa-46de-958b-7cac46eb8c23?dl=0), install the extra dependencies using;
-
-  ```
-  pip install pywaterinfo[vmm_grid]
-  ```
-
 
 
 ## Example

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-import datetime
 import logging
 import os
 import pandas as pd
-import pytz
 import sys
+from dateutil.tz import gettz
 from unittest.mock import patch
 
 import pywaterinfo
@@ -223,7 +222,6 @@ class TestDatetimeHandling:
         assert connection._parse_date("2017-01-01 10:00:00") == "2017-01-01 11:00:00"
         assert connection._parse_date("01-01-2017") == "2017-01-01 01:00:00"
 
-    @pytest.mark.skipif(sys.version_info < (3, 9), reason="ZoneInfo is 3.9 feature")
     def test_utc_default_return(self, connection, df_timeseries):  # noqa
         """Check that the returned dates are UTC aware and according to the user
         input in UTC
@@ -236,10 +234,7 @@ class TestDatetimeHandling:
             "2019-05-01T00:00:00.000Z"
         )
         assert isinstance(df_timeseries["Timestamp"].dtype, pd.DatetimeTZDtype)
-        assert (
-            pd.to_datetime(df_timeseries.loc[0, "Timestamp"]).tz
-            == datetime.timezone.utc
-        )
+        assert pd.to_datetime(df_timeseries.loc[0, "Timestamp"]).tz == gettz("UTC")
 
     def test_kiwis_requires_cet(self, connection, caplog, request):
         """Check on the KIWIS behavior of CET date format as request parameter
@@ -291,7 +286,7 @@ class TestDatetimeHandling:
         provided by the user.
 
         Note, there is no query option to check the timezone string for the java
-        app of kisters, so we only check if string is supported by pytz.
+        app of kisters, so we only check if string is supported by zoneinfo.
         """
         connection = request.getfixturevalue(connection)
         df_utc_default = connection.get_timeseries_values(
@@ -315,7 +310,6 @@ class TestDatetimeHandling:
             df_cet["Timestamp"].dt.tz_convert("UTC"), df_utc["Timestamp"]
         )
 
-    @pytest.mark.skipif(sys.version_info < (3, 9), reason="ZoneInfo is 3.9 feature")
     def test_input_datetime_custom_timezone(self, connection, request):
         """Custom timezone with datetime input support"""
         connection = request.getfixturevalue(connection)
@@ -356,7 +350,7 @@ class TestDatetimeHandling:
         df = connection.get_timeseries_values(
             ts_id="60992042", start="20190501 14:05", end="20190501 14:10"
         )
-        assert df["Timestamp"].dt.tz == datetime.timezone.utc
+        assert df["Timestamp"].dt.tz == gettz("UTC")
 
         df = connection.get_timeseries_values(
             ts_id="60992042",
@@ -365,7 +359,7 @@ class TestDatetimeHandling:
             timezone="CET",
         )
         assert isinstance(df["Timestamp"].dtype, pd.DatetimeTZDtype)
-        assert df["Timestamp"].dt.tz == pytz.timezone("CET")
+        assert df["Timestamp"].dt.tz == gettz("CET")
 
     def test_timezone_mixed_timezone(self, connection, request):
         """Queries resulting in mixed timezone offsets are handled without warning
@@ -381,7 +375,7 @@ class TestDatetimeHandling:
             returnfields="Timestamp,Value",
         )
         assert isinstance(df["Timestamp"].dtype, pd.DatetimeTZDtype)
-        assert df["Timestamp"].dt.tz == pytz.timezone("CET")
+        assert df["Timestamp"].dt.tz == gettz("CET")
 
     def test_start_end_timezone(self, connection, request):
         """pywaterinfo can handle start/end dates already containing tz info"""
@@ -400,13 +394,13 @@ class TestDatetimeHandling:
         # datetime objects containing timezone info
         df_cet_zone = connection.get_timeseries_values(
             ts_id="60992042",
-            start=pd.to_datetime("20190501 14:05:00").tz_localize("CET"),
-            end=pd.to_datetime("20190501 14:10:00").tz_localize("CET"),
+            start=pd.to_datetime("20190501 14:05:00").tz_localize("Europe/Brussels"),
+            end=pd.to_datetime("20190501 14:10:00").tz_localize("Europe/Brussels"),
             timezone="CET",
         )
         assert df_cet_zone.loc[0, "Timestamp"] == pd.to_datetime(
             "2019-05-01 14:05:00"
-        ).tz_localize("CET")
+        ).tz_localize("Europe/Brussels")
 
         # no assumptions are made on the tz of the input dates and the requested output,
         # CET input dates with UTC output will work and return the corresponding UTC
@@ -424,7 +418,7 @@ class TestDatetimeHandling:
     def test_invalid_timezone(self, connection, request):
         """Unknown timezone should raise error"""
         connection = request.getfixturevalue(connection)
-        with pytest.raises(pytz.exceptions.UnknownTimeZoneError):
+        with pytest.raises(ValueError):
             connection.get_timeseries_values(
                 ts_id="60992042",
                 start="20190501 14:05:00+02:00",
@@ -773,7 +767,7 @@ class TestEnsembleTimeSeries:
         )
 
         assert isinstance(data, pd.DataFrame)
-        assert data["Timestamp"].dt.tz.zone == tz
+        assert data["Timestamp"].dt.tz == gettz(tz)
         assert not data.empty
 
     @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
@@ -787,7 +781,7 @@ class TestEnsembleTimeSeries:
         )
 
         assert isinstance(data, pd.DataFrame)
-        assert data["Timestamp"].dt.tz == datetime.timezone.utc
+        assert data["Timestamp"].dt.tz == gettz("UTC")
 
     @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
     def test_cannot_have_two_identifiers(self, connection, request):

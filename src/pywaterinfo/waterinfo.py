@@ -2,9 +2,9 @@ import datetime
 import h5py
 import logging
 import pandas as pd
-import pytz
 import re
 import requests
+from dateutil.tz import gettz
 from io import BytesIO
 
 from pywaterinfo.parser import parse_waterinfo_hdf5
@@ -223,7 +223,7 @@ class Waterinfo:
             DataFrame with converted Timestamp column
         """
         df["Timestamp"] = pd.to_datetime(df["Timestamp"], utc=True).dt.tz_convert(
-            timezone
+            gettz(timezone)
         )
         return df
 
@@ -475,17 +475,16 @@ class Waterinfo:
         timezone : str, default 'UTC'
             user defined timezone to use
         """
-        if timezone not in pytz.all_timezones:
-            raise pytz.exceptions.UnknownTimeZoneError(
-                f"{timezone} is not a valid timezone string."
-            )
+        if gettz(timezone) is None:
+            raise ValueError(f"{timezone} is not a valid timezone string.")
 
+        tz = gettz(timezone)
         input_timestamp = pd.to_datetime(str(input_datetime))
 
         if not input_timestamp.tz:  # timestamp does not contain tz info
-            input_timestamp = input_timestamp.tz_localize(timezone)
+            input_timestamp = input_timestamp.tz_localize(tz)
 
-        return input_timestamp.tz_convert("CET").strftime("%Y-%m-%d %H:%M:%S")
+        return input_timestamp.tz_convert(gettz("CET")).strftime("%Y-%m-%d %H:%M:%S")
 
     def _parse_period(self, start=None, end=None, period=None, timezone="UTC"):
         """Check the from/to/period arguments when requesting
