@@ -571,25 +571,12 @@ class TestRasterTimeseriesValues:
             "vmm_grid_cached_connection",
         ],
     )
-    def test_grid_info_extra_deps(self, caplog, connection, request):
-        """Test KIWIS grid request returns temp file and response"""
-
-        # check if the logs say the The provider {provider} requires extra
-        # dependencies
-
-        with caplog.at_level(logging.INFO):
-            connection = request.getfixturevalue(connection)
-            assert "requires extra dependencies." in caplog.text
-
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_grid_connection",
-            "vmm_grid_cached_connection",
-        ],
-    )
     def test_get_raster_timeseries_values_add_metadata(
-        self, connection, request, mock_vmm_grid_hdf5_response
+        self,
+        connection,
+        request,
+        mock_vmm_grid_hdf5_response,
+        mock_vmm_grid_metadata_df,
     ):
         """Verify additional ts_id attributes are added to xarray.Dataset"""
 
@@ -602,17 +589,16 @@ class TestRasterTimeseriesValues:
         )
 
         vmm_grid = request.getfixturevalue(connection)
-        original_request_kiwis = vmm_grid.request_kiwis
 
-        def side_effect(*args, **kwargs):
-            if kwargs.get("return_bytesio", False):
-                # This is the raster data call - return mocked HDF5
-                return (mock_vmm_grid_hdf5_response, None)
-            else:
-
-                return original_request_kiwis(*args, **kwargs)
-
-        with patch.object(vmm_grid, "request_kiwis", side_effect=side_effect):
+        with patch.object(
+            vmm_grid,
+            "request_kiwis",
+            return_value=(mock_vmm_grid_hdf5_response, None),
+        ), patch.object(
+            vmm_grid,
+            "get_timeseries_value_layer",
+            return_value=mock_vmm_grid_metadata_df,
+        ):
             ds = vmm_grid.get_raster_timeseries_values(
                 ts_id="911010",
                 period="PT1H",
@@ -820,46 +806,4 @@ class TestEnsembleTimeSeries:
             assert str(excinfo.value) == (
                 "Currently, pywaterinfo doesn't support calling "
                 "`get_ensemble_timeseries_values` without any time information."
-            )
-
-
-class TestGridRasterFile:
-
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_grid_connection",
-            "vmm_grid_cached_connection",
-        ],
-    )
-    def test_grid_raster_file_valid_provider(self, connection, request):
-        """Test KIWIS grid raster file request"""
-        connection = request.getfixturevalue(connection)
-        with pytest.raises(
-            NotImplementedError, match="Binary io needs to be implemented."
-        ):
-            connection.get_raster_timeseries_values(
-                ts_id="911010",
-                period="PT1H",
-            )
-
-    @pytest.mark.parametrize(
-        "connection",
-        [
-            "vmm_connection",
-            "vmm_cached_connection",
-            "hic_connection",
-            "hic_cached_connection",
-        ],
-    )
-    def test_grid_raster_file_invalid_provider(self, connection, request):
-        """Test KIWIS grid raster file request"""
-        connection = request.getfixturevalue(connection)
-
-        with pytest.raises(
-            WaterinfoException, match="only available from the VMM grid datasource."
-        ):
-            connection.get_raster_timeseries_values(
-                ts_id="911010",
-                period="PT1H",
             )

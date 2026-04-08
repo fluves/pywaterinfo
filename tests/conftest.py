@@ -6,6 +6,7 @@ import pytest
 
 import datetime
 import os
+import pandas as pd
 from io import BytesIO
 from pathlib import Path
 
@@ -89,3 +90,20 @@ def mock_vmm_grid_hdf5_response():
     with open(CURRENT_DIR / "data" / "ts_id_911010_hdf5_response.hdf5", "rb") as f:
         io_content = f.read()
     return BytesIO(io_content)
+
+
+@pytest.fixture(scope="module")
+def mock_vmm_grid_metadata_df():
+    """Mock VMM grid metadata response for get_timeseries_value_layer"""
+
+    return pd.DataFrame(
+        [
+            {
+                "ts_name": "Rainfall.Radar.5min",
+                "station_no": "RADAR_001",
+                "station_id": "911010",
+                "stationparameter_longname": "Rainfall",
+                "ts_unitsymbol": "mm",
+            }
+        ]
+    )
