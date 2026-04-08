@@ -5,8 +5,9 @@ import datetime
 import logging
 import os
 import pandas as pd
-import pytz
 import sys
+
+from zoneinfo import ZoneInfoNotFoundError
 
 from pywaterinfo import HIC_BASE, VMM_BASE, Waterinfo
 from pywaterinfo.waterinfo import WaterinfoException
@@ -278,7 +279,7 @@ class TestDatetimeHandling:
         provided by the user.
 
         Note, there is no query option to check the timezone string for the java
-        app of kisters, so we only check if string is supported by pytz.
+        app of kisters, so we only check if string is supported by zoneinfo.
         """
         connection = request.getfixturevalue(connection)
         df_utc_default = connection.get_timeseries_values(
@@ -411,7 +412,7 @@ class TestDatetimeHandling:
     def test_invalid_timezone(self, connection, request):
         """Unknown timezone should raise error"""
         connection = request.getfixturevalue(connection)
-        with pytest.raises(pytz.exceptions.UnknownTimeZoneError):
+        with pytest.raises(ZoneInfoNotFoundError):
             connection.get_timeseries_values(
                 ts_id="60992042",
                 start="20190501 14:05:00+02:00",

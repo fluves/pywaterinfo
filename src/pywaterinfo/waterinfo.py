@@ -1,9 +1,10 @@
 import datetime
 import logging
 import pandas as pd
-import pytz
 import re
 import requests
+
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 try:
     import requests_cache
@@ -429,8 +430,10 @@ class Waterinfo:
         timezone : str, default 'UTC'
             user defined timezone to use
         """
-        if timezone not in pytz.all_timezones:
-            raise pytz.exceptions.UnknownTimeZoneError(
+        try:
+            ZoneInfo(timezone)
+        except (KeyError, ZoneInfoNotFoundError):
+            raise ZoneInfoNotFoundError(
                 f"{timezone} is not a valid timezone string."
             )
 
