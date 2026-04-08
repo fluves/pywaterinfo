@@ -127,7 +127,7 @@ can be retrieved between :code:`start=2021-01-28` and :code:`end=2021-01-29`.
 .. code:: python
 
     # Show available columns
-    print(f"Available columns: {df_ensemble_data.columns()}")
+    print(f"Available columns: {df_ensemble_data.columns}")
 
     print("Retrieved TOFS:")
     grouped = df_ensemble_data.groupby("ensembledate")

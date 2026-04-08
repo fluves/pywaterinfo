@@ -2,26 +2,41 @@
 import pytest
 
 import logging
+import numpy as np
 import os
 import pandas as pd
 import sys
+import xarray as xr
 from dateutil.tz import gettz
+from unittest.mock import patch
 
-from pywaterinfo import HIC_BASE, VMM_BASE, Waterinfo
+import pywaterinfo
+from pywaterinfo import Waterinfo
 from pywaterinfo.waterinfo import WaterinfoException
 
 
-def test_waterinfo_repr(vmm_connection, hic_connection):
-    """Check repr/print message is correct to source"""
-    assert repr(vmm_connection) == f"<Waterinfo object, Query from '{VMM_BASE}'>"
-    assert repr(hic_connection) == f"<Waterinfo object, Query from '{HIC_BASE}'>"
-
-
-def test_valid_sources():
+def test_invalid_providers():
     """Check error handling on improper data provider"""
-    with pytest.raises(Exception) as e:
-        assert Waterinfo("JAN")
-        assert str(e.value) == "Provider is either 'vmm' or 'hic'."
+
+    invalid_provider = "JAN"
+    available_providers = pywaterinfo.waterinfo.PROVIDERS
+
+    with pytest.raises(WaterinfoException) as e:
+        Waterinfo(invalid_provider)
+        assert str(e.value) == (
+            f"Available providers: {', '.join(available_providers)}."
+        )
+
+
+@pytest.mark.parametrize("cache", [False, True])
+@pytest.mark.parametrize("provider", ["hic", "vmm", "vmm_grid"])
+def test_valid_providers(cache, provider):
+    """Verify all available sources can be used to create a Waterinfo object"""
+    conn = Waterinfo(provider, cache=cache)
+    assert repr(conn) == (
+        f"<Waterinfo object, Query "
+        f"from '{pywaterinfo.waterinfo.PROVIDERS[provider]['base_url']}'>"
+    )
 
 
 @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
@@ -522,6 +537,125 @@ class TestRequestKiwis:
             assert (
                 connection._check_query_parameters({"request": kiwis_request}) is None
             )
+
+
+class TestRasterTimeseriesValues:
+
+    @pytest.mark.parametrize(
+        "connection",
+        [
+            "vmm_connection",
+            "vmm_cached_connection",
+            "hic_connection",
+            "hic_cached_connection",
+        ],
+    )
+    def test_get_raster_timeseries_values_invalid_provider(self, connection, request):
+        """Handles if any other provider than vmm_grid is used for grid request"""
+
+        connection = request.getfixturevalue(connection)
+        with pytest.raises(
+            WaterinfoException,
+            match=(
+                "get_raster_timeseries_values is only available for"
+                " VMM grid datasource."
+            ),
+        ):
+            connection.get_raster_timeseries_values(
+                ts_id="911010",
+                period="PT1H",
+            )
+
+    @pytest.mark.parametrize(
+        "connection",
+        [
+            "vmm_grid_connection",
+            "vmm_grid_cached_connection",
+        ],
+    )
+    def test_get_raster_timeseries_values_valid_provider(self, connection, request):
+        """Handles if any other provider than vmm_grid is used for grid request
+
+        Uses a fixed start and end time to make sure we are fetching same dataset each
+        time.
+        """
+
+        connection = request.getfixturevalue(connection)
+
+        ds = connection.get_raster_timeseries_values(
+            ts_id="911010",
+            start=pd.Timestamp("2026-01-01 10:00:00"),
+            end=pd.Timestamp("2026-01-01 11:00:00"),
+        )
+
+        assert isinstance(ds, xr.Dataset)
+        # some values that are not None or empty
+        assert ds.value.values[~np.isnan(ds.value.values)].size > 0
+        assert ds.attrs["ts_name"] == "SRI_1km_cappi"
+        assert ds.attrs["station_no"] == "Vlaanderen_VMM"
+        assert ds.attrs["station_id"] == "13911"
+        assert ds.attrs["station_parameter_name"] == "Precipitation Intensity"
+        assert ds.attrs["ts_unitsymbol"] == "mm/h"
+        assert ds.attrs["xscale"] == 500.0
+        assert ds.attrs["yscale"] == 500.0
+        assert ds.attrs["xsize"] == 900
+        assert ds.attrs["ysize"] == 780
+        assert ds.time.size == 13
+        assert ds.x.size == 900
+        assert ds.y.size == 780
+        np.testing.assert_allclose(
+            ds.y.values[0],
+            49.39648370276597,
+            rtol=1e-5,
+        )
+        np.testing.assert_allclose(
+            ds.x.values[0],
+            0.37415377402958827,
+            rtol=1e-5,
+        )
+
+    @pytest.mark.parametrize(
+        "connection",
+        [
+            "vmm_grid_connection",
+            "vmm_grid_cached_connection",
+        ],
+    )
+    def test_get_raster_timeseries_values_add_metadata(
+        self,
+        connection,
+        request,
+        mock_vmm_grid_hdf5_response,
+        mock_vmm_grid_metadata_df,
+    ):
+        """Verify additional ts_id attributes are added to xarray.Dataset"""
+
+        ts_id_metadata_expected_keys = (
+            "ts_name",
+            "station_no",
+            "station_id",
+            "station_parameter_name",
+            "ts_unitsymbol",
+        )
+
+        vmm_grid = request.getfixturevalue(connection)
+
+        with patch.object(
+            vmm_grid,
+            "request_kiwis",
+            return_value=(mock_vmm_grid_hdf5_response, None),
+        ), patch.object(
+            vmm_grid,
+            "get_timeseries_value_layer",
+            return_value=mock_vmm_grid_metadata_df,
+        ):
+            ds = vmm_grid.get_raster_timeseries_values(
+                ts_id="911010",
+                period="PT1H",
+            )
+
+            assert hasattr(ds, "attrs")
+            assert set(ts_id_metadata_expected_keys).issubset(set(ds.attrs.keys()))
 
 
 class TestTimeseriesValueLayer:

@@ -1,9 +1,13 @@
 import datetime
+import h5py
 import logging
 import pandas as pd
 import re
 import requests
 from dateutil.tz import gettz
+from io import BytesIO
+
+from pywaterinfo.parser import parse_waterinfo_hdf5
 
 try:
     import requests_cache
@@ -28,6 +32,27 @@ VMM_BASE = "https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS"
 VMM_AUTH = "http://download.waterinfo.be/kiwis-auth/token"
 HIC_BASE = "https://hicws.vlaanderen.be/KiWIS/KiWIS"
 HIC_AUTH = "https://hicwsauth.vlaanderen.be/auth"
+VMM_GRID_BASE = "https://hydro.vmm.be/grid/kiwis/KiWIS"
+VMM_GRID_AUTH = "https://hydro.vmm.be/kiwis-auth/token"
+
+# Provider registry for easier maintenance
+PROVIDERS = {
+    "vmm": {
+        "base_url": VMM_BASE,
+        "auth_url": VMM_AUTH,
+        "datasource": "1",
+    },
+    "hic": {
+        "base_url": HIC_BASE,
+        "auth_url": HIC_AUTH,
+        "datasource": "4",
+    },
+    "vmm_grid": {
+        "base_url": VMM_GRID_BASE,
+        "auth_url": VMM_GRID_AUTH,
+        "datasource": "10",
+    },
+}
 
 # Custom hard-coded fix for the decoding issue #1 of given returnfields
 DECODE_ERRORS = ["AV Quality Code Color", "RV Quality Code Color"]
@@ -78,18 +103,15 @@ class Waterinfo:
 
         # TODO - add info on missing installation of requests-cache
 
-        # set the base string linked to the data provider
-        if provider == "vmm":
-            self._base_url = VMM_BASE
-            self._auth_url = VMM_AUTH
-            self._datasource = "1"
-        elif provider == "hic":
-            self._base_url = HIC_BASE
-            self._auth_url = HIC_AUTH
-            self._datasource = "4"
-        else:
-            raise WaterinfoException("Provider is either 'vmm' or 'hic'.")
+        # Only defined providers are allowed
+        if provider not in PROVIDERS:
+            raise WaterinfoException(
+                f"Available providers: {', '.join(PROVIDERS.keys())}."
+            )
 
+        self._base_url = PROVIDERS[provider]["base_url"]
+        self._auth_url = PROVIDERS[provider]["auth_url"]
+        self._datasource = PROVIDERS[provider]["datasource"]
         # Use requests-cache session
         if cache:
             if request_cache_support:
@@ -199,7 +221,9 @@ class Waterinfo:
         if self._cache:
             self._request.cache.clear()
 
-    def request_kiwis(self, query: dict, headers: dict = None) -> dict:
+    def request_kiwis(
+        self, query: dict, headers: dict = None, return_bytesio: bool = False
+    ) -> dict:
         """http call to waterinfo.be KIWIS API
 
         General call used to request information and data from waterinfo.be, providing
@@ -217,10 +241,16 @@ class Waterinfo:
             list of query options to be used together with the base string
         headers : dict
             authentication header for the call
+        return_bytesio : bool, optional
+            Content of the response is returned as BytesIO object
 
         Returns
         -------
-        parsed json object, full HTTP response
+        parsed: json or BytesIO
+            returned parsed json object or if return_bytesio is True, return
+            BytesIO object
+        res: str
+            full HTTP response
 
         Examples
         --------
@@ -244,6 +274,7 @@ class Waterinfo:
         >>> data        #doctest: +ELLIPSIS
         [['station_name'...]]
         """
+
         # query input checks: valid parameters and formatting of the parameters period,
         # dateformat, returnfields
         query = {key.lower(): value for (key, value) in query.items()}
@@ -291,16 +322,20 @@ class Waterinfo:
                 f"(call to waterinfo.be without cache activated)."
             )
 
-        parsed = res.json()
-        if (
-            type(parsed) is dict
-            and "type" in parsed.keys()
-            and parsed["type"] == "error"
-        ):
-            raise KiwisException(
-                f"Waterinfo API returned an error:\n\tCode: "
-                f"{parsed['code']}\n\tMessage: {parsed['message']}"
-            )
+        if return_bytesio:
+            io_content = BytesIO(res.content)
+            parsed = io_content
+        else:
+            parsed = res.json()
+            if (
+                type(parsed) is dict
+                and "type" in parsed.keys()
+                and parsed["type"] == "error"
+            ):
+                raise KiwisException(
+                    f"Waterinfo API returned an error:\n\tCode: "
+                    f"{parsed['code']}\n\tMessage: {parsed['message']}"
+                )
 
         return parsed, res
 
@@ -795,6 +830,23 @@ class Waterinfo:
         >>>
         >>> # all available groupid's provided by HIC
         >>> df = hic.get_group_list()
+
+        >>> vmm_grid = Waterinfo("vmm_grid")
+        >>>
+        >>> # all available groupid's provided by HIC
+        >>> df = vmm_grid.get_group_list()
+        >>>
+        >>> # all available groupid's  provided by VMM containing 'Radar' in
+        >>> # the group name
+        >>> df = vmm_grid.get_group_list(group_name='*Radar*')
+        >>>
+        >>> # all available groupid's  provided by VMM containing 'Pluvio' in
+        >>> # the group name
+        >>> df = vmm_grid.get_group_list(group_name='*Pluvio*')
+
+
+
+
         """
         if group_type and group_type not in ["station", "parameter", "timeseries"]:
             raise WaterinfoException(
@@ -1018,3 +1070,87 @@ class Waterinfo:
                 df = self._convert_timestamp_column(df, timezone)
                 all_series.append(df)
         return pd.concat(all_series)
+
+    def get_raster_timeseries_values(
+        self,
+        ts_id,
+        period=None,
+        start=None,
+        end=None,
+        **kwargs,
+    ):
+        """Get the hdf5 in xarray.Dataset format for a raster time series.
+
+        Parameters
+        ----------
+        ts_id : str or int
+            The time series id.
+        period : str
+            input string according to format required by waterinfo: the period string
+            is provided as P#Y#M#DT#H#M#S, with P defines `Period`, each # is an
+            integer value and the codes define the number of...
+            Y - years M - months D - days T required if information about sub-day
+            resolution is present H - hours D - days M - minutes S - seconds Instead
+            of D (days), the usage of W - weeks is possible as well.
+            Examples of valid period strings: P3D, P1Y, P1DT12H, PT6H, P1Y6M3DT4H20M30S.
+        start : datetime | str
+            Either Python datetime object or a string which can be interpreted
+            as a valid Timestamp.
+        end : datetime | str
+            Either Python datetime object or a string which can be interpreted
+            as a valid Timestamp.
+
+        Returns
+        -------
+        xarray.Dataset
+            The raster dataset.
+        """
+        if self._datasource != "10":
+            raise WaterinfoException(
+                "get_raster_timeseries_values is only available for"
+                " VMM grid datasource."
+            )
+
+        if "timezone" in kwargs.keys():
+            timezone = kwargs["timezone"]
+        else:
+            timezone = "UTC"
+
+        # check the period information
+        period_info = self._parse_period(
+            start=start, end=end, period=period, timezone=timezone
+        )
+
+        query_param = dict(
+            request="getRasterTimeseriesValues",
+            ts_id=ts_id,
+            format="hdf5",
+        )
+        query_param.update(period_info)
+        query_param.update(kwargs)
+
+        io_content, res = self.request_kiwis(query_param, return_bytesio=True)
+
+        with h5py.File(io_content, "r") as h5f:
+            ds = parse_waterinfo_hdf5(h5f, nan_value=-2)
+
+        # fetch metadata of the ts_id
+        df_metadata = self.get_timeseries_value_layer(ts_id=ts_id)
+
+        ts_id_metadata = {
+            "ts_name": df_metadata["ts_name"].item(),
+            "station_no": df_metadata["station_no"].item(),
+            "station_id": df_metadata["station_id"].item(),
+            "station_parameter_name": (df_metadata["stationparameter_longname"].item()),
+            "ts_unitsymbol": df_metadata["ts_unitsymbol"].item(),
+        }
+
+        # add attributes to dataset
+        ds.attrs.update(ts_id_metadata)
+
+        return ds
+
+
+def available_datasources():
+    """Return available data providers"""
+    return list(PROVIDERS.keys())
