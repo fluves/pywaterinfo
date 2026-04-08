@@ -51,9 +51,6 @@ PROVIDERS = {
         "base_url": VMM_GRID_BASE,
         "auth_url": VMM_GRID_AUTH,
         "datasource": "10",
-        # True if extra dependencies are required for this provider.
-        # Add the dependencies to the setup.cfg under '[options.extras_require]'
-        "extra_deps": True,
     },
 }
 
@@ -115,14 +112,6 @@ class Waterinfo:
         self._base_url = PROVIDERS[provider]["base_url"]
         self._auth_url = PROVIDERS[provider]["auth_url"]
         self._datasource = PROVIDERS[provider]["datasource"]
-        extra_deps_required = PROVIDERS[provider].get("extra_deps", 0)
-        if extra_deps_required:
-            logger.info(
-                f"The provider {provider} requires extra dependencies."
-                "Make sure you installed them with "
-                f"`pip install pywaterinfo[{provider}]`."
-            )
-
         # Use requests-cache session
         if cache:
             if request_cache_support:
