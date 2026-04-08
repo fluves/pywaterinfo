@@ -2,9 +2,11 @@
 import pytest
 
 import logging
+import numpy as np
 import os
 import pandas as pd
 import sys
+import xarray as xr
 from dateutil.tz import gettz
 from unittest.mock import patch
 
@@ -563,6 +565,41 @@ class TestRasterTimeseriesValues:
                 ts_id="911010",
                 period="PT1H",
             )
+
+    @pytest.mark.parametrize(
+        "connection",
+        [
+            "vmm_grid_connection",
+            "vmm_grid_cached_connection",
+        ],
+    )
+    def test_get_raster_timeseries_values_valid_provider(self, connection, request):
+        """Handles if any other provider than vmm_grid is used for grid request
+
+        Uses a fixed start and end time to make sure we are fetching same dataset each
+        time.
+        """
+
+        connection = request.getfixturevalue(connection)
+
+        ds = connection.get_raster_timeseries_values(
+            ts_id="911010",
+            start=pd.Timestamp("2026-01-01 10:00:00"),
+            end=pd.Timestamp("2026-01-01 11:00:00"),
+        )
+
+        assert isinstance(ds, xr.Dataset)
+        # some values that are not None or empty
+        assert ds.value.values[~np.isnan(ds.value.values)].size > 0
+        assert ds.attrs["ts_name"] == "SRI_1km_cappi"
+        assert ds.attrs["station_no"] == "Vlaanderen_VMM"
+        assert ds.attrs["station_id"] == "13911"
+        assert ds.attrs["station_parameter_name"] == "Precipitation Intensity"
+        assert ds.attrs["ts_unitsymbol"] == "mm/h"
+        assert ds.attrs["xscale"] == 500.0
+        assert ds.attrs["yscale"] == 500.0
+        assert ds.attrs["xsize"] == 900
+        assert ds.attrs["ysize"] == 780
 
     @pytest.mark.parametrize(
         "connection",
