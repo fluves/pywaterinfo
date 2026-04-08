@@ -600,6 +600,19 @@ class TestRasterTimeseriesValues:
         assert ds.attrs["yscale"] == 500.0
         assert ds.attrs["xsize"] == 900
         assert ds.attrs["ysize"] == 780
+        assert ds.time.size == 13
+        assert ds.x.size == 900
+        assert ds.y.size == 780
+        np.testing.assert_allclose(
+            ds.y.values[0],
+            49.39648370276597,
+            rtol=1e-5,
+        )
+        np.testing.assert_allclose(
+            ds.x.values[0],
+            0.37415377402958827,
+            rtol=1e-5,
+        )
 
     @pytest.mark.parametrize(
         "connection",
