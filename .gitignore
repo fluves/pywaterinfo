@@ -54,3 +54,6 @@ venv
 
 # ignore sqlite
 *.sqlite
+
+# ignore notebooks
+*.ipynb

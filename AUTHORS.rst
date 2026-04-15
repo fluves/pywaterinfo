@@ -6,3 +6,4 @@ Contributors
 * Johan Van De Wauw <johan@fluves.com>
 * Bino Maiheu
 * Daan Buekenhout
+* Baris Oztas <baris@bariso.dev>

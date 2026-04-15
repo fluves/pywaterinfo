@@ -98,6 +98,119 @@ time series as illustrated in the following example:
     If you want 'naive' timestamps in the returned time series, use the :code:`tz_localize`
     function of Pandas, e.g. :code:`df["Timestamp"] = df["Timestamp"].dt.tz_localize(None)`.
 
+
+Ensemble time series - only available for HIC
+---------------------------------------------
+
+Ensemble data, in contrast to CMD time series values, contains different Time of
+Forecast (TOF) data for a given period followed by all the forecasted timestamps with
+their values. For instance, for :code:`ts_id= 84021010`, the following TOFs
+can be retrieved between :code:`start=2021-01-28` and :code:`end=2021-01-29`.
+
+.. code:: python
+
+    from pywaterinfo import Waterinfo
+
+    hic = Waterinfo("hic")
+
+    # Get the all the available ensembles between two dates
+    df_ensemble_data = hic.get_ensemble_timeseries_values(
+        ts_id=84021010,
+        start="2021-01-28",
+        end="2021-01-29",
+    )
+
+.. plot:: plots/plot_ensemble_data.py
+
+    Example of 1 (one!) timeseries, containing 5 different TOF for 28/01/2021
+
+.. code:: python
+
+    # Show available columns
+    print(f"Available columns: {df_ensemble_data.columns}")
+
+    print("Retrieved TOFS:")
+    grouped = df_ensemble_data.groupby("ensembledate")
+    for name, group in grouped:
+        print(f"Ensemble date: {name}")
+        # Show the first few rows of each ensemble group
+        print(group.head(), end="\n\n")
+
+.. code-block:: text
+
+
+    Available columns : [
+        'Timestamp', '0', 'ts_id', 'ts_path', 'station_id', 'station_no',
+        'station_name', 'parametertype_name', 'ts_name', 'ts_unitsymbol',
+        'ensembledate', 'ensembledispatchinfo'
+    ]
+
+    Retrieved TOFS:
+
+    Ensemble date: 2021-01-28T06:00:00.000Z
+                    Timestamp      0     ts_id                                            ts_path station_id  ... parametertype_name   ts_name ts_unitsymbol              ensembledate ensembledispatchinfo
+    0 2021-01-28 06:00:00+00:00  20.75  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T06:00:00.000Z                  MR1
+    1 2021-01-28 06:15:00+00:00  20.78  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T06:00:00.000Z                  MR1
+    2 2021-01-28 06:30:00+00:00  20.79  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T06:00:00.000Z                  MR1
+    3 2021-01-28 06:45:00+00:00  20.80  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T06:00:00.000Z                  MR1
+    4 2021-01-28 07:00:00+00:00  20.81  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T06:00:00.000Z                  MR1
+
+    [5 rows x 12 columns]
+
+    Ensemble date: 2021-01-28T12:00:00.000Z
+                    Timestamp      0     ts_id                                            ts_path station_id  ... parametertype_name   ts_name ts_unitsymbol              ensembledate ensembledispatchinfo
+    0 2021-01-28 12:00:00+00:00  22.98  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T12:00:00.000Z                  MR1
+    1 2021-01-28 12:15:00+00:00  23.19  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T12:00:00.000Z                  MR1
+    2 2021-01-28 12:30:00+00:00  23.42  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T12:00:00.000Z                  MR1
+    3 2021-01-28 12:45:00+00:00  23.67  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T12:00:00.000Z                  MR1
+    4 2021-01-28 13:00:00+00:00  23.93  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T12:00:00.000Z                  MR1
+
+    [5 rows x 12 columns]
+
+    Ensemble date: 2021-01-28T18:00:00.000Z
+                    Timestamp      0     ts_id                                            ts_path station_id  ... parametertype_name   ts_name ts_unitsymbol              ensembledate ensembledispatchinfo
+    0 2021-01-28 18:00:00+00:00  30.95  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T18:00:00.000Z                  MR1
+    1 2021-01-28 18:15:00+00:00  31.45  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T18:00:00.000Z                  MR1
+    2 2021-01-28 18:30:00+00:00  32.09  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T18:00:00.000Z                  MR1
+    3 2021-01-28 18:45:00+00:00  32.66  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T18:00:00.000Z                  MR1
+    4 2021-01-28 19:00:00+00:00  33.09  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T18:00:00.000Z                  MR1
+
+    [5 rows x 12 columns]
+
+    Ensemble date: 2021-01-29T00:00:00.000Z
+                    Timestamp      0     ts_id                                            ts_path station_id  ... parametertype_name   ts_name ts_unitsymbol              ensembledate ensembledispatchinfo
+    0 2021-01-29 00:00:00+00:00  38.48  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-29T00:00:00.000Z                  MR1
+    1 2021-01-29 00:15:00+00:00  38.72  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-29T00:00:00.000Z                  MR1
+    2 2021-01-29 00:30:00+00:00  39.44  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-29T00:00:00.000Z                  MR1
+    3 2021-01-29 00:45:00+00:00  41.03  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-29T00:00:00.000Z                  MR1
+    4 2021-01-29 01:00:00+00:00  41.69  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-29T00:00:00.000Z                  MR1
+
+    [5 rows x 12 columns]
+
+Even though, you will be able to call ensemble timeseries id's with the
+:func:`~pywaterinfo.Waterinfo.get_timeseries_values` without any error being raised, the
+returned timeseries will not be consistent. Data returned will have timestamps and
+values from mixed TOFs, as can be seen from the returned brown timeseries shown below.
+
+.. code:: python
+
+    from pywaterinfo import Waterinfo
+
+    hic = Waterinfo("hic")
+
+    # Get the all the available ensembles between two dates
+    df_ensemble_data = hic.get_timeseries_values(
+        ts_id=84021010,
+        start="2021-01-28",
+        end="2021-01-29",
+    )
+
+.. plot:: plots/plot_inconsistent_results.py
+
+    Figure showing (in black) the non-consistent result for 28/01/2021 that will be
+    returned by HIC Webservices when treated as a Cmd time series
+
+
 Time series groups
 ------------------
 

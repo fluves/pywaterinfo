@@ -1,0 +1,94 @@
+import logging
+import numpy as np
+import pandas as pd
+import xarray as xr
+
+logger = logging.getLogger(__name__)
+
+
+def parse_waterinfo_hdf5(h5f, nan_value=-2):
+    """Parse Waterinfo HDF5 radar data structure into an xarray Dataset.
+
+    This function extracts precipitation radar data from Waterinfo.be HDF5
+    files, which have a specific structure with spatial information in the
+    'where' group attributes and time-series data in the 'dataset1' group.
+
+    Parameters
+    ----------
+    h5f : h5py.File or io.BytesIO
+        Opened HDF5 file object or file-like object containing Waterinfo radar
+        data.
+
+    Returns
+    -------
+    xr.Dataset
+        Dataset containing precipitation data with dimensions (time, y, x) and
+        the 'precipitation' variable.
+    """
+
+    # Extract spatial information from 'where' attributes
+    where_attrs = h5f["where"].attrs
+
+    # Grid parameters
+    xsize = where_attrs["xsize"]
+    ysize = where_attrs["ysize"]
+    xscale = where_attrs["xscale"]
+    yscale = where_attrs["yscale"]
+
+    # Projection definition
+    projdef = where_attrs["projdef"]
+
+    # Create coordinate arrays in projected coordinates
+    # The origin is at (LL_lon, LL_lat) in projected coordinates
+    x_coords = np.arange(0, xsize) * xscale + where_attrs["LL_lon"]
+    y_coords = np.arange(0, ysize) * yscale + where_attrs["LL_lat"]
+
+    # Extract time information from data groups
+    dataset1 = h5f["dataset1"]
+    data_groups = sorted(
+        [key for key in dataset1.keys() if key.startswith("data")],
+        key=lambda x: int(x[4:]),  # Sort by number after 'data'
+    )
+
+    # Extract timestamps from 'what' group
+    what_attrs = h5f["what"].attrs
+    base_date = what_attrs["date"]
+    base_time = what_attrs["time"]
+
+    # Parse base datetime
+    base_dt = pd.to_datetime(f"{base_date}{base_time}", format="%Y%m%d%H%M%S")
+
+    # Create timesteps
+    timesteps = [base_dt + pd.Timedelta(minutes=5 * i) for i in range(len(data_groups))]
+
+    # Read all data arrays and replace -2 with np.nan
+    data_arrays = []
+    for i, data_group_name in enumerate(data_groups):
+        data_group = dataset1[data_group_name]
+        data_array = data_group["data"][:]
+
+        data_array = data_array.astype(np.float32)
+        data_array[data_array == nan_value] = np.nan
+
+        data_arrays.append(data_array)
+
+    # Stack into 3D array (time, y, x)
+    data_3d = np.stack(data_arrays, axis=0)
+
+    # Create xarray Dataset
+    ds = xr.Dataset(
+        {"value": (["time", "y", "x"], data_3d)},
+        coords={"time": timesteps, "x": x_coords, "y": y_coords},
+    )
+
+    raster_attributes = {
+        "projdef": projdef,
+        "xscale": xscale,
+        "yscale": yscale,
+        "xsize": xsize,
+        "ysize": ysize,
+    }
+
+    ds.attrs.update(raster_attributes)
+
+    return ds
