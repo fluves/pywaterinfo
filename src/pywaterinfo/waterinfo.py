@@ -35,7 +35,7 @@ HIC_AUTH = "https://hicwsauth.vlaanderen.be/auth"
 VMM_GRID_BASE = "https://hydro.vmm.be/grid/kiwis/KiWIS"
 VMM_GRID_AUTH = "https://hydro.vmm.be/kiwis-auth/token"
 SPW_BASE = "https://hydrometrie.wallonie.be/services/KiWIS/KiWIS"
-SPW_AUTH = "https://hydrometrie.wallonie.be/services/auth/token"  
+SPW_AUTH = "https://hydrometrie.wallonie.be/services/auth/token"
 
 # Provider registry for easier maintenance
 PROVIDERS = {
