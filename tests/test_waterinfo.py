@@ -1,28 +1,42 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-import datetime
 import logging
+import numpy as np
 import os
 import pandas as pd
-import pytz
 import sys
+import xarray as xr
+from dateutil.tz import gettz
+from unittest.mock import patch
 
-from pywaterinfo import HIC_BASE, VMM_BASE, Waterinfo
+import pywaterinfo
+from pywaterinfo import Waterinfo
 from pywaterinfo.waterinfo import WaterinfoException
 
 
-def test_waterinfo_repr(vmm_connection, hic_connection):
-    """Check repr/print message is correct to source"""
-    assert repr(vmm_connection) == f"<Waterinfo object, Query from '{VMM_BASE}'>"
-    assert repr(hic_connection) == f"<Waterinfo object, Query from '{HIC_BASE}'>"
-
-
-def test_valid_sources():
+def test_invalid_providers():
     """Check error handling on improper data provider"""
-    with pytest.raises(Exception) as e:
-        assert Waterinfo("JAN")
-        assert str(e.value) == "Provider is either 'vmm' or 'hic'."
+
+    invalid_provider = "JAN"
+    available_providers = pywaterinfo.waterinfo.PROVIDERS
+
+    with pytest.raises(WaterinfoException) as e:
+        Waterinfo(invalid_provider)
+        assert str(e.value) == (
+            f"Available providers: {', '.join(available_providers)}."
+        )
+
+
+@pytest.mark.parametrize("cache", [False, True])
+@pytest.mark.parametrize("provider", ["hic", "vmm", "vmm_grid"])
+def test_valid_providers(cache, provider):
+    """Verify all available sources can be used to create a Waterinfo object"""
+    conn = Waterinfo(provider, cache=cache)
+    assert repr(conn) == (
+        f"<Waterinfo object, Query "
+        f"from '{pywaterinfo.waterinfo.PROVIDERS[provider]['base_url']}'>"
+    )
 
 
 @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
@@ -210,7 +224,6 @@ class TestDatetimeHandling:
         assert connection._parse_date("2017-01-01 10:00:00") == "2017-01-01 11:00:00"
         assert connection._parse_date("01-01-2017") == "2017-01-01 01:00:00"
 
-    @pytest.mark.skipif(sys.version_info < (3, 9), reason="ZoneInfo is 3.9 feature")
     def test_utc_default_return(self, connection, df_timeseries):  # noqa
         """Check that the returned dates are UTC aware and according to the user
         input in UTC
@@ -223,10 +236,7 @@ class TestDatetimeHandling:
             "2019-05-01T00:00:00.000Z"
         )
         assert isinstance(df_timeseries["Timestamp"].dtype, pd.DatetimeTZDtype)
-        assert (
-            pd.to_datetime(df_timeseries.loc[0, "Timestamp"]).tz
-            == datetime.timezone.utc
-        )
+        assert pd.to_datetime(df_timeseries.loc[0, "Timestamp"]).tz == gettz("UTC")
 
     def test_kiwis_requires_cet(self, connection, caplog, request):
         """Check on the KIWIS behavior of CET date format as request parameter
@@ -278,7 +288,7 @@ class TestDatetimeHandling:
         provided by the user.
 
         Note, there is no query option to check the timezone string for the java
-        app of kisters, so we only check if string is supported by pytz.
+        app of kisters, so we only check if string is supported by zoneinfo.
         """
         connection = request.getfixturevalue(connection)
         df_utc_default = connection.get_timeseries_values(
@@ -302,7 +312,6 @@ class TestDatetimeHandling:
             df_cet["Timestamp"].dt.tz_convert("UTC"), df_utc["Timestamp"]
         )
 
-    @pytest.mark.skipif(sys.version_info < (3, 9), reason="ZoneInfo is 3.9 feature")
     def test_input_datetime_custom_timezone(self, connection, request):
         """Custom timezone with datetime input support"""
         connection = request.getfixturevalue(connection)
@@ -343,7 +352,7 @@ class TestDatetimeHandling:
         df = connection.get_timeseries_values(
             ts_id="60992042", start="20190501 14:05", end="20190501 14:10"
         )
-        assert df["Timestamp"].dt.tz == datetime.timezone.utc
+        assert df["Timestamp"].dt.tz == gettz("UTC")
 
         df = connection.get_timeseries_values(
             ts_id="60992042",
@@ -352,7 +361,7 @@ class TestDatetimeHandling:
             timezone="CET",
         )
         assert isinstance(df["Timestamp"].dtype, pd.DatetimeTZDtype)
-        assert df["Timestamp"].dt.tz == pytz.timezone("CET")
+        assert df["Timestamp"].dt.tz == gettz("CET")
 
     def test_timezone_mixed_timezone(self, connection, request):
         """Queries resulting in mixed timezone offsets are handled without warning
@@ -368,7 +377,7 @@ class TestDatetimeHandling:
             returnfields="Timestamp,Value",
         )
         assert isinstance(df["Timestamp"].dtype, pd.DatetimeTZDtype)
-        assert df["Timestamp"].dt.tz == pytz.timezone("CET")
+        assert df["Timestamp"].dt.tz == gettz("CET")
 
     def test_start_end_timezone(self, connection, request):
         """pywaterinfo can handle start/end dates already containing tz info"""
@@ -387,13 +396,13 @@ class TestDatetimeHandling:
         # datetime objects containing timezone info
         df_cet_zone = connection.get_timeseries_values(
             ts_id="60992042",
-            start=pd.to_datetime("20190501 14:05:00").tz_localize("CET"),
-            end=pd.to_datetime("20190501 14:10:00").tz_localize("CET"),
+            start=pd.to_datetime("20190501 14:05:00").tz_localize("Europe/Brussels"),
+            end=pd.to_datetime("20190501 14:10:00").tz_localize("Europe/Brussels"),
             timezone="CET",
         )
         assert df_cet_zone.loc[0, "Timestamp"] == pd.to_datetime(
             "2019-05-01 14:05:00"
-        ).tz_localize("CET")
+        ).tz_localize("Europe/Brussels")
 
         # no assumptions are made on the tz of the input dates and the requested output,
         # CET input dates with UTC output will work and return the corresponding UTC
@@ -411,7 +420,7 @@ class TestDatetimeHandling:
     def test_invalid_timezone(self, connection, request):
         """Unknown timezone should raise error"""
         connection = request.getfixturevalue(connection)
-        with pytest.raises(pytz.exceptions.UnknownTimeZoneError):
+        with pytest.raises(ValueError):
             connection.get_timeseries_values(
                 ts_id="60992042",
                 start="20190501 14:05:00+02:00",
@@ -530,6 +539,125 @@ class TestRequestKiwis:
             )
 
 
+class TestRasterTimeseriesValues:
+
+    @pytest.mark.parametrize(
+        "connection",
+        [
+            "vmm_connection",
+            "vmm_cached_connection",
+            "hic_connection",
+            "hic_cached_connection",
+        ],
+    )
+    def test_get_raster_timeseries_values_invalid_provider(self, connection, request):
+        """Handles if any other provider than vmm_grid is used for grid request"""
+
+        connection = request.getfixturevalue(connection)
+        with pytest.raises(
+            WaterinfoException,
+            match=(
+                "get_raster_timeseries_values is only available for"
+                " VMM grid datasource."
+            ),
+        ):
+            connection.get_raster_timeseries_values(
+                ts_id="911010",
+                period="PT1H",
+            )
+
+    @pytest.mark.parametrize(
+        "connection",
+        [
+            "vmm_grid_connection",
+            "vmm_grid_cached_connection",
+        ],
+    )
+    def test_get_raster_timeseries_values_valid_provider(self, connection, request):
+        """Handles if any other provider than vmm_grid is used for grid request
+
+        Uses a fixed start and end time to make sure we are fetching same dataset each
+        time.
+        """
+
+        connection = request.getfixturevalue(connection)
+
+        ds = connection.get_raster_timeseries_values(
+            ts_id="911010",
+            start=pd.Timestamp("2026-01-01 10:00:00"),
+            end=pd.Timestamp("2026-01-01 11:00:00"),
+        )
+
+        assert isinstance(ds, xr.Dataset)
+        # some values that are not None or empty
+        assert ds.value.values[~np.isnan(ds.value.values)].size > 0
+        assert ds.attrs["ts_name"] == "SRI_1km_cappi"
+        assert ds.attrs["station_no"] == "Vlaanderen_VMM"
+        assert ds.attrs["station_id"] == "13911"
+        assert ds.attrs["station_parameter_name"] == "Precipitation Intensity"
+        assert ds.attrs["ts_unitsymbol"] == "mm/h"
+        assert ds.attrs["xscale"] == 500.0
+        assert ds.attrs["yscale"] == 500.0
+        assert ds.attrs["xsize"] == 900
+        assert ds.attrs["ysize"] == 780
+        assert ds.time.size == 13
+        assert ds.x.size == 900
+        assert ds.y.size == 780
+        np.testing.assert_allclose(
+            ds.y.values[0],
+            49.39648370276597,
+            rtol=1e-5,
+        )
+        np.testing.assert_allclose(
+            ds.x.values[0],
+            0.37415377402958827,
+            rtol=1e-5,
+        )
+
+    @pytest.mark.parametrize(
+        "connection",
+        [
+            "vmm_grid_connection",
+            "vmm_grid_cached_connection",
+        ],
+    )
+    def test_get_raster_timeseries_values_add_metadata(
+        self,
+        connection,
+        request,
+        mock_vmm_grid_hdf5_response,
+        mock_vmm_grid_metadata_df,
+    ):
+        """Verify additional ts_id attributes are added to xarray.Dataset"""
+
+        ts_id_metadata_expected_keys = (
+            "ts_name",
+            "station_no",
+            "station_id",
+            "station_parameter_name",
+            "ts_unitsymbol",
+        )
+
+        vmm_grid = request.getfixturevalue(connection)
+
+        with patch.object(
+            vmm_grid,
+            "request_kiwis",
+            return_value=(mock_vmm_grid_hdf5_response, None),
+        ), patch.object(
+            vmm_grid,
+            "get_timeseries_value_layer",
+            return_value=mock_vmm_grid_metadata_df,
+        ):
+            ds = vmm_grid.get_raster_timeseries_values(
+                ts_id="911010",
+                period="PT1H",
+            )
+
+            assert hasattr(ds, "attrs")
+            assert set(ts_id_metadata_expected_keys).issubset(set(ds.attrs.keys()))
+
+
 class TestTimeseriesValueLayer:
     @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
     def test_one_of_three(self, connection, request):
@@ -581,3 +709,151 @@ class TestTimeseriesList:
         connection = request.getfixturevalue(connection)
         df = connection.get_timeseries_list(station_no="plu03a-1066")
         assert "station_no" in df.columns
+
+
+class TestEnsembleTimeSeries:
+    @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
+    def test_not_available_apart_from_hic(self, connection, request):
+        """If provider is not HIC, WaterinfoException should be raised"""
+        connection = request.getfixturevalue(connection)
+        with pytest.raises(WaterinfoException) as excinfo:
+            connection.get_ensemble_timeseries_values()
+            assert str(excinfo.value) == "Ensemble data only available for HIC."
+
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    @pytest.mark.parametrize(
+        "kwargs",
+        [
+            {"ts_id": "84017010,84327010,84150010"},
+            {
+                "ts_path": "Maastricht/SINT-WL1-1060/Ncatch"
+                "_voorspeld/Cmd.Ensemble.Binary.KT-det.O"
+                ","
+                "Helkijn/bos05m-1066/Ncatch"
+                "_voorspeld/Cmd.Ensemble.Binary.KT-det.O"
+            },
+        ],
+    )
+    def test_commaseperated_ids_or_paths(self, connection, kwargs, request):
+        """Allow commaseperated identifiers until implemented"""
+        conn = request.getfixturevalue(connection)
+
+        data = conn.get_ensemble_timeseries_values(
+            start="2025-06-01T00:00:00Z", end="2025-06-01T12:00:00Z", **kwargs
+        )
+        assert isinstance(data, pd.DataFrame)
+        assert "ensembledate" in data.columns
+        assert "ensembledispatchinfo" in data.columns
+        assert not data.empty
+
+    @pytest.mark.parametrize(
+        "ts_id",
+        [84021010, 84019010],
+    )
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_valid_request_ts_id_int(self, ts_id, connection, request):
+        """For valid cases, a pd.dataframe with ensemble members should be returned"""
+        conn = request.getfixturevalue(connection)
+
+        data = conn.get_ensemble_timeseries_values(
+            start="2025-06-01T00:00:00Z",
+            end="2025-06-01T12:00:00Z",
+            ts_id=ts_id,
+        )
+        assert isinstance(data, pd.DataFrame)
+        assert "ensembledate" in data.columns
+        assert "ensembledispatchinfo" in data.columns
+        assert not data.empty
+
+    @pytest.mark.parametrize(
+        "ts_path",
+        [
+            "Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble.Binary.KT-det.O",
+            "Aarschot/dem02a-1066/H_voorspeld/Cmd.Ensemble.Binary.KT-Perc.Abs.O",
+        ],
+    )
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_valid_request_ts_path(self, ts_path, connection, request):
+        """For valid cases, a pd.dataframe with ensemble members should be returned"""
+        conn = request.getfixturevalue(connection)
+
+        data = conn.get_ensemble_timeseries_values(
+            start="2025-06-01T00:00:00Z",
+            end="2025-06-01T12:00:00Z",
+            ts_path=ts_path,
+        )
+        assert isinstance(data, pd.DataFrame)
+        assert "ensembledate" in data.columns
+        assert "ensembledispatchinfo" in data.columns
+        assert not data.empty
+
+    @pytest.mark.parametrize(
+        "tz",
+        ["Europe/Brussels", "CET", "EST", "Greenwich"],
+    )
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_timezone_provided(self, tz, connection, request):
+        """If timezone is overwritten, data should have timezone information"""
+        conn = request.getfixturevalue(connection)
+        data = conn.get_ensemble_timeseries_values(
+            start="2025-06-01T00:00:00",
+            end="2025-06-01T12:00:00",
+            ts_id="84021010",
+            timezone=tz,
+        )
+
+        assert isinstance(data, pd.DataFrame)
+        assert data["Timestamp"].dt.tz == gettz(tz)
+        assert not data.empty
+
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_timezone_not_provided(self, connection, request):
+        """If timezone is not provided, data should timezone of UTC."""
+        conn = request.getfixturevalue(connection)
+        data = conn.get_ensemble_timeseries_values(
+            start="2025-06-01T00:00:00",
+            end="2025-06-01T12:00:00",
+            ts_id="84021010",
+        )
+
+        assert isinstance(data, pd.DataFrame)
+        assert data["Timestamp"].dt.tz == gettz("UTC")
+
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_cannot_have_two_identifiers(self, connection, request):
+        """Do not allow multiple identifiers"""
+        conn = request.getfixturevalue(connection)
+        with pytest.raises(WaterinfoException) as excinfo:
+            conn.get_ensemble_timeseries_values(
+                ts_id="tsid1",
+                ts_path="data/path",
+                start="2025-06-01T00:00:00Z",
+                end="2025-06-01T12:00:00Z",
+            )
+        assert str(excinfo.value) == (
+            "A combination of ts_id and ts_path is not possible, use one"
+        )
+
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_no_identifier(self, connection, request):
+        """If no identifier is provided, WaterinfoException should be raised"""
+        conn = request.getfixturevalue(connection)
+        with pytest.raises(WaterinfoException) as excinfo:
+            conn.get_ensemble_timeseries_values(
+                start="2025-06-01T00:00:00Z",
+                end="2025-06-01T12:00:00Z",
+            )
+            assert str(excinfo.value) == ("Either ts_id or ts_path is required.")
+
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_no_date_or_period(self, connection, request):
+        """If no date or period is provided, NotImplementedError should be raised"""
+        conn = request.getfixturevalue(connection)
+        with pytest.raises(NotImplementedError) as excinfo:
+            conn.get_ensemble_timeseries_values(
+                ts_id="84021010",
+            )
+            assert str(excinfo.value) == (
+                "Currently, pywaterinfo doesn't support calling "
+                "`get_ensemble_timeseries_values` without any time information."
+            )
