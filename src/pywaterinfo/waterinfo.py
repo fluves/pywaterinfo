@@ -61,8 +61,9 @@ PROVIDERS = {
     },
 }
 
-# Custom hard-coded fix for the decoding issue #1 of given returnfields
-DECODE_ERRORS = ["AV Quality Code Color", "RV Quality Code Color"]
+# Custom hard-coded fix for the decoding issue #1 (VMM/WL)
+# and #78 (SPW on Parameter Comment) of given returnfields
+DECODE_ERRORS = ["AV Quality Code Color", "RV Quality Code Color", "Parameter Comment"]
 
 # Default cache configuration
 CACHE_RETENTION = datetime.timedelta(days=7)
