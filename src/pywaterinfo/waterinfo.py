@@ -43,26 +43,27 @@ PROVIDERS = {
         "base_url": VMM_BASE,
         "auth_url": VMM_AUTH,
         "datasource": "1",
+        "decode_errors": ["AV Quality Code Color", "RV Quality Code Color"],
     },
     "hic": {
         "base_url": HIC_BASE,
         "auth_url": HIC_AUTH,
         "datasource": "4",
+        "decode_errors": ["AV Quality Code Color", "RV Quality Code Color"],
     },
     "vmm_grid": {
         "base_url": VMM_GRID_BASE,
         "auth_url": VMM_GRID_AUTH,
         "datasource": "10",
+        "decode_errors": ["AV Quality Code Color", "RV Quality Code Color"],
     },
     "spw": {
         "base_url": SPW_BASE,
         "auth_url": SPW_AUTH,
         "datasource": "0",
+        "decode_errors": ["Parameter Comment"],
     },
 }
-
-# Custom hard-coded fix for the decoding issue #1 of given returnfields
-DECODE_ERRORS = ["AV Quality Code Color", "RV Quality Code Color"]
 
 # Default cache configuration
 CACHE_RETENTION = datetime.timedelta(days=7)
@@ -119,6 +120,7 @@ class Waterinfo:
         self._base_url = PROVIDERS[provider]["base_url"]
         self._auth_url = PROVIDERS[provider]["auth_url"]
         self._datasource = PROVIDERS[provider]["datasource"]
+        self._decode_errors = PROVIDERS[provider]["decode_errors"]
         # Use requests-cache session
         if cache:
             if request_cache_support:
@@ -668,7 +670,7 @@ class Waterinfo:
             "Content"
         ].keys()
         all_returnfields = [
-            field for field in returnfields if field not in DECODE_ERRORS
+            field for field in returnfields if field not in self._decode_errors
         ]
 
         query_param = dict(
