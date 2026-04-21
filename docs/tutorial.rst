@@ -304,6 +304,7 @@ Custom queries
 --------------
 
 The `VMM <https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo>`_,
+`VMM Grid <https://hydro.vmm.be/grid/kiwis/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo>`_,
 `HIC <https://www.waterinfo.be/tsmhic/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo>`_ and
 `SPW <https://hydrometrie.wallonie.be/services/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo>`_ APIs
 provide more API paths. Whereas no specialized functions are available, use the :func:`~pywaterinfo.Waterinfo.request_kiwis` method
