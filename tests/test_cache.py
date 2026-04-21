@@ -27,6 +27,21 @@ def test_cache_hic(hic_cached_connection):
     assert res.from_cache
 
 
+def test_cache_spw(spw_cached_connection):
+    """Second call of the same request is retrieved from cache for SPW requests."""
+    spw_cached_connection.clear_cache()
+    # patch/exclude cache control to use retention time only
+    spw_cached_connection._request.settings.cache_control = False
+    data, res = spw_cached_connection.request_kiwis(
+        query={"request": "getTimeseriesValueLayer", "timeseriesgroup_id": "7256919"}
+    )
+    assert not res.from_cache
+    data, res = spw_cached_connection.request_kiwis(
+        query={"request": "getTimeseriesValueLayer", "timeseriesgroup_id": "7256919"}
+    )
+    assert res.from_cache
+
+
 def test_clear_cache(vmm_cached_connection):
     """Cache is cleared."""
     data, res = vmm_cached_connection.request_kiwis({"request": "getRequestInfo"})

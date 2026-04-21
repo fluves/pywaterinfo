@@ -78,6 +78,16 @@ def vmm_grid_cached_connection(connection_factory):
 
 
 @pytest.fixture(scope="module")
+def spw_connection(connection_factory):
+    return connection_factory("spw")
+
+
+@pytest.fixture(scope="module")
+def spw_cached_connection(connection_factory):
+    return connection_factory("spw", cache=True)
+
+
+@pytest.fixture(scope="module")
 def df_timeseries(vmm_connection):
     return vmm_connection.get_timeseries_values(
         78124042, start="20190501", end="20190502"

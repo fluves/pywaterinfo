@@ -29,7 +29,7 @@ def test_invalid_providers():
 
 
 @pytest.mark.parametrize("cache", [False, True])
-@pytest.mark.parametrize("provider", ["hic", "vmm", "vmm_grid"])
+@pytest.mark.parametrize("provider", ["hic", "vmm", "vmm_grid", "spw"])
 def test_valid_providers(cache, provider):
     """Verify all available sources can be used to create a Waterinfo object"""
     conn = Waterinfo(provider, cache=cache)
@@ -110,6 +110,32 @@ def test_token_hic(cache):
     with pytest.raises(Exception):
         client = "DUMMY"
         Waterinfo("hic", token=client, cache=cache)
+
+
+@pytest.mark.notoken
+@pytest.mark.parametrize("cache", [False, True])
+def test_token_spw(cache):
+    """Check if submitting of a token is tackled properly"""
+    # no token, no token header, no authentication in request header
+    spw = Waterinfo("spw", cache=cache)
+    spw.clear_cache()
+    assert spw._token_header is None
+    _, res = spw.request_kiwis({"request": "getRequestInfo"})
+    assert "Authorization" not in res.request.headers.keys()
+
+    # token, token header, authentication in request header
+    # this client code is received by VMM for unit testing purposes only
+    client = os.environ.get("SPW_TOKEN")
+    spw = Waterinfo("spw", token=client, cache=cache)
+    spw.clear_cache()
+    assert spw._token_header is not None
+    _, res = spw.request_kiwis({"request": "getRequestInfo"})
+    assert "Authorization" in res.request.headers.keys()
+
+    # wrong token results in error
+    with pytest.raises(Exception):
+        client = "DUMMY"
+        Waterinfo("spw", token=client, cache=cache)
 
 
 @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
@@ -674,6 +700,12 @@ class TestTimeseriesValueLayer:
         df = connection.get_timeseries_value_layer(timeseriesgroup_id="156207")
         assert "ts_id" in df.columns
 
+    @pytest.mark.parametrize("connection", ["spw_connection", "spw_cached_connection"])
+    def test_spw(self, connection, request):
+        connection = request.getfixturevalue(connection)
+        df = connection.get_timeseries_value_layer(timeseriesgroup_id="7256919")
+        assert "ts_id" in df.columns
+
 
 class TestGroupList:
     @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
@@ -693,6 +725,12 @@ class TestGroupList:
         df = connection.get_group_list()
         assert "group_id" in df.columns
 
+    @pytest.mark.parametrize("connection", ["spw_connection", "spw_cached_connection"])
+    def test_spw(self, connection, request):
+        connection = request.getfixturevalue(connection)
+        df = connection.get_group_list()
+        assert "group_id" in df.columns
+
 
 class TestTimeseriesList:
     @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
@@ -708,6 +746,13 @@ class TestTimeseriesList:
         """"""
         connection = request.getfixturevalue(connection)
         df = connection.get_timeseries_list(station_no="plu03a-1066")
+        assert "station_no" in df.columns
+
+    @pytest.mark.parametrize("connection", ["spw_connection", "spw_cached_connection"])
+    def test_spw(self, connection, request):
+        """"""
+        connection = request.getfixturevalue(connection)
+        df = connection.get_timeseries_list(station_no="L6280")
         assert "station_no" in df.columns
 
 
