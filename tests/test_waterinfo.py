@@ -843,6 +843,20 @@ class TestEnsembleTimeSeries:
         assert "ensembledispatchinfo" in data.columns
         assert not data.empty
 
+    @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
+    def test_check_timestamp_is_increasing(self, connection, request):
+        """In a single TOF, the returned timestamps should be unique and increasing"""
+        conn = request.getfixturevalue(connection)
+        df = conn.get_ensemble_timeseries_values(
+            ts_id="84021010",
+            start="2021-06-01T00:00:00Z",
+            end="2021-06-01T01:00:00Z",
+        )
+        # check that the timestamps are not identical
+        assert not df["Timestamp"].nunique() == 1
+        # check that the timestamps are increasing
+        assert df["Timestamp"].is_monotonic_increasing
+
     @pytest.mark.parametrize(
         "tz",
         ["Europe/Brussels", "CET", "EST", "Greenwich"],
