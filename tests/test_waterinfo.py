@@ -469,8 +469,8 @@ class TestDatetimeHandling:
             connection._check_return_fields_format("DUMMY,DUMMY")
 
 
-@pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
 class TestTimeseriesValues:
+    @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
     def test_one_of_two_ids(self, connection, request):
         """either ts_id or timeseriesgroup_id should be used"""
         connection = request.getfixturevalue(connection)
@@ -481,6 +481,7 @@ class TestTimeseriesValues:
         with pytest.raises(Exception):
             connection.get_timeseries_values(period="P1D")
 
+    @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
     def test_multiple_ids(self, connection, request):
         """Call worksxpected for multiple identifiers combined in single dataframe"""
         """either ts_id or timeseriesgroup_id should be used"""
@@ -490,6 +491,7 @@ class TestTimeseriesValues:
         )
         assert set(df["ts_id"].unique()) == set(["60992042", "60968042"])
 
+    @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
     def test_no_data(self, connection, request):
         """return empty dataframe when no data"""
         connection = request.getfixturevalue(connection)
@@ -504,12 +506,21 @@ class TestTimeseriesValues:
         )
         assert len(df) == 0
 
+    @pytest.mark.parametrize("connection", ["vmm_connection", "vmm_cached_connection"])
     def test_datetime_conversion(self, connection, request):
         """Datetime in the returned data sets are pd.Timestamps with timezone info"""
         connection = request.getfixturevalue(connection)
         df = connection.get_timeseries_values(
             ts_id="60992042,60968042", start="20190501 14:05", end="20190501 14:10"
         )
+        assert isinstance(df["Timestamp"].dtype, pd.DatetimeTZDtype)
+
+    @pytest.mark.parametrize("connection", ["spw_connection", "spw_cached_connection"])
+    def test_spw_timeseries_values(self, connection, request):
+        """Datetime in the returned data sets are pd.Timestamps with timezone info"""
+        connection = request.getfixturevalue(connection)
+        df = connection.get_timeseries_values(ts_id="235519010", period="P1D")
+
         assert isinstance(df["Timestamp"].dtype, pd.DatetimeTZDtype)
 
 
