@@ -861,6 +861,10 @@ class TestEnsembleTimeSeries:
         # check that the timestamps are increasing
         assert df["Timestamp"].is_monotonic_increasing
 
+    @pytest.mark.parametrize(
+        "ts_id",
+        [84021010, 84019010],
+    )
     @pytest.mark.parametrize("connection", ["hic_connection", "hic_cached_connection"])
     def test_check_timestamp_is_increasing_for_tof(self, ts_id, connection, request):
         """The returned timestamps should be unique and increasing for each TOF"""
