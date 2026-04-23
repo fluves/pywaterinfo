@@ -7,3 +7,4 @@ Contributors
 * Bino Maiheu
 * Daan Buekenhout
 * Baris Oztas <baris@bariso.dev>
+* Tim Franken
