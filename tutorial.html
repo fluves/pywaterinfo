@@ -1,21 +1,22 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial &mdash; pywaterinfo 0.8.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+  <title>Tutorial &mdash; pywaterinfo 0.9.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/documentation_options.js?v=ec16d22d"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=39bb1c6d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,9 +35,6 @@
           <a href="index.html" class="icon icon-home">
             pywaterinfo
           </a>
-              <div class="version">
-                0.8.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -54,6 +52,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#download-with-known-ts-identifier">Download with known ts identifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ensemble-time-series-only-available-for-hic">Ensemble time series - only available for HIC</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#time-series-groups">Time series groups</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#time-series-group-data">Time series group data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#search-identifier-based-on-parameter-or-station-name">Search identifier based on parameter or station name</a></li>
@@ -100,7 +99,7 @@
            <div itemprop="articleBody">
              
   <section id="tutorial">
-<span id="waterinfo"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Link to this heading">¶</a></h1>
+<span id="waterinfo"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Link to this heading"></a></h1>
 <p>The Waterinfo module facilitates access to <a class="reference external" href="https://waterinfo.be">waterinfo.be</a>, a website managed by the Flanders
 Environment Agency (VMM) and Flanders Hydraulics Research (HIC). The website provides access to real-time water
 and weather related environmental variables for Flanders (Belgium), such as rainfall, air pressure,
@@ -111,7 +110,7 @@ would work on other deployments of this API as well. As VMM and HIC have each an
 the documentation could be slightly different for <a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">VMM</a>
 versus <a class="reference external" href="https://www.waterinfo.be/tsmhic/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">HIC</a>.</p>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
 <p>The waterinfo.be API uses a system of identifiers, called <code class="code docutils literal notranslate"><span class="pre">ts_id</span></code> to define individual time series.
 For example, the identifier <code class="code docutils literal notranslate"><span class="pre">ts_id</span> <span class="pre">=</span> <span class="pre">78073042</span></code> corresponds to the time series of air pressure data
 for the measurement station in Liedekerke, with a 15 min time resolution. Hence, the <code class="code docutils literal notranslate"><span class="pre">ts_id</span></code> identifier
@@ -119,25 +118,25 @@ defines a variable of interest from a measurement station of interest with a spe
 (e.g. 15 min, hourly,…). The knowledge of the proper identifier is essential to be able to download
 the corresponding data.</p>
 <p>In order to get started, make sure to define the source of the data: VMM or HIC:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pywaterinfo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Waterinfo</span>
 <span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span> <span class="c1"># look for data from VMM</span>
 <span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span> <span class="c1"># look for data from HIC</span>
 </pre></div>
 </div>
 <p>One of the reasons is that tokens are provided by them separately. If you have a token available, add this to the
 initiation to make sure all session requests are using the token:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pywaterinfo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Waterinfo</span>
 <span class="n">vmm_token</span> <span class="o">=</span> <span class="s2">&quot;DUMMY&quot;</span>
 <span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">,</span>  <span class="n">token</span><span class="o">=</span><span class="n">vmm_token</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="download-with-known-ts-identifier">
-<h2>Download with known ts identifier<a class="headerlink" href="#download-with-known-ts-identifier" title="Link to this heading">¶</a></h2>
-<p>In case you already know the <code class="code docutils literal notranslate"><span class="pre">ts_id</span></code> identifier that defines your time series, the class <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo" title="pywaterinfo.Waterinfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">Waterinfo</span></code></a> provides the method
-<a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.get_timeseries_values" title="pywaterinfo.Waterinfo.get_timeseries_values"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_values()</span></code></a> to download a specific period of the time series. For example, to download the air pressure time series data of Liedekerke with a 15 min resolution
+<h2>Download with known ts identifier<a class="headerlink" href="#download-with-known-ts-identifier" title="Link to this heading"></a></h2>
+<p>In case you already know the <code class="code docutils literal notranslate"><span class="pre">ts_id</span></code> identifier that defines your time series, the class <code class="xref py py-class docutils literal notranslate"><span class="pre">Waterinfo</span></code> provides the method
+<code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_values()</span></code> to download a specific period of the time series. For example, to download the air pressure time series data of Liedekerke with a 15 min resolution
 (<code class="code docutils literal notranslate"><span class="pre">ts_id</span> <span class="pre">=</span> <span class="pre">78073042</span></code>) for the first of January 2016:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pywaterinfo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Waterinfo</span>
 <span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
 <span class="n">vmm</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span><span class="s2">&quot;78073042&quot;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2016-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2016-01-02&quot;</span><span class="p">)</span>
 </pre></div>
@@ -158,12 +157,12 @@ parameter <code class="code docutils literal notranslate"><span class="pre">time
 time zone info).</p>
 </div>
 <p>Apart from the <code class="code docutils literal notranslate"><span class="pre">start</span></code> and <code class="code docutils literal notranslate"><span class="pre">end</span></code> configuration, the usage of the <code class="code docutils literal notranslate"><span class="pre">period</span></code> is a convenient
-way of requesting time series. See the <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.get_timeseries_values" title="pywaterinfo.Waterinfo.get_timeseries_values"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_values()</span></code></a> for
+way of requesting time series. See the <code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_values()</span></code> for
 more information and examples.</p>
 <p>When interested in all available data of a time series (! watch out with credit limits) or using the start/end
 of the time series in the request, one can find these in the metadata of a
 time series as illustrated in the following example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pywaterinfo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Waterinfo</span>
 
 <span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
 
@@ -181,12 +180,122 @@ time series as illustrated in the following example:</p>
 function of Pandas, e.g. <code class="code docutils literal notranslate"><span class="pre">df[&quot;Timestamp&quot;]</span> <span class="pre">=</span> <span class="pre">df[&quot;Timestamp&quot;].dt.tz_localize(None)</span></code>.</p>
 </div>
 </section>
+<section id="ensemble-time-series-only-available-for-hic">
+<h2>Ensemble time series - only available for HIC<a class="headerlink" href="#ensemble-time-series-only-available-for-hic" title="Link to this heading"></a></h2>
+<p>Ensemble data, in contrast to CMD time series values, contains different Time of
+Forecast (TOF) data for a given period followed by all the forecasted timestamps with
+their values. For instance, for <code class="code docutils literal notranslate"><span class="pre">ts_id=</span> <span class="pre">84021010</span></code>, the following TOFs
+can be retrieved between <code class="code docutils literal notranslate"><span class="pre">start=2021-01-28</span></code> and <code class="code docutils literal notranslate"><span class="pre">end=2021-01-29</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pywaterinfo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Waterinfo</span>
+
+<span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get the all the available ensembles between two dates</span>
+<span class="n">df_ensemble_data</span> <span class="o">=</span> <span class="n">hic</span><span class="o">.</span><span class="n">get_ensemble_timeseries_values</span><span class="p">(</span>
+    <span class="n">ts_id</span><span class="o">=</span><span class="mi">84021010</span><span class="p">,</span>
+    <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2021-01-28&quot;</span><span class="p">,</span>
+    <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2021-01-29&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="_downloads/b93e00969b24003c449d98031795c99d/plot_ensemble_data.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/5b3e22c414f351ce39f057a9aeb83cec/plot_ensemble_data.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/9a8caf3da238938a50ea9b635ddb0787/plot_ensemble_data.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/d266e5e23461a96e3268e63cd42e97b5/plot_ensemble_data.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default" id="id3">
+<img alt="_images/plot_ensemble_data.png" class="plot-directive" src="_images/plot_ensemble_data.png" />
+<figcaption>
+<p><span class="caption-text">Example of 1 (one!) timeseries, containing 5 different TOF for 28/01/2021</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show available columns</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available columns: </span><span class="si">{</span><span class="n">df_ensemble_data</span><span class="o">.</span><span class="n">columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Retrieved TOFS:&quot;</span><span class="p">)</span>
+<span class="n">grouped</span> <span class="o">=</span> <span class="n">df_ensemble_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;ensembledate&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ensemble date: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># Show the first few rows of each ensemble group</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">head</span><span class="p">(),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Available columns : [
+    &#39;Timestamp&#39;, &#39;0&#39;, &#39;ts_id&#39;, &#39;ts_path&#39;, &#39;station_id&#39;, &#39;station_no&#39;,
+    &#39;station_name&#39;, &#39;parametertype_name&#39;, &#39;ts_name&#39;, &#39;ts_unitsymbol&#39;,
+    &#39;ensembledate&#39;, &#39;ensembledispatchinfo&#39;
+]
+
+Retrieved TOFS:
+
+Ensemble date: 2021-01-28T06:00:00.000Z
+                Timestamp      0     ts_id                                            ts_path station_id  ... parametertype_name   ts_name ts_unitsymbol              ensembledate ensembledispatchinfo
+0 2021-01-28 06:00:00+00:00  20.75  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T06:00:00.000Z                  MR1
+1 2021-01-28 06:15:00+00:00  20.78  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T06:00:00.000Z                  MR1
+2 2021-01-28 06:30:00+00:00  20.79  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T06:00:00.000Z                  MR1
+3 2021-01-28 06:45:00+00:00  20.80  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T06:00:00.000Z                  MR1
+4 2021-01-28 07:00:00+00:00  20.81  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T06:00:00.000Z                  MR1
+
+[5 rows x 12 columns]
+
+Ensemble date: 2021-01-28T12:00:00.000Z
+                Timestamp      0     ts_id                                            ts_path station_id  ... parametertype_name   ts_name ts_unitsymbol              ensembledate ensembledispatchinfo
+0 2021-01-28 12:00:00+00:00  22.98  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T12:00:00.000Z                  MR1
+1 2021-01-28 12:15:00+00:00  23.19  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T12:00:00.000Z                  MR1
+2 2021-01-28 12:30:00+00:00  23.42  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T12:00:00.000Z                  MR1
+3 2021-01-28 12:45:00+00:00  23.67  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T12:00:00.000Z                  MR1
+4 2021-01-28 13:00:00+00:00  23.93  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T12:00:00.000Z                  MR1
+
+[5 rows x 12 columns]
+
+Ensemble date: 2021-01-28T18:00:00.000Z
+                Timestamp      0     ts_id                                            ts_path station_id  ... parametertype_name   ts_name ts_unitsymbol              ensembledate ensembledispatchinfo
+0 2021-01-28 18:00:00+00:00  30.95  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T18:00:00.000Z                  MR1
+1 2021-01-28 18:15:00+00:00  31.45  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T18:00:00.000Z                  MR1
+2 2021-01-28 18:30:00+00:00  32.09  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T18:00:00.000Z                  MR1
+3 2021-01-28 18:45:00+00:00  32.66  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T18:00:00.000Z                  MR1
+4 2021-01-28 19:00:00+00:00  33.09  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-28T18:00:00.000Z                  MR1
+
+[5 rows x 12 columns]
+
+Ensemble date: 2021-01-29T00:00:00.000Z
+                Timestamp      0     ts_id                                            ts_path station_id  ... parametertype_name   ts_name ts_unitsymbol              ensembledate ensembledispatchinfo
+0 2021-01-29 00:00:00+00:00  38.48  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-29T00:00:00.000Z                  MR1
+1 2021-01-29 00:15:00+00:00  38.72  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-29T00:00:00.000Z                  MR1
+2 2021-01-29 00:30:00+00:00  39.44  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-29T00:00:00.000Z                  MR1
+3 2021-01-29 00:45:00+00:00  41.03  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-29T00:00:00.000Z                  MR1
+4 2021-01-29 01:00:00+00:00  41.69  84021010  Aarschot/dem02a-1066/Q_voorspeld/Cmd.Ensemble....      21965  ...        Q_voorspeld  KT-det.O          m³/s  2021-01-29T00:00:00.000Z                  MR1
+
+[5 rows x 12 columns]
+</pre></div>
+</div>
+<p>Even though, you will be able to call ensemble timeseries id’s with the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_values()</span></code> without any error being raised, the
+returned timeseries will not be consistent. Data returned will have timestamps and
+values from mixed TOFs, as can be seen from the returned brown timeseries shown below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pywaterinfo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Waterinfo</span>
+
+<span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get the all the available ensembles between two dates</span>
+<span class="n">df_ensemble_data</span> <span class="o">=</span> <span class="n">hic</span><span class="o">.</span><span class="n">get_timeseries_values</span><span class="p">(</span>
+    <span class="n">ts_id</span><span class="o">=</span><span class="mi">84021010</span><span class="p">,</span>
+    <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2021-01-28&quot;</span><span class="p">,</span>
+    <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2021-01-29&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="_downloads/368acd1d17bfa1d206d7a1b148b7185e/plot_inconsistent_results.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/79a899ae5b6bb0a9d71634bd0792a841/plot_inconsistent_results.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/3ea81e1b1a3a8e6f3298db4e2286ee86/plot_inconsistent_results.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/70f662d37521bc9803bdcae990f7c434/plot_inconsistent_results.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default" id="id5">
+<img alt="_images/plot_inconsistent_results.png" class="plot-directive" src="_images/plot_inconsistent_results.png" />
+<figcaption>
+<p><span class="caption-text">Figure showing (in black) the non-consistent result for 28/01/2021 that will be
+returned by HIC Webservices when treated as a Cmd time series</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
 <section id="time-series-groups">
-<h2>Time series groups<a class="headerlink" href="#time-series-groups" title="Link to this heading">¶</a></h2>
+<h2>Time series groups<a class="headerlink" href="#time-series-groups" title="Link to this heading"></a></h2>
 <p>A lot of the time series and stations are bundled in so-called <code class="code docutils literal notranslate"><span class="pre">timeseriesgroup_id</span></code>’s. They represent for example all
 available station of rainfall at a given frequency (e.g. 15 Min). To get an overview of the available groups, use
-the method <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.get_group_list" title="pywaterinfo.Waterinfo.get_group_list"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_group_list()</span></code></a>, e.g. for the HIC stations:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+the method <code class="xref py py-func docutils literal notranslate"><span class="pre">get_group_list()</span></code>, e.g. for the HIC stations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pywaterinfo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Waterinfo</span>
 <span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
 <span class="n">hic</span><span class="o">.</span><span class="n">get_group_list</span><span class="p">()</span>
 </pre></div>
@@ -197,19 +306,25 @@ the method <a class="reference internal" href="api/reference.html#pywaterinfo.Wa
 are the preferred option to query for the provided variables. For an overview, see the
 <a class="reference internal" href="timeseriesgroupids.html#groupids"><span class="std std-ref">Timeseriesgroup_ids</span></a> page.</p>
 </div>
+<p>Similar, for L’hydrométrie en Wallonie the group list can be requested:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pywaterinfo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Waterinfo</span>
+<span class="n">spw</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;spw&quot;</span><span class="p">)</span>
+<span class="n">spw</span><span class="o">.</span><span class="n">get_group_list</span><span class="p">()</span>
+</pre></div>
+</div>
 </section>
 <section id="time-series-group-data">
-<h2>Time series group data<a class="headerlink" href="#time-series-group-data" title="Link to this heading">¶</a></h2>
-<p>To get all the available time series identifiers (<code class="code docutils literal notranslate"><span class="pre">ts_id</span></code>) within a given group, use the <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.get_timeseries_value_layer" title="pywaterinfo.Waterinfo.get_timeseries_value_layer"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_value_layer()</span></code></a>
+<h2>Time series group data<a class="headerlink" href="#time-series-group-data" title="Link to this heading"></a></h2>
+<p>To get all the available time series identifiers (<code class="code docutils literal notranslate"><span class="pre">ts_id</span></code>) within a given group, use the <code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_value_layer()</span></code>
 method. It provides the metadata of these stations and (by default) the latest measured value. The group identifier for
 conductivity measured by HIC is <code class="code docutils literal notranslate"><span class="pre">156173</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pywaterinfo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Waterinfo</span>
 <span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
 <span class="n">hic</span><span class="o">.</span><span class="n">get_timeseries_value_layer</span><span class="p">(</span><span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="s2">&quot;156173&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Multiple identifiers can be combined in a single statement:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pywaterinfo</span> <span class="kn">import</span> <span class="n">Waterinfo</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pywaterinfo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Waterinfo</span>
 <span class="n">hic</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;hic&quot;</span><span class="p">)</span>
 <span class="c1"># combine oxygen and conductivity in a single call</span>
 <span class="n">hic</span><span class="o">.</span><span class="n">get_timeseries_value_layer</span><span class="p">(</span><span class="n">timeseriesgroup_id</span><span class="o">=</span><span class="s2">&quot;156207,156173&quot;</span><span class="p">)</span>
@@ -228,9 +343,9 @@ use the <code class="code docutils literal notranslate"><span class="pre">metada
 </div>
 </section>
 <section id="search-identifier-based-on-parameter-or-station-name">
-<h2>Search identifier based on parameter or station name<a class="headerlink" href="#search-identifier-based-on-parameter-or-station-name" title="Link to this heading">¶</a></h2>
+<h2>Search identifier based on parameter or station name<a class="headerlink" href="#search-identifier-based-on-parameter-or-station-name" title="Link to this heading"></a></h2>
 <p>In the situation you are looking for the identifiers of all measured parameters at a station or all the
-stations measuring a given parameter, use the <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.get_timeseries_list" title="pywaterinfo.Waterinfo.get_timeseries_list"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_list()</span></code></a> method.
+stations measuring a given parameter, use the <code class="xref py py-func docutils literal notranslate"><span class="pre">get_timeseries_list()</span></code> method.
 It supports wildcards and supports looking based on station information, parameter information or a combination of both:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
 <span class="c1"># for given station ME09_012, which time series are available?</span>
@@ -249,10 +364,12 @@ It supports wildcards and supports looking based on station information, paramet
 </div>
 </section>
 <section id="custom-queries">
-<h2>Custom queries<a class="headerlink" href="#custom-queries" title="Link to this heading">¶</a></h2>
-<p>The <a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">VMM</a>
-and <a class="reference external" href="https://www.waterinfo.be/tsmhic/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">HIC</a> APIs
-provide more API paths. Whereas no specialized functions are available, use the <a class="reference internal" href="api/reference.html#pywaterinfo.Waterinfo.request_kiwis" title="pywaterinfo.Waterinfo.request_kiwis"><code class="xref py py-func docutils literal notranslate"><span class="pre">request_kiwis()</span></code></a> method
+<h2>Custom queries<a class="headerlink" href="#custom-queries" title="Link to this heading"></a></h2>
+<p>The <a class="reference external" href="https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">VMM</a>,
+<a class="reference external" href="https://hydro.vmm.be/grid/kiwis/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">VMM Grid</a>,
+<a class="reference external" href="https://www.waterinfo.be/tsmhic/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">HIC</a> and
+<a class="reference external" href="https://hydrometrie.wallonie.be/services/KiWIS/KiWIS?service=kisters&amp;type=QueryServices&amp;format=html&amp;request=getrequestinfo">SPW</a> APIs
+provide more API paths. Whereas no specialized functions are available, use the <code class="xref py py-func docutils literal notranslate"><span class="pre">request_kiwis()</span></code> method
 to do custom calls to the KIWIS API. For example, using the <code class="code docutils literal notranslate"><span class="pre">getStationList</span></code> query for stations starting with a <code class="code docutils literal notranslate"><span class="pre">P</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vmm</span> <span class="o">=</span> <span class="n">Waterinfo</span><span class="p">(</span><span class="s2">&quot;vmm&quot;</span><span class="p">)</span>
 <span class="n">vmm</span><span class="o">.</span><span class="n">request_kiwis</span><span class="p">({</span><span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="s2">&quot;getStationList&quot;</span><span class="p">,</span> <span class="s2">&quot;station_no&quot;</span><span class="p">:</span> <span class="s2">&quot;P*&quot;</span><span class="p">})</span>

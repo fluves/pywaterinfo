@@ -1,21 +1,22 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changelog &mdash; pywaterinfo 0.8.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+  <title>Changelog &mdash; pywaterinfo 0.9.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/documentation_options.js?v=ec16d22d"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=39bb1c6d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,9 +35,6 @@
           <a href="index.html" class="icon icon-home">
             pywaterinfo
           </a>
-              <div class="version">
-                0.8.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -62,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="contributing.html#development-guidelines">Development guidelines</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-9-0">Version 0.9.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-8-1">Version 0.8.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-8-0">Version 0.8.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-7-0">Version 0.7.0</a></li>
@@ -107,15 +106,30 @@
            <div itemprop="articleBody">
              
   <section id="changelog">
-<span id="changes"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
+<span id="changes"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
+<section id="version-0-9-0">
+<h2>Version 0.9.0<a class="headerlink" href="#version-0-9-0" title="Link to this heading"></a></h2>
+<p>Pywaterinfo no longer supports Python 3.9 and the support for Python 3.13 is added. This release contains a number of new interesting features:</p>
+<ul class="simple">
+<li><p>New data provider is added. The pywaterinfo package can now also query the API of L’hydrométrie en
+Wallonie provided by Le Service public de Wallonie (SPW) (#73, #80; thanks to &#64;TimFranken)</p></li>
+<li><p>Support for Ensemble Timeseries from HIC provider added (#74, #75, #83; thanks to &#64;barisoztas)</p></li>
+<li><p>Support for VMM Grid based data added (#76; thanks to &#64;barisoztas)</p></li>
+</ul>
+<p>Furthermore, following development improvements were included:</p>
+<ul class="simple">
+<li><p>Deprecate pytz as dependency (#77; thanks to &#64;barisoztas)</p></li>
+<li><p>Improved handling of WISKI API decoding errors. The exclusion of non-parseable fields can be implemented on the level of an individual data provider (#79; thanks to &#64;TimFranken)</p></li>
+</ul>
+</section>
 <section id="version-0-8-1">
-<h2>Version 0.8.1<a class="headerlink" href="#version-0-8-1" title="Link to this heading">¶</a></h2>
+<h2>Version 0.8.1<a class="headerlink" href="#version-0-8-1" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Fix URL of the statud badge in the README.md</p></li>
 </ul>
 </section>
 <section id="version-0-8-0">
-<h2>Version 0.8.0<a class="headerlink" href="#version-0-8-0" title="Link to this heading">¶</a></h2>
+<h2>Version 0.8.0<a class="headerlink" href="#version-0-8-0" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Switch the supported Python versions by removing Python 3.7 and including Python 3.12 (#69)</p></li>
 <li><p>Fix handling of time series with mixed timezone offsets (#68)</p></li>
@@ -123,7 +137,7 @@
 </ul>
 </section>
 <section id="version-0-7-0">
-<h2>Version 0.7.0<a class="headerlink" href="#version-0-7-0" title="Link to this heading">¶</a></h2>
+<h2>Version 0.7.0<a class="headerlink" href="#version-0-7-0" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Make the caching logic opt-in and deactivated by default (#61).</p></li>
 <li><p>Update the CI setup to support Python 3.10 and 3.11 (#60)</p></li>
@@ -131,20 +145,20 @@
 </ul>
 </section>
 <section id="version-0-6-0">
-<h2>Version 0.6.0<a class="headerlink" href="#version-0-6-0" title="Link to this heading">¶</a></h2>
+<h2>Version 0.6.0<a class="headerlink" href="#version-0-6-0" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Add support for datetime with zoneinfo tzinfo in python 3.9 (#48, by dbkhout)</p></li>
 <li><p>Add citation file using Citation File Format (CFF) (#43)</p></li>
 </ul>
 </section>
 <section id="version-0-5-1">
-<h2>Version 0.5.1<a class="headerlink" href="#version-0-5-1" title="Link to this heading">¶</a></h2>
+<h2>Version 0.5.1<a class="headerlink" href="#version-0-5-1" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Fix wrong package metadata on supported Python versions.</p></li>
 </ul>
 </section>
 <section id="version-0-5-0">
-<h2>Version 0.5.0<a class="headerlink" href="#version-0-5-0" title="Link to this heading">¶</a></h2>
+<h2>Version 0.5.0<a class="headerlink" href="#version-0-5-0" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>The package now also supports requests without ‘optional fields’ (#42).</p></li>
 <li><p>Deprecate python 3.6 dus to incompatibility with requests-cache.</p></li>
@@ -155,7 +169,7 @@
 </ul>
 </section>
 <section id="version-0-4-0">
-<h2>Version 0.4.0<a class="headerlink" href="#version-0-4-0" title="Link to this heading">¶</a></h2>
+<h2>Version 0.4.0<a class="headerlink" href="#version-0-4-0" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Switch local caching (#32) to temporary os directory instead of project directory</p></li>
 <li><dl class="simple">
@@ -168,7 +182,7 @@
 </ul>
 </section>
 <section id="version-0-3-1">
-<h2>Version 0.3.1<a class="headerlink" href="#version-0-3-1" title="Link to this heading">¶</a></h2>
+<h2>Version 0.3.1<a class="headerlink" href="#version-0-3-1" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><dl class="simple">
 <dt>Extend example/documentation:</dt><dd><ul>
@@ -180,7 +194,7 @@
 </ul>
 </section>
 <section id="version-0-3-0">
-<h2>Version 0.3.0<a class="headerlink" href="#version-0-3-0" title="Link to this heading">¶</a></h2>
+<h2>Version 0.3.0<a class="headerlink" href="#version-0-3-0" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Add local caching of API requests using the <cite>requests-cache</cite> package.</p></li>
 <li><p>Adjust root URL for HIC based API calls according to online documentation <a class="reference external" href="https://hicws.vlaanderen.be/">https://hicws.vlaanderen.be/</a>.</p></li>
@@ -196,19 +210,19 @@
 </ul>
 </section>
 <section id="version-0-2-2">
-<h2>Version 0.2.2<a class="headerlink" href="#version-0-2-2" title="Link to this heading">¶</a></h2>
+<h2>Version 0.2.2<a class="headerlink" href="#version-0-2-2" title="Link to this heading"></a></h2>
 <p>Fix token handling for HIC data requests.</p>
 </section>
 <section id="version-0-2-1">
-<h2>Version 0.2.1<a class="headerlink" href="#version-0-2-1" title="Link to this heading">¶</a></h2>
+<h2>Version 0.2.1<a class="headerlink" href="#version-0-2-1" title="Link to this heading"></a></h2>
 <p>Hot fix on token handling (Thanks to Erik Bollen for reporting).</p>
 </section>
 <section id="version-0-2-0">
-<h2>Version 0.2.0<a class="headerlink" href="#version-0-2-0" title="Link to this heading">¶</a></h2>
+<h2>Version 0.2.0<a class="headerlink" href="#version-0-2-0" title="Link to this heading"></a></h2>
 <p>Add support for SSL certificate handling.</p>
 </section>
 <section id="version-0-1-1">
-<h2>Version 0.1.1<a class="headerlink" href="#version-0-1-1" title="Link to this heading">¶</a></h2>
+<h2>Version 0.1.1<a class="headerlink" href="#version-0-1-1" title="Link to this heading"></a></h2>
 <p>This version provides a first implementation wrapping the API provided by <a class="reference external" href="https://www.waterinfo.be/">waterinfo.be</a>. The package provides a minimal
 wrapper with the aim to find and download time series data and returns it as Pandas DataFrame. The latter enables methods for plotting and analysis.</p>
 <ul class="simple">

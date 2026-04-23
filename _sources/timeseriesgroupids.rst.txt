@@ -69,42 +69,68 @@ For the VMM, the list of available group identifiers (date: 2017-10-01) are prov
       windrichting, 15min, 192926, wind_direction, 15min
       windspeed, 15min, 192925, wind_speed, 15min
 
-HIC
----
+HIC - Cmd timeseriesgroup_ids
+-----------------------------
 
-Similar for the HIC, the list of available group identifiers (date: 2019-09-17) are provided
-in the following table.
+Similar for the VMM, the list of available group identifiers (date: 2023-03-03) are
+provided in the following table. `Source <https://hicws.vlaanderen.be/Manual_for_the_use_of_webservices_HIC.pdf>`_
 
 .. Caution:: These identifiers are not described as stable identifiers and can change in time!
 
-.. csv-table:: HIC published timeseriesgroup identifiers
-   :header: "variable (nl)", "frequency_nl", "timeseriesgroup_id", "variable (en)", "frequency (en)"
-   :widths: 10, 5, 10, 10, 5
+.. csv-table:: HIC - Cmd timeseriesgroup_ids
+   :header: "group_id", "group_name", "group_type", "stationparameter_longname", "ts_unitname", "ts_unitsymbol"
+   :widths: 10, 15, 15, 10, 10, 5
 
-      afvoer, hoge resolutie, 156170, discharge, high resolution
-      afvoer, uur, 156171, discharge, hour
-      afvoer, dag, 156169, discharge, day
-      astronomische voorspellingen hoog-en laagwaters tijgebied Schelde, , 350099, astronomical predictions high-and low water tidal area Schelde,
-      astronomische voorspellingen continu reeksen tijgebied Schelde, , 354718, astronomical predictions continuous time series tidal area Schelde,
-      berekende bovenafvoer Zeeschelde thv Schelle, , 260592, calculated discharge Zeeschelde at Schelle,
-      chlorofyl, hoge resolutie, 156172, chlorofyl, high resolution
-      conductiviteit, hoge resolutie, 156173, conductivity, high resolution
-      gebiedsneerslagen belangrijke meetlocaties HIC (gemeten en voorspeld), ,156159, area rainfall main locations HIC (measured and predicted),
-      neerslag, hoge resolutie, 156167, rainfall, high resolution
-      neerslag, uur, 156168, rainfall, hour
-      neerslag, dag, 156166, rainfall, day
-      neerslag, maand, 156190, rainfall, month
-      neerslag, jaar, 156191, rainfall, year
-      saliniteit, hoge resolutie, 421208, salinity, high resolution
-      sediment concentratie, hoge resolutie, 156188, sediment concentration, high resolution
-      stroomrichting, hoge resolutie, 156158, flow direction, high resolution
-      stroomsnelheid, hoge resolutie, 156199, flow speed, high resolution
-      turbiditeit, hoge resolutie, 156202, turbidity, high resolution
-      waterstand, hoge resolutie, 156163, water level, high resolution
-      waterstand, uur, 156164, water level, hour
-      waterstand, dag, 156162, water level, day
-      waterstand hoog-en laagwaters tijgebied Schelde, ,156165, water level high-and low water tidal area Schelde
-      watertemperatuur, hoge resolutie, 156200, water temperature, high resolution
-      zuurstofgehalte, hoge resolutie, 156207, oxygen concentration, high resolution
-      zuurstofverzadiging, hoge resolutie, 456208, oxygen saturation, high resolution
-      zuurtegraad, hoge resolutie, 156197, acidity, high resolution
+      156158,DL_Stroomrichting,timeseries,Flow Direction,degree,°
+      156159,DL_NCatch,timeseries,Catchment Rainfall,millimeter,mm
+      156162,DL_H_dag,timeseries,River Stage,meter,m
+      156163,DL_H_hr,timeseries,River Stage,meter,m
+      156164,DL_H_uur,timeseries,River Stage,meter,m
+      156165,DL_HWLW,timeseries,Tidal Water Level,meter,m
+      156166,DL_Pluvio_Day_HICOTT,timeseries,Rainfall,millimeter,mm
+      156167,DL_Pluvio_Hr_HICOTT,timeseries,Rainfall,millimeter,mm
+      156168,DL_Pluvio_uur_HICOTT,timeseries,Rainfall,millimeter,mm
+      156169,DL_Q_dag,timeseries,River Discharge,cubic meter per second,m³/s
+      156170,DL_Q_hr,timeseries,River Discharge,cubic meter per second,m³/s
+      156171,DL_Q_uur,timeseries,River Discharge,cubic meter per second,m³/s
+      156172,DL_Chlorofyl,timeseries,Chlorofyl a,microgram per litre,µg/l
+      156173,DL_Conductiviteit,timeseries,Conductivity,microsiemens per centimeter,µS/cm
+      156188,DL_SSC,timeseries,Suspended Sediment Concentration Calculated,milligram per litre,mg/l
+      156190,DL_Pluvio_maand_HICOTT,timeseries,Rainfall,millimeter,mm
+      156191,DL_Pluvio_jaar_HICOTT,timeseries,Rainfall,millimeter,mm
+      156197,DL_pH,timeseries,pH,scalar,-
+      156199,DL_Snelheid_Sediment,timeseries,Flow Velocity,meter per second,m/s
+      156200,DL_Temperatuur_Sediment,timeseries,Temperature,degree Celsius,°C
+      156202,DL_Turbiditeit,timeseries,Turbidity_NTU,nephlometric turbidity unit,NTU
+      156207,DL_Zuurstofgehalte,timeseries,Oxygen Concentration,milligram per litre,mg/l
+      156208,DL_Zuurstofverzadiging,timeseries,Oxygen Saturation,percentage,%
+      260592,DL_Discharge_calc,timeseries,River Discharge,cubic meter per second,m³/s
+      350099,DL_astroHWLW_TAW,timeseries,W_voorspeld,meter,m
+      354718,DL_astroContinu_TAW,timeseries,W_voorspeld,meter,m
+      421208,DL_Saliniteit,timeseries,Salinity,Practical salinity scale,psu
+      510205,DL_HW,timeseries,Tidal Water Level,meter,m
+      510207,DL_LW,timeseries,Tidal Water Level,meter,m
+      512458,DL_astroContinu_LAT,timeseries,W_voorspeld,decimeter,dm
+      515316,DL_astroHWLW_LAT,timeseries,W_voorspeld,decimeter,dm
+
+
+HIC - Ensemble timeseriesgroup_ids
+----------------------------------
+
+The list of available group identifiers for ensemble time series (date: 2023-03-03) are
+provided in the following table. `Source <https://hicws.vlaanderen.be/Manual_for_the_use_of_webservices_HIC.pdf>`_
+
+.. Caution:: These identifiers are not described as stable identifiers and can change in time!
+
+
+.. csv-table:: HIC - Cmd timeseriesgroup_ids
+   :header: "group_id", "group_name", "group_type", "stationparameter_longname", "ts_unitname", "ts_unitsymbol"
+   :widths: 10, 15, 15, 10, 10, 5
+
+      432821,DL_VerwachtingenHWLW,timeseries,W_voorspeld,meter,m
+      506056,DL_PeilVoorspeld_KTdet,timeseries,H_voorspeld,meter,m
+      506057,DL_AfvoerVoorspeld_KTdet,timeseries,Q_voorspeld,cubic meter per second,m³/s
+      506058,DL_PeilVoorspeld_LTdet,timeseries,H_voorspeld,meter,m
+      506059,DL_AfvoerVoorspeld_LTdet,timeseries,Q_voorspeld,cubic meter per second,m³/s
+      506060,DL_NCatch_KTdet,timeseries,Ncatch_voorspeld,millimeter,mm
+      506061,DL_NCatch_LTdet,timeseries,Ncatch_voorspeld,millimeter,mm

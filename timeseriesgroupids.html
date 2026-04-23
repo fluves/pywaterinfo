@@ -1,21 +1,22 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Timeseriesgroup_ids &mdash; pywaterinfo 0.8.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+  <title>Timeseriesgroup_ids &mdash; pywaterinfo 0.9.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/documentation_options.js?v=ec16d22d"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=39bb1c6d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,9 +35,6 @@
           <a href="index.html" class="icon icon-home">
             pywaterinfo
           </a>
-              <div class="version">
-                0.8.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -56,7 +54,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Group identifiers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#vmm">VMM</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#hic">HIC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hic-cmd-timeseriesgroup-ids">HIC - Cmd timeseriesgroup_ids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hic-ensemble-timeseriesgroup-ids">HIC - Ensemble timeseriesgroup_ids</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/reference.html">Module Reference</a></li>
@@ -97,9 +96,9 @@
            <div itemprop="articleBody">
              
   <section id="timeseriesgroup-ids">
-<span id="groupids"></span><h1>Timeseriesgroup_ids<a class="headerlink" href="#timeseriesgroup-ids" title="Link to this heading">¶</a></h1>
+<span id="groupids"></span><h1>Timeseriesgroup_ids<a class="headerlink" href="#timeseriesgroup-ids" title="Link to this heading"></a></h1>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
 <p>For a number of time series, the VMM and HIC provide the group identifiers in the online
 <a class="reference external" href="https://www.waterinfo.be/download/c4bc2c28-0251-40e3-8ecb-a139298597aa">available documentation</a>.
 These identifiers are the preferred source to query the enlisted variables.</p>
@@ -110,14 +109,14 @@ frequency to overcome large data queries as much as possible.</p>
 </div>
 </section>
 <section id="vmm">
-<h2>VMM<a class="headerlink" href="#vmm" title="Link to this heading">¶</a></h2>
+<h2>VMM<a class="headerlink" href="#vmm" title="Link to this heading"></a></h2>
 <p>For the VMM, the list of available group identifiers (date: 2017-10-01) are provided in the following table.</p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
 <p>These identifiers are not described as stable identifiers and can change in time!</p>
 </div>
-<table class="docutils align-default" id="id1">
-<caption><span class="caption-text">VMM published timeseriesgroup identifiers</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">VMM published timeseriesgroup identifiers</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>variable (nl)</p></th>
 <th class="head"><p>frequency_nl</p></th>
@@ -388,193 +387,333 @@ frequency to overcome large data queries as much as possible.</p>
 </tbody>
 </table>
 </section>
-<section id="hic">
-<h2>HIC<a class="headerlink" href="#hic" title="Link to this heading">¶</a></h2>
-<p>Similar for the HIC, the list of available group identifiers (date: 2019-09-17) are provided
-in the following table.</p>
+<section id="hic-cmd-timeseriesgroup-ids">
+<h2>HIC - Cmd timeseriesgroup_ids<a class="headerlink" href="#hic-cmd-timeseriesgroup-ids" title="Link to this heading"></a></h2>
+<p>Similar for the VMM, the list of available group identifiers (date: 2023-03-03) are
+provided in the following table. <a class="reference external" href="https://hicws.vlaanderen.be/Manual_for_the_use_of_webservices_HIC.pdf">Source</a></p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
 <p>These identifiers are not described as stable identifiers and can change in time!</p>
 </div>
-<table class="docutils align-default" id="id2">
-<caption><span class="caption-text">HIC published timeseriesgroup identifiers</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
+<table class="docutils align-default" id="id3">
+<caption><span class="caption-text">HIC - Cmd timeseriesgroup_ids</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
 <colgroup>
-<col style="width: 25.0%" />
-<col style="width: 12.5%" />
-<col style="width: 25.0%" />
-<col style="width: 25.0%" />
-<col style="width: 12.5%" />
+<col style="width: 15.4%" />
+<col style="width: 23.1%" />
+<col style="width: 23.1%" />
+<col style="width: 15.4%" />
+<col style="width: 15.4%" />
+<col style="width: 7.7%" />
 </colgroup>
 <thead>
-<tr class="row-odd"><th class="head"><p>variable (nl)</p></th>
-<th class="head"><p>frequency_nl</p></th>
-<th class="head"><p>timeseriesgroup_id</p></th>
-<th class="head"><p>variable (en)</p></th>
-<th class="head"><p>frequency (en)</p></th>
+<tr class="row-odd"><th class="head"><p>group_id</p></th>
+<th class="head"><p>group_name</p></th>
+<th class="head"><p>group_type</p></th>
+<th class="head"><p>stationparameter_longname</p></th>
+<th class="head"><p>ts_unitname</p></th>
+<th class="head"><p>ts_unitsymbol</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>afvoer</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>156170</p></td>
-<td><p>discharge</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-even"><td><p>156158</p></td>
+<td><p>DL_Stroomrichting</p></td>
+<td><p>timeseries</p></td>
+<td><p>Flow Direction</p></td>
+<td><p>degree</p></td>
+<td><p>°</p></td>
 </tr>
-<tr class="row-odd"><td><p>afvoer</p></td>
-<td><p>uur</p></td>
-<td><p>156171</p></td>
-<td><p>discharge</p></td>
-<td><p>hour</p></td>
+<tr class="row-odd"><td><p>156159</p></td>
+<td><p>DL_NCatch</p></td>
+<td><p>timeseries</p></td>
+<td><p>Catchment Rainfall</p></td>
+<td><p>millimeter</p></td>
+<td><p>mm</p></td>
 </tr>
-<tr class="row-even"><td><p>afvoer</p></td>
-<td><p>dag</p></td>
-<td><p>156169</p></td>
-<td><p>discharge</p></td>
-<td><p>day</p></td>
+<tr class="row-even"><td><p>156162</p></td>
+<td><p>DL_H_dag</p></td>
+<td><p>timeseries</p></td>
+<td><p>River Stage</p></td>
+<td><p>meter</p></td>
+<td><p>m</p></td>
 </tr>
-<tr class="row-odd"><td><p>astronomische voorspellingen hoog-en laagwaters tijgebied Schelde</p></td>
-<td></td>
-<td><p>350099</p></td>
-<td><p>astronomical predictions high-and low water tidal area Schelde</p></td>
-<td></td>
+<tr class="row-odd"><td><p>156163</p></td>
+<td><p>DL_H_hr</p></td>
+<td><p>timeseries</p></td>
+<td><p>River Stage</p></td>
+<td><p>meter</p></td>
+<td><p>m</p></td>
 </tr>
-<tr class="row-even"><td><p>astronomische voorspellingen continu reeksen tijgebied Schelde</p></td>
-<td></td>
-<td><p>354718</p></td>
-<td><p>astronomical predictions continuous time series tidal area Schelde</p></td>
-<td></td>
+<tr class="row-even"><td><p>156164</p></td>
+<td><p>DL_H_uur</p></td>
+<td><p>timeseries</p></td>
+<td><p>River Stage</p></td>
+<td><p>meter</p></td>
+<td><p>m</p></td>
 </tr>
-<tr class="row-odd"><td><p>berekende bovenafvoer Zeeschelde thv Schelle</p></td>
-<td></td>
-<td><p>260592</p></td>
-<td><p>calculated discharge Zeeschelde at Schelle</p></td>
-<td></td>
+<tr class="row-odd"><td><p>156165</p></td>
+<td><p>DL_HWLW</p></td>
+<td><p>timeseries</p></td>
+<td><p>Tidal Water Level</p></td>
+<td><p>meter</p></td>
+<td><p>m</p></td>
 </tr>
-<tr class="row-even"><td><p>chlorofyl</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>156172</p></td>
-<td><p>chlorofyl</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-even"><td><p>156166</p></td>
+<td><p>DL_Pluvio_Day_HICOTT</p></td>
+<td><p>timeseries</p></td>
+<td><p>Rainfall</p></td>
+<td><p>millimeter</p></td>
+<td><p>mm</p></td>
 </tr>
-<tr class="row-odd"><td><p>conductiviteit</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>156173</p></td>
-<td><p>conductivity</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-odd"><td><p>156167</p></td>
+<td><p>DL_Pluvio_Hr_HICOTT</p></td>
+<td><p>timeseries</p></td>
+<td><p>Rainfall</p></td>
+<td><p>millimeter</p></td>
+<td><p>mm</p></td>
 </tr>
-<tr class="row-even"><td><p>gebiedsneerslagen belangrijke meetlocaties HIC (gemeten en voorspeld)</p></td>
-<td></td>
-<td><p>156159</p></td>
-<td><p>area rainfall main locations HIC (measured and predicted)</p></td>
-<td></td>
+<tr class="row-even"><td><p>156168</p></td>
+<td><p>DL_Pluvio_uur_HICOTT</p></td>
+<td><p>timeseries</p></td>
+<td><p>Rainfall</p></td>
+<td><p>millimeter</p></td>
+<td><p>mm</p></td>
 </tr>
-<tr class="row-odd"><td><p>neerslag</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>156167</p></td>
-<td><p>rainfall</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-odd"><td><p>156169</p></td>
+<td><p>DL_Q_dag</p></td>
+<td><p>timeseries</p></td>
+<td><p>River Discharge</p></td>
+<td><p>cubic meter per second</p></td>
+<td><p>m³/s</p></td>
 </tr>
-<tr class="row-even"><td><p>neerslag</p></td>
-<td><p>uur</p></td>
-<td><p>156168</p></td>
-<td><p>rainfall</p></td>
-<td><p>hour</p></td>
+<tr class="row-even"><td><p>156170</p></td>
+<td><p>DL_Q_hr</p></td>
+<td><p>timeseries</p></td>
+<td><p>River Discharge</p></td>
+<td><p>cubic meter per second</p></td>
+<td><p>m³/s</p></td>
 </tr>
-<tr class="row-odd"><td><p>neerslag</p></td>
-<td><p>dag</p></td>
-<td><p>156166</p></td>
-<td><p>rainfall</p></td>
-<td><p>day</p></td>
+<tr class="row-odd"><td><p>156171</p></td>
+<td><p>DL_Q_uur</p></td>
+<td><p>timeseries</p></td>
+<td><p>River Discharge</p></td>
+<td><p>cubic meter per second</p></td>
+<td><p>m³/s</p></td>
 </tr>
-<tr class="row-even"><td><p>neerslag</p></td>
-<td><p>maand</p></td>
-<td><p>156190</p></td>
-<td><p>rainfall</p></td>
-<td><p>month</p></td>
+<tr class="row-even"><td><p>156172</p></td>
+<td><p>DL_Chlorofyl</p></td>
+<td><p>timeseries</p></td>
+<td><p>Chlorofyl a</p></td>
+<td><p>microgram per litre</p></td>
+<td><p>µg/l</p></td>
 </tr>
-<tr class="row-odd"><td><p>neerslag</p></td>
-<td><p>jaar</p></td>
-<td><p>156191</p></td>
-<td><p>rainfall</p></td>
-<td><p>year</p></td>
+<tr class="row-odd"><td><p>156173</p></td>
+<td><p>DL_Conductiviteit</p></td>
+<td><p>timeseries</p></td>
+<td><p>Conductivity</p></td>
+<td><p>microsiemens per centimeter</p></td>
+<td><p>µS/cm</p></td>
 </tr>
-<tr class="row-even"><td><p>saliniteit</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>421208</p></td>
-<td><p>salinity</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-even"><td><p>156188</p></td>
+<td><p>DL_SSC</p></td>
+<td><p>timeseries</p></td>
+<td><p>Suspended Sediment Concentration Calculated</p></td>
+<td><p>milligram per litre</p></td>
+<td><p>mg/l</p></td>
 </tr>
-<tr class="row-odd"><td><p>sediment concentratie</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>156188</p></td>
-<td><p>sediment concentration</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-odd"><td><p>156190</p></td>
+<td><p>DL_Pluvio_maand_HICOTT</p></td>
+<td><p>timeseries</p></td>
+<td><p>Rainfall</p></td>
+<td><p>millimeter</p></td>
+<td><p>mm</p></td>
 </tr>
-<tr class="row-even"><td><p>stroomrichting</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>156158</p></td>
-<td><p>flow direction</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-even"><td><p>156191</p></td>
+<td><p>DL_Pluvio_jaar_HICOTT</p></td>
+<td><p>timeseries</p></td>
+<td><p>Rainfall</p></td>
+<td><p>millimeter</p></td>
+<td><p>mm</p></td>
 </tr>
-<tr class="row-odd"><td><p>stroomsnelheid</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>156199</p></td>
-<td><p>flow speed</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-odd"><td><p>156197</p></td>
+<td><p>DL_pH</p></td>
+<td><p>timeseries</p></td>
+<td><p>pH</p></td>
+<td><p>scalar</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
 </tr>
-<tr class="row-even"><td><p>turbiditeit</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>156202</p></td>
-<td><p>turbidity</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-even"><td><p>156199</p></td>
+<td><p>DL_Snelheid_Sediment</p></td>
+<td><p>timeseries</p></td>
+<td><p>Flow Velocity</p></td>
+<td><p>meter per second</p></td>
+<td><p>m/s</p></td>
 </tr>
-<tr class="row-odd"><td><p>waterstand</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>156163</p></td>
-<td><p>water level</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-odd"><td><p>156200</p></td>
+<td><p>DL_Temperatuur_Sediment</p></td>
+<td><p>timeseries</p></td>
+<td><p>Temperature</p></td>
+<td><p>degree Celsius</p></td>
+<td><p>°C</p></td>
 </tr>
-<tr class="row-even"><td><p>waterstand</p></td>
-<td><p>uur</p></td>
-<td><p>156164</p></td>
-<td><p>water level</p></td>
-<td><p>hour</p></td>
+<tr class="row-even"><td><p>156202</p></td>
+<td><p>DL_Turbiditeit</p></td>
+<td><p>timeseries</p></td>
+<td><p>Turbidity_NTU</p></td>
+<td><p>nephlometric turbidity unit</p></td>
+<td><p>NTU</p></td>
 </tr>
-<tr class="row-odd"><td><p>waterstand</p></td>
-<td><p>dag</p></td>
-<td><p>156162</p></td>
-<td><p>water level</p></td>
-<td><p>day</p></td>
+<tr class="row-odd"><td><p>156207</p></td>
+<td><p>DL_Zuurstofgehalte</p></td>
+<td><p>timeseries</p></td>
+<td><p>Oxygen Concentration</p></td>
+<td><p>milligram per litre</p></td>
+<td><p>mg/l</p></td>
 </tr>
-<tr class="row-even"><td><p>waterstand hoog-en laagwaters tijgebied Schelde</p></td>
-<td></td>
-<td><p>156165</p></td>
-<td><p>water level high-and low water tidal area Schelde</p></td>
-<td></td>
+<tr class="row-even"><td><p>156208</p></td>
+<td><p>DL_Zuurstofverzadiging</p></td>
+<td><p>timeseries</p></td>
+<td><p>Oxygen Saturation</p></td>
+<td><p>percentage</p></td>
+<td><p>%</p></td>
 </tr>
-<tr class="row-odd"><td><p>watertemperatuur</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>156200</p></td>
-<td><p>water temperature</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-odd"><td><p>260592</p></td>
+<td><p>DL_Discharge_calc</p></td>
+<td><p>timeseries</p></td>
+<td><p>River Discharge</p></td>
+<td><p>cubic meter per second</p></td>
+<td><p>m³/s</p></td>
 </tr>
-<tr class="row-even"><td><p>zuurstofgehalte</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>156207</p></td>
-<td><p>oxygen concentration</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-even"><td><p>350099</p></td>
+<td><p>DL_astroHWLW_TAW</p></td>
+<td><p>timeseries</p></td>
+<td><p>W_voorspeld</p></td>
+<td><p>meter</p></td>
+<td><p>m</p></td>
 </tr>
-<tr class="row-odd"><td><p>zuurstofverzadiging</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>456208</p></td>
-<td><p>oxygen saturation</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-odd"><td><p>354718</p></td>
+<td><p>DL_astroContinu_TAW</p></td>
+<td><p>timeseries</p></td>
+<td><p>W_voorspeld</p></td>
+<td><p>meter</p></td>
+<td><p>m</p></td>
 </tr>
-<tr class="row-even"><td><p>zuurtegraad</p></td>
-<td><p>hoge resolutie</p></td>
-<td><p>156197</p></td>
-<td><p>acidity</p></td>
-<td><p>high resolution</p></td>
+<tr class="row-even"><td><p>421208</p></td>
+<td><p>DL_Saliniteit</p></td>
+<td><p>timeseries</p></td>
+<td><p>Salinity</p></td>
+<td><p>Practical salinity scale</p></td>
+<td><p>psu</p></td>
+</tr>
+<tr class="row-odd"><td><p>510205</p></td>
+<td><p>DL_HW</p></td>
+<td><p>timeseries</p></td>
+<td><p>Tidal Water Level</p></td>
+<td><p>meter</p></td>
+<td><p>m</p></td>
+</tr>
+<tr class="row-even"><td><p>510207</p></td>
+<td><p>DL_LW</p></td>
+<td><p>timeseries</p></td>
+<td><p>Tidal Water Level</p></td>
+<td><p>meter</p></td>
+<td><p>m</p></td>
+</tr>
+<tr class="row-odd"><td><p>512458</p></td>
+<td><p>DL_astroContinu_LAT</p></td>
+<td><p>timeseries</p></td>
+<td><p>W_voorspeld</p></td>
+<td><p>decimeter</p></td>
+<td><p>dm</p></td>
+</tr>
+<tr class="row-even"><td><p>515316</p></td>
+<td><p>DL_astroHWLW_LAT</p></td>
+<td><p>timeseries</p></td>
+<td><p>W_voorspeld</p></td>
+<td><p>decimeter</p></td>
+<td><p>dm</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hic-ensemble-timeseriesgroup-ids">
+<h2>HIC - Ensemble timeseriesgroup_ids<a class="headerlink" href="#hic-ensemble-timeseriesgroup-ids" title="Link to this heading"></a></h2>
+<p>The list of available group identifiers for ensemble time series (date: 2023-03-03) are
+provided in the following table. <a class="reference external" href="https://hicws.vlaanderen.be/Manual_for_the_use_of_webservices_HIC.pdf">Source</a></p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>These identifiers are not described as stable identifiers and can change in time!</p>
+</div>
+<table class="docutils align-default" id="id4">
+<caption><span class="caption-text">HIC - Cmd timeseriesgroup_ids</span><a class="headerlink" href="#id4" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 15.4%" />
+<col style="width: 23.1%" />
+<col style="width: 23.1%" />
+<col style="width: 15.4%" />
+<col style="width: 15.4%" />
+<col style="width: 7.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>group_id</p></th>
+<th class="head"><p>group_name</p></th>
+<th class="head"><p>group_type</p></th>
+<th class="head"><p>stationparameter_longname</p></th>
+<th class="head"><p>ts_unitname</p></th>
+<th class="head"><p>ts_unitsymbol</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>432821</p></td>
+<td><p>DL_VerwachtingenHWLW</p></td>
+<td><p>timeseries</p></td>
+<td><p>W_voorspeld</p></td>
+<td><p>meter</p></td>
+<td><p>m</p></td>
+</tr>
+<tr class="row-odd"><td><p>506056</p></td>
+<td><p>DL_PeilVoorspeld_KTdet</p></td>
+<td><p>timeseries</p></td>
+<td><p>H_voorspeld</p></td>
+<td><p>meter</p></td>
+<td><p>m</p></td>
+</tr>
+<tr class="row-even"><td><p>506057</p></td>
+<td><p>DL_AfvoerVoorspeld_KTdet</p></td>
+<td><p>timeseries</p></td>
+<td><p>Q_voorspeld</p></td>
+<td><p>cubic meter per second</p></td>
+<td><p>m³/s</p></td>
+</tr>
+<tr class="row-odd"><td><p>506058</p></td>
+<td><p>DL_PeilVoorspeld_LTdet</p></td>
+<td><p>timeseries</p></td>
+<td><p>H_voorspeld</p></td>
+<td><p>meter</p></td>
+<td><p>m</p></td>
+</tr>
+<tr class="row-even"><td><p>506059</p></td>
+<td><p>DL_AfvoerVoorspeld_LTdet</p></td>
+<td><p>timeseries</p></td>
+<td><p>Q_voorspeld</p></td>
+<td><p>cubic meter per second</p></td>
+<td><p>m³/s</p></td>
+</tr>
+<tr class="row-odd"><td><p>506060</p></td>
+<td><p>DL_NCatch_KTdet</p></td>
+<td><p>timeseries</p></td>
+<td><p>Ncatch_voorspeld</p></td>
+<td><p>millimeter</p></td>
+<td><p>mm</p></td>
+</tr>
+<tr class="row-even"><td><p>506061</p></td>
+<td><p>DL_NCatch_LTdet</p></td>
+<td><p>timeseries</p></td>
+<td><p>Ncatch_voorspeld</p></td>
+<td><p>millimeter</p></td>
+<td><p>mm</p></td>
 </tr>
 </tbody>
 </table>

@@ -1,21 +1,22 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Print versus logging &mdash; pywaterinfo 0.8.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+  <title>Print versus logging &mdash; pywaterinfo 0.9.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/documentation_options.js?v=ec16d22d"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=39bb1c6d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,9 +35,6 @@
           <a href="index.html" class="icon icon-home">
             pywaterinfo
           </a>
-              <div class="version">
-                0.8.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -92,7 +90,7 @@
            <div itemprop="articleBody">
              
   <section id="print-versus-logging">
-<span id="logging"></span><h1>Print versus logging<a class="headerlink" href="#print-versus-logging" title="Link to this heading">¶</a></h1>
+<span id="logging"></span><h1>Print versus logging<a class="headerlink" href="#print-versus-logging" title="Link to this heading"></a></h1>
 <p>When developing functionalities of the package, use the <a class="reference external" href="https://docs.python.org/3/library/logging.html">logging module</a>
 instead of <code class="code docutils literal notranslate"><span class="pre">print</span></code> statements in the code.</p>
 <p>Check the <a class="reference external" href="https://docs.python.org/3.7/howto/logging.html">logging howto</a> document
@@ -103,7 +101,7 @@ go wrong, it is interested to verify the HTTP call. However, when using the libr
 an application, one might not bother the detailed HTTP calls. By adding the URLs of the response in an
 <code class="code docutils literal notranslate"><span class="pre">logging.info</span></code> message, this behaviour (where to see what) can be fully controlled on the application side.</p>
 <p>From the package side, the following is required:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="o">...</span>
 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Succesful waterinfo API request with call </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -111,7 +109,7 @@ an application, one might not bother the detailed HTTP calls. By adding the URLs
 </div>
 <p>On the applciation (using/relying on the package) side, one can control the level of log messages. If
 interested in seeing these informative messages, set the level on <code class="code docutils literal notranslate"><span class="pre">logging.INFO</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
 <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 </pre></div>
