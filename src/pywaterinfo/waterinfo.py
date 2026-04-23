@@ -1061,13 +1061,15 @@ class Waterinfo:
         for _, section in data.items():
             for item in section:
                 ts_dict = item["timeseries"]
-                timestamp = ts_dict["data"][0][0]
-                values = [item[::-2] for item in ts_dict["data"]]
+                columns = ts_dict["columns"].split(",")
 
-                timestamp_with_values = [[timestamp, *vals] for vals in values]
-                df = pd.DataFrame(
-                    timestamp_with_values, columns=ts_dict["columns"].split(",")
-                )
+                # ts_dict["data"] has the format of:
+                # [[ts1, val1, ts1, val2, ...], [ts2, val1, ts2, val2, ...], ...] or
+                # [[ts1, val1], [ts2, val1], ...]
+                # Extract the first timestamp and every odd-indexed element as
+                # values.
+                parsed_rows = [[row[0]] + row[1::2] for row in ts_dict["data"]]
+                df = pd.DataFrame(parsed_rows, columns=columns)
                 # Add timeseries metadata
                 for key in ts_dict:
                     if key not in ("data", "columns", "rows"):
