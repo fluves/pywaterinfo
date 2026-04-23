@@ -230,6 +230,15 @@ the method :func:`~pywaterinfo.Waterinfo.get_group_list`, e.g. for the HIC stati
    :ref:`groupids` page.
 
 
+Similar, for L'hydrométrie en Wallonie the group list can be requested:
+
+::
+
+    from pywaterinfo import Waterinfo
+    spw = Waterinfo("spw")
+    spw.get_group_list()
+
+
 Time series group data
 -----------------------
 
@@ -294,8 +303,10 @@ An example use case is to get the available parameters (in waterinfo also called
 Custom queries
 --------------
 
-The `VMM <https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo>`_
-and `HIC <https://www.waterinfo.be/tsmhic/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo>`_ APIs
+The `VMM <https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo>`_,
+`VMM Grid <https://hydro.vmm.be/grid/kiwis/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo>`_,
+`HIC <https://www.waterinfo.be/tsmhic/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo>`_ and
+`SPW <https://hydrometrie.wallonie.be/services/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo>`_ APIs
 provide more API paths. Whereas no specialized functions are available, use the :func:`~pywaterinfo.Waterinfo.request_kiwis` method
 to do custom calls to the KIWIS API. For example, using the :code:`getStationList` query for stations starting with a :code:`P`:
 
