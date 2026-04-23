@@ -2,6 +2,22 @@
 Changelog
 =========
 
+Version 0.9.0
+=============
+
+Pywaterinfo no longer supports Python 3.9 and the support for Python 3.13 is added. This release contains a number of new interesting features:
+
+- New data provider is added. The pywaterinfo package can now also query the API of L'hydrométrie en
+  Wallonie provided by Le Service public de Wallonie (SPW) (#73, #80; thanks to @TimFranken)
+- Support for Ensemble Timeseries from HIC provider added (#74, #75, #83; thanks to @barisoztas)
+- Support for VMM Grid based data added (#76; thanks to @barisoztas)
+
+Furthermore, following development improvements were included:
+
+- Deprecate pytz as dependency (#77; thanks to @barisoztas)
+- Improved handling of WISKI API decoding errors. The exclusion of non-parseable fields can be implemented on the level of an individual data provider (#79; thanks to @TimFranken)
+
+
 Version 0.8.1
 =============
 
