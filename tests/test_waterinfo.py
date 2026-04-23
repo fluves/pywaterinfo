@@ -98,7 +98,7 @@ def test_token_hic(cache):
     assert "Authorization" not in res.request.headers.keys()
 
     # token, token header, authentication in request header
-    # this client code is received by VMM for unit testing purposes only
+    # this client code is received by HIC for unit testing purposes only
     client = os.environ.get("HIC_TOKEN")
     hic = Waterinfo("hic", token=client, cache=cache)
     hic.clear_cache()
@@ -124,13 +124,13 @@ def test_token_spw(cache):
     assert "Authorization" not in res.request.headers.keys()
 
     # token, token header, authentication in request header
-    # this client code is received by VMM for unit testing purposes only
-    client = os.environ.get("SPW_TOKEN")
-    spw = Waterinfo("spw", token=client, cache=cache)
-    spw.clear_cache()
-    assert spw._token_header is not None
-    _, res = spw.request_kiwis({"request": "getRequestInfo"})
-    assert "Authorization" in res.request.headers.keys()
+    # TODO > request SPW token
+    # client = os.environ.get("SPW_TOKEN")
+    # spw = Waterinfo("spw", token=client, cache=cache)
+    # spw.clear_cache()
+    # assert spw._token_header is not None
+    # _, res = spw.request_kiwis({"request": "getRequestInfo"})
+    # assert "Authorization" in res.request.headers.keys()
 
     # wrong token results in error
     with pytest.raises(Exception):
